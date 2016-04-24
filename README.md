@@ -1,3 +1,3 @@
-# makrenejs
+# makrene.js
 
-javascript graph library
+javascript graph/mash library
