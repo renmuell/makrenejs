@@ -5,25 +5,28 @@ var eslint     = require('gulp-eslint');
 var replace    = require('gulp-replace');
 var sourcemaps = require('gulp-sourcemaps');
 var browserify = require('gulp-browserify');
+var tape       = require('gulp-tape');
+var tapSpec    = require('tap-spec');
+var tapMin     = require('tap-min');
 
 // path
 
 var path = {
   src : {
-    js       : './src/makrene/**/*.js',
-    vendorJs : './src/vendorJs/**/*.js',
-    example  : './example/**/*.*',
-    test     : './test/**/*.js'
+    js       : 'src/makrene/**/*.js',
+    vendorJs : 'src/vendorJs/**/*.js',
+    example  : 'example/**/*.*',
+    test     : 'test/**/*.js'
   },
   build : {
-    src      : './build/src/makrene',
-    mainJs   : './build/src/makrene/makrene.js',
-    vendorJs : './build/src/vendorJs',
-    example  : './build/example',
-    test     : './build/test'
+    src      : 'build/src/makrene',
+    mainJs   : 'build/src/makrene/makrene.js',
+    vendorJs : 'build/src/vendorJs',
+    example  : 'build/example',
+    test     : 'build/test'
   },
   release : {
-    main    : './release/'
+    main    : 'release/'
   }
 };
 
@@ -57,9 +60,7 @@ gulp.task('bundle-js', ['build-js', 'copy-vendorjs'], function(){
 
 // Release JS
 
-gulp.task('release-js', ['release-js-main']);
-
-gulp.task('release-js', ['bundle-js'], function(){
+gulp.task('release-js', ['test'], function(){
   return gulp.src(path.build.mainJs)
              .on('error', onError)
              .pipe(gulp.dest(path.release.main))
@@ -90,14 +91,29 @@ gulp.task('copy-example', function(){
 // Watch
 
 gulp.task('watch', ['build'], function(){
-  gulp.watch(path.src.js, ['build']);
-  gulp.watch(path.src.example, ['build']);
+  gulp.watch(path.src.js      , ['build']);
+  gulp.watch(path.src.example , ['build']);
+  gulp.watch(path.src.test    , ['build']);
+});
+
+// Test
+
+gulp.task('test',  ['bundle-js'],function() {
+  return gulp.src(path.src.test)
+    .pipe(eslint())
+    .pipe(eslint.formatEach())
+    //.pipe(eslint.failAfterError())
+    .on('error', onError)
+    .pipe(tape({
+      //reporter: tapSpec()
+      reporter: tapMin()
+    }));
 });
 
 // ALL
 
-gulp.task('default', ['build-js']);
+gulp.task('default', ['build']);
 
-gulp.task('build', ['copy-example', 'bundle-js']);
+gulp.task('build', ['copy-example', 'test']);
 
 gulp.task('release', ['release-js']);

@@ -11,11 +11,12 @@
       var context = canvas.getContext('2d');
   
       var circle = Makrene.Circle({
-        numVertexOnLevel: 10
+        numVertexOnLevel: 6
       });
 
-      for (var i = 0; i < 41; i++) {
-        circle.push(Math.random() > 0.2 ? Makrene.Vertex() : undefined);
+      for (var i = 0; i < 10; i++) {
+        circle.push( Makrene.Vertex());
+        //circle.push(Math.random() > 0.2 ? Makrene.Vertex() : undefined);
       }
       
       draw();
