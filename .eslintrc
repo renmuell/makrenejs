@@ -8,7 +8,6 @@
   "extends": "eslint:recommended",
   "rules": {
     "valid-jsdoc": ["error", {
-      "matchDescription": "^[A-Z][A-Za-z0-9\\s]*[.]$"
     }]
   }
 }
