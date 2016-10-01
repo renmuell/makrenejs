@@ -65,6 +65,7 @@ module.exports = function Makrene_Circle(config) {
     *  @see graph.numCircleLevels
     */
    var _numCircleLevels = 0;
+   var _circleLength = 0;
 
   /***
    *      _____                           _   _           
@@ -105,13 +106,7 @@ module.exports = function Makrene_Circle(config) {
      */
     length  : {
       get: function(){
-        var l = 0;
-
-        graph.vertices.forEach(function(level){
-          l += level.length;
-        });
-
-        return l;
+        return _circleLength;
       }
     },
 
@@ -316,7 +311,7 @@ module.exports = function Makrene_Circle(config) {
 
     clear: function(){
       _numCircleLevels = 0;
-
+      _circleLength    = 0;
       graph.faces       = [];
       graph.edges       = [];
       graph.vertices    = [];
@@ -385,7 +380,9 @@ module.exports = function Makrene_Circle(config) {
 
         //link with next neigour 
         linkWithNeighbourVertex(graph, v, graph.vertices[level][(pos + 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]); 
-      }      
+      }  
+
+      _circleLength++;    
     },
 
     removeVertexFrom: function(level, pos){
@@ -462,6 +459,8 @@ module.exports = function Makrene_Circle(config) {
         vertex.edges = [];
         vertex.faces = [];
         vertex.neighbours = [];
+
+        _circleLength--;
 
         return vertex;
       }

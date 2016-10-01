@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>Example</title>
+    <meta charset="UTF-8"> 
   </head>
   <body>
     <canvas id="canvas" width="1800" height="1800"></canvas>
@@ -14,11 +15,21 @@
         numVertexOnLevel: 6
       });
 
+
       for (var i = 0; i < 10; i++) {
         circle.push( Makrene.Vertex());
         //circle.push(Math.random() > 0.2 ? Makrene.Vertex() : undefined);
       }
+      /*
+      setInterval(function(){
+         circle.push( Makrene.Vertex());
+         draw();
+      }, 500);
+
+      /*
       
+      */
+
       draw();
 
       function draw(){

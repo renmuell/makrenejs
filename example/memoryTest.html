@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>Example</title>
+    <meta charset="UTF-8"> 
   </head>
   <body>
     <script type="text/javascript" src="../release/makrene.js"></script>
@@ -10,7 +11,7 @@
       function test(){
         circle = Makrene.Circle({ create: false })
 
-        for (var i = 0; i < 10001; i++) {
+        for (var i = 0; i < 1000; i++) {
          circle.push(Makrene.Vertex())
         }
       }
