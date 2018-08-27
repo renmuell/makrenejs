@@ -8,9 +8,9 @@ module.exports = function (context, circle, config) {
     circle,
     config,
     function(v) {
-      return config.offset + (((config.vertexWidth + config.margin) * v.customData.col) + config.vertexWidth/2);
+      return config.offset + (((config.vertexWidth + config.margin) * v.data.col) + config.vertexWidth/2);
     },
     function(v) {
-      return config.offset + (((config.vertexHeight + config.margin ) * v.customData.row) + config.vertexHeight/2);
+      return config.offset + (((config.vertexHeight + config.margin ) * v.data.row) + config.vertexHeight/2);
     });
 };

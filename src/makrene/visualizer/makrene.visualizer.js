@@ -2,100 +2,200 @@
 
 module.exports = function(context, graph, config, getPosX, getPosY){
 
+  config = Object.assign({
+
+   /**
+    *  The width of the screen
+    *  @type {number}
+    */
+    width: 100,
+
+   /**
+    *  The height of the screen
+    *  @type {number}
+    */
+    height: 100,
+    
+   /**
+    *  The space between each level
+    *  @type {number}
+    */
+    levelOffset: 10,
+    
+   /**
+    *  The width of each vertex box
+    *  @type {number}
+    */
+    vertexWidth: 100,
+    
+   /**
+    *  The height of each vertex box
+    *  @type {number}
+    */
+    vertexHeight: 100,
+    
+   /**
+    *  The color of the lines
+    *  @type {number}
+    */
+    lineColor: 100,
+    
+   /**
+    *  The color of each vertex box
+    *  @type {number}
+    */
+    vertexColor: 100,
+    
+   /**
+    *  The width of each line
+    *  @type {number}
+    */
+    lineWidth: 100,
+
+    /**
+     *  Draw faces
+     *  @type {bool}
+     */
+     drawFaces: true,
+
+    /**
+     *  Draw edges
+     *  @type {bool}
+     */
+     drawEdges: true,
+
+    /**
+     *  Draw vertices
+     *  @type {bool}
+     */
+     drawVertices: true,
+
+    /**
+     *  Draw faces
+     *  @type {bool}
+     */
+     drawFacesDebugText: false,
+
+    /**
+     *  Draw faces
+     *  @type {bool}
+     */
+     drawEdgesDebugText: false,
+
+    /**
+     *  Draw faces
+     *  @type {bool}
+     */
+     drawVertexDebugText: false
+
+  }, config);
+
   getPosX = getPosX || function (v) {
-    if (v.customData.x)
-      return v.customData.x;
-    v.customData.x = Math.random() * config.width;
-    return v.customData.x;
+    if (v.data.x)
+      return v.data.x;
+    v.data.x = Math.random() * config.width;
+    return v.data.x;
   }
 
   getPosY = getPosY || function (v) {
-    if (v.customData.y)
-      return v.customData.y;
-    v.customData.y = Math.random() * config.height;
-    return v.customData.y;
+    if (v.data.y)
+      return v.data.y;
+    v.data.y = Math.random() * config.height;
+    return v.data.y;
   }
 
-  // draw Faces
-  graph.faces.forEach(function(face){
-    context.beginPath();
-    context.fillStyle = 'rgba(0,0,0,0.2)';
-    var vertex = face.vertices[0];
-    context.moveTo(getPosX(vertex), getPosY(vertex));
-    face.vertices.forEach(function(vertex){
-      context.lineTo(getPosX(vertex), getPosY(vertex));
-    })
-    context.fill();
-  })
-
-  // draw Edges
-  graph.edges.forEach(function(edge){
-    context.beginPath();
-    context.lineWidth = config.lineWidth;
-    context.strokeStyle = config.lineColor;
-    var v1 = edge.vertices[0];
-    var v2 = edge.vertices[1];
-    context.moveTo(getPosX(v1), getPosY(v1));
-    context.lineTo(getPosX(v2), getPosY(v2));
-    context.stroke();
-  });
-
-  // draw vertexes
-  graph.forEach(function(v){
-    if (v){
+  if (config.drawFaces) {
+    // draw Faces
+    graph.faces.forEach(function(face){
       context.beginPath();
-      context.fillStyle = config.vertexColor;
-      context.fillRect(
-        getPosX(v) - config.vertexWidth/2,
-        getPosY(v) - config.vertexHeight/2,
-        config.vertexWidth,
-        config.vertexHeight);     
-    }
-  });
+      context.fillStyle = 'rgba(0,0,0,0.2)';
+      var vertex = face.vertices[0];
+      context.moveTo(getPosX(vertex), getPosY(vertex));
+      face.vertices.forEach(function(vertex){
+        context.lineTo(getPosX(vertex), getPosY(vertex));
+      })
+      context.fill();
+    })
+  }
 
-  // Draw text
-  graph.forEach(function(v){
-    if (v){
+  if (config.drawEdges) {
+    // draw Edges
+    graph.edges.forEach(function(edge){
+      context.beginPath();
+      context.lineWidth = config.lineWidth;
+      context.strokeStyle = config.lineColor;
+      var v1 = edge.vertices[0];
+      var v2 = edge.vertices[1];
+      context.moveTo(getPosX(v1), getPosY(v1));
+      context.lineTo(getPosX(v2), getPosY(v2));
+      context.stroke();
+    });
+  }
+
+  if (config.drawVertices) {
+    // draw vertexes
+    graph.forEach(function(v){
+      if (v){
+        context.beginPath();
+        context.fillStyle = config.vertexColor;
+        context.fillRect(
+          getPosX(v) - config.vertexWidth/2,
+          getPosY(v) - config.vertexHeight/2,
+          config.vertexWidth,
+          config.vertexHeight);     
+      }
+    });
+  }
+
+  if (config.drawVertexDebugText) {
+    // Draw text
+    graph.forEach(function(v){
+      if (v){
+        drawText(
+          context, 
+          'i' + v.id +
+          'n' + v.neighbours.length + 
+          'e' + v.edges.length + 
+          'f' + v.faces.length,
+          getPosX(v),
+          getPosY(v),
+          'red');
+      }
+    });
+  }
+
+  if (config.drawEdgesDebugText) {
+    graph.edges.forEach(function(edge){
+      var v1 = edge.vertices[0];
+      var v2 = edge.vertices[1];
       drawText(
-        context, 
-        'i' + v.id +
-        'n' + v.neighbours.length + 
-        'e' + v.edges.length + 
-        'f' + v.faces.length,
-        getPosX(v),
-        getPosY(v),
-        'red');
-    }
-  });
+        context,
+        'i' + edge.id +
+        'n' + edge.neighbours.length + 
+        'v' + edge.vertices.length + 
+        'f' + edge.faces.length,
+        getPosX(v1) + (getPosX(v2)- getPosX(v1))/2,
+        getPosY(v1) + (getPosY(v2) - getPosY(v1))/2,
+        'blue');
+    });
+  }
 
-  graph.edges.forEach(function(edge){
-    var v1 = edge.vertices[0];
-    var v2 = edge.vertices[1];
-    drawText(
-      context,
-      'i' + edge.id +
-      'n' + edge.neighbours.length + 
-      'v' + edge.vertices.length + 
-      'f' + edge.faces.length,
-      getPosX(v1) + (getPosX(v2)- getPosX(v1))/2,
-      getPosY(v1) + (getPosY(v2) - getPosY(v1))/2,
-      'blue');
-  });
-
-  graph.faces.forEach(function(face){
-    var centerX = (getPosX(face.vertices[0]) + getPosX(face.vertices[1]) + getPosX(face.vertices[2])) / 3;
-    var centerY = (getPosY(face.vertices[0]) + getPosY(face.vertices[1]) + getPosY(face.vertices[2])) / 3;
-    
-    drawText(
-      context,
-      'i' + face.id +
-      'n' + face.neighbours.length + 
-      'v' + face.vertices.length + 
-      'e' + face.edges.length,
-      centerX,
-      centerY,
-      'black')
-  })
+  if (config.drawFacesDebugText) {
+    graph.faces.forEach(function(face){
+      var centerX = (getPosX(face.vertices[0]) + getPosX(face.vertices[1]) + getPosX(face.vertices[2])) / 3;
+      var centerY = (getPosY(face.vertices[0]) + getPosY(face.vertices[1]) + getPosY(face.vertices[2])) / 3;
+      
+      drawText(
+        context,
+        'i' + face.id +
+        'n' + face.neighbours.length + 
+        'v' + face.vertices.length + 
+        'e' + face.edges.length,
+        centerX,
+        centerY,
+        'black')
+    });
+  }
 };
 
 function drawText(context, content, x, y, color){

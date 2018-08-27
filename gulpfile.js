@@ -65,7 +65,9 @@ gulp.task('release-js', ['test'], function(){
              .on('error', onError)
              .pipe(gulp.dest(path.release.main))
              .pipe(sourcemaps.init())
-             .pipe(uglify())
+             .pipe(uglify().on('error', function(e){
+                console.log(e);
+             }))
              .pipe(rename({
                  suffix: "-min"
               }))

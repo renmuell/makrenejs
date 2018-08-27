@@ -1,63 +1,191 @@
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Makrene=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 /*global module */
 
-module.exports = {
+/**
+ *  Core components of graph library.
+ */
+var Makrene = {
 
-  version : '0.0.8',
+  /**
+   *  Current Version of library
+   *  @public
+   *  @type {string}
+   */
+  version : '0.1.0',
 
-  Vertex: function(){
-    return {
-      edges       : [],
-      faces       : [],
-      neighbours  : [],
-      customData  : {}
-    };
+  /**
+   *  The factory Vertex(), create an new vertex object.
+   * 
+   *  A vertex is a fundamental element of a graph. It represent an node which can hold data and
+   *  can be linked to create a graph.
+   *
+   *  Syntax:
+   *  var vertex = Makrene.Vertex();
+   *
+   *  @public
+   *  @param {object} data - The data of the vertex
+   *  @return {Makrene.Vertex} - New vertex object
+   */
+  Vertex: function Makrene_Vertex (data) {
+
+    var vertex = Object.create(Makrene_Vertex.prototype, {});
+
+    return Object.assign(vertex, {
+      edges      : [],
+      faces      : [],
+      neighbours : [],
+      data       : data || {}
+    });
   },
 
-  Edge: function(){
-    return {
-      vertices    : [],
-      faces       : [],
-      neighbours  : [],
-      customData  : {}
-    };
+  /**
+   *  The isVertex() method determines whether the passed value is an Vertex object.
+   *
+   *  Syntax:
+   *  Makrene.isVertex(value);
+   *  
+   *  @param {object} value - The value to be checked.
+   *  @return {bool} - true if the value is an Vertex; otherwise, false.
+   */
+  isVertex: function (value){
+    if (typeof value === 'undefined') { return false; }
+    return value instanceof Makrene.Vertex;
   },
 
-  Face: function(){
-    return {
-      vertices    : [],
-      edges       : [],
-      neighbours  : [],
-      customData  : {}
-    };
+  /**
+   *  The factory Edge(), create an new edge object.
+   * 
+   *  A edge represents a connection of two vertices.
+   *
+   *  Syntax:
+   *  var edge = Makrene.Edge();
+   *
+   *  @public
+   *  @param {object} data - The data of the edge
+   *  @return {Makrene.Edge} - New edge object
+   */
+  Edge: function Makrene_Edge(data){
+
+    var edge = Object.create(Makrene_Edge.prototype, {});
+
+    return Object.assign(edge, {
+      vertices   : [],
+      faces      : [],
+      neighbours : [],
+      data       : data || {}
+    });
   },
 
-  Graph: function(){
+  /**
+   *  The isEdge() method determines whether the passed value is an Edge object.
+   *
+   *  Syntax:
+   *  Makrene.isEdge(value);
+   *  
+   *  @param {object} value - The value to be checked.
+   *  @return {bool} - true if the value is an Edge; otherwise, false.
+   */
+  isEdge: function (value){
+    if (typeof value === 'undefined') { return false; }
+    return value instanceof Makrene.Edge;
+  },
 
-    var graph = {
+  /**
+   *  The factory Face(), create an new Face object.
+   * 
+   *  A face represents a area between closed connected edges. Also known as polygon.
+   *
+   *  Syntax:
+   *  var face = Makrene.Face();
+   *
+   *  @public
+   *  @param {object} data - The data of the face
+   *  @return {Makrene.Face} - New face object
+   */
+  Face: function Makrene_Face(data){
 
-      edges       : [],
-      faces       : [],
-      vertices    : [],
-      neighbours  : [],
-      customData  : {},
+    var face = Object.create(Makrene_Face.prototype, {});
 
-      addVertex : function(v) { graph.vertices.push(v);     },
-      addEdge   : function(e) { graph.edges.push(e);        },
-      addFace   : function(f) { graph.faces.push(f);        },
+    return Object.assign(face, {
+      vertices   : [],
+      edges      : [],
+      neighbours : [],
+      data       : data || {}
+    });
+  },
+
+  /**
+   *  The isFace() method determines whether the passed value is an Face object.
+   *
+   *  Syntax:
+   *  Makrene.isFace(value);
+   *  
+   *  @param {object} value - The value to be checked.
+   *  @return {bool} - true if the value is an Face; otherwise, false.
+   */
+  isFace: function (value){
+    if (typeof value === 'undefined') { return false; }
+    return value instanceof Makrene.Face;
+  },
+
+  /**
+   *  The factory Graph(), create an new Graph object.
+   * 
+   *  A graph is a set of connected vertices, edges and faces.
+   *
+   *  Syntax:
+   *  var face = Makrene.Graph();
+   *
+   *  @public
+   *  @param {object} data - The data of the graph
+   *  @return {Makrene.Graph} - New graph object
+   */
+  Graph: function Makrene_Graph(data){
+
+    var graph = Object.create(Makrene_Graph.prototype, {});
+
+    return Object.assign(graph, {
+
+      vertices   : [],
+      edges      : [],
+      faces      : [],
+      neighbours : [],
+      data       : data || {},
+
+      addVertex : function(v) { graph.vertices.push(v); return graph; },
+      addEdge   : function(e) { graph.edges.push(e);    return graph; },
+      addFace   : function(f) { graph.faces.push(f);    return graph; },
 
       forEach   : function(fn){ graph.vertices.forEach(fn); }
-    };
+    });
+  },
 
-    return graph;
+  /**
+   *  The isGraph() method determines whether the passed value is an Graph object.
+   *
+   *  Syntax:
+   *  Makrene.isGraph(value);
+   *  
+   *  @param {object} value - The value to be checked.
+   *  @return {bool} - true if the value is an Graph; otherwise, false.
+   */
+  isGraph: function (value){
+    if (typeof value === 'undefined') { return false; }
+    return value instanceof Makrene.Graph;
   }
+
 };
+
+module.exports = Makrene;
 
 },{}],2:[function(_dereq_,module,exports){
 /*global require, module */
 
 _dereq_('../vendorJs/polyfill')
 
+/**
+ *  Combines all Makrene components into on usable namespace object.
+ */
 module.exports = Object.assign(_dereq_('./base/makrene.base'), {
   Circle : _dereq_('./graph/makrene.graph.circle'),
   Grid   : _dereq_('./graph/makrene.graph.grid'),
@@ -65,11 +193,12 @@ module.exports = Object.assign(_dereq_('./base/makrene.base'), {
   Search : _dereq_('./search/makrene.search'),
   Visualizer : Object.assign(_dereq_('./visualizer/makrene.visualizer'), {
     Grid   : _dereq_('./visualizer/makrene.visualizer.grid'),
-    Circle : _dereq_('./visualizer/makrene.visualizer.circle')
+    Circle : _dereq_('./visualizer/makrene.visualizer.circle'),
+    CircleFullscreen : _dereq_('./visualizer/makrene.visualizer.circleFullscreen')
   })
 });
 
-},{"../vendorJs/polyfill":10,"./base/makrene.base":1,"./graph/makrene.graph.circle":3,"./graph/makrene.graph.grid":4,"./ki/makrene.ki.circle":5,"./search/makrene.search":6,"./visualizer/makrene.visualizer":9,"./visualizer/makrene.visualizer.circle":7,"./visualizer/makrene.visualizer.grid":8}],3:[function(_dereq_,module,exports){
+},{"../vendorJs/polyfill":11,"./base/makrene.base":1,"./graph/makrene.graph.circle":3,"./graph/makrene.graph.grid":4,"./ki/makrene.ki.circle":5,"./search/makrene.search":6,"./visualizer/makrene.visualizer":10,"./visualizer/makrene.visualizer.circle":7,"./visualizer/makrene.visualizer.circleFullscreen":8,"./visualizer/makrene.visualizer.grid":9}],3:[function(_dereq_,module,exports){
 (function() {
 
 /*global require, module */
@@ -78,10 +207,16 @@ var Makrene = _dereq_('../base/makrene.base')
 
 /**
  *  Multi linked circle mesh.
- *   ___
- *  /\ /\ 
- *  --X--  
- *  \/_\/
+ *
+ *     -----B-----
+ *    /    / \    \
+ *   A----5---6----C
+ *   | \ / \ / \ / |
+ *   |  4---1---7  |
+ *   | / \ / \ / \ |  Circle with numVertexOnLevel = 6
+ *   9----3---2----D         and  length = 13
+ *    \    \ /    /
+ *     -----8-----
  *
  *  The circle contains multiple levels/rings, each with a 
  *  max number of vertices. The center contains one vertex, connected
@@ -96,8 +231,14 @@ var Makrene = _dereq_('../base/makrene.base')
  *  is the vertex with the highest degree/angle on the outer 
  *  level/ring.
  *  
+ *  Syntax:
+ *  
+ *  let circle = Makrene.Circle();
+ *
+ *  @public
  *  @implements {Makrene.Graph}
  *  @param {object} config - the Settigns
+ *  @param {number} config.numVertexOnLevel - @see graph.numVertexOnLevel
  *  @returns {Makrene.Circle} Circle
  */
 module.exports = function Makrene_Circle(config) {
@@ -116,6 +257,7 @@ module.exports = function Makrene_Circle(config) {
   config = Object.assign({
 
    /**
+    *  default setting for numVertexOnLevel
     *  @see graph.numVertexOnLevel
     */
     numVertexOnLevel: 8
@@ -134,9 +276,15 @@ module.exports = function Makrene_Circle(config) {
    */
 
    /**
+    *  @private
     *  @see graph.numCircleLevels
     */
    var _numCircleLevels = 0;
+   
+   /**
+    *  @private
+    *  @see graph.length
+    */
    var _circleLength = 0;
 
   /***
@@ -149,11 +297,12 @@ module.exports = function Makrene_Circle(config) {
    *                     | |                              
    *                     |_|                              
    */
-
   var graph = Object.create(Makrene_Circle.prototype, {
 
     /**
      *  Gets the number of max vertex count per level/ring.
+     *
+     *  @public
      *  @default 8
      *  @type {number}
      */
@@ -163,6 +312,8 @@ module.exports = function Makrene_Circle(config) {
 
     /**
      *  Gets the number of circle levels/rings.
+     *
+     *  @public
      *  @type {number}
      */
     numCircleLevels: {
@@ -173,6 +324,7 @@ module.exports = function Makrene_Circle(config) {
 
     /**
      *  The number of vertices in the circle/graph.
+     *
      *  @public
      *  @type {number}
      */
@@ -184,6 +336,7 @@ module.exports = function Makrene_Circle(config) {
 
     /**
      *  Is circle empty.
+     *
      *  @public
      *  @type {bool}
      */
@@ -195,6 +348,7 @@ module.exports = function Makrene_Circle(config) {
 
     /**
      *  First Element of circle/graph, which is the center of the circle.
+     *
      *  @public
      *  @type {Makrene.Vertex}
      */
@@ -205,7 +359,8 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Visual center element of circle/graph.
+     *  Visual center element of circle/graph. Same as first().
+     *
      *  @public
      *  @alias graph.first
      *  @type {Makrene.Vertex}
@@ -217,8 +372,9 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Last Element of circle/graph, which is the vertex with the 
+     *  Last element of circle/graph, which is the vertex with the 
      *  highest degree/angle on the outer level/ring.
+     *
      *  @public
      *  @type {Makrene.Vertex}
      */
@@ -242,50 +398,96 @@ module.exports = function Makrene_Circle(config) {
    *     |_|  |_|\___|\__|_| |_|\___/ \__,_|___/
    *                                                                                     
    */
-
   return Object.assign(graph, Makrene.Graph(), {
 
-    push: function (v) {
+    /**
+     *  The push() method adds one or more elements to the end of 
+     *  an Circle and returns the new length of the Circle.
+     *
+     *  Syntax:
+     *  let newCircleLength = circle.push(vertex1[, ...[, vertexN]])
+     *
+     *  @public
+     *  @param {...Makrene.Vertex|object} v - The elements to add to the end of the Circle.
+     *                                        New vertex or data for new vertex.
+     *  @return {number} - Length after push of vertex
+     */
+    push: function () {
 
-      if(!graph.isEmpty && (_numCircleLevels == 0 
-       || graph.vertices[_numCircleLevels].length === graph.numVertexOnLevel)) {
+      [].forEach.call(arguments, function (v) {
 
-        _numCircleLevels++;
-      
-      }
+        if (typeof v === 'undefined' || !(v instanceof Makrene.Vertex)) {
+          v = Makrene.Vertex(v || {});
+        }
 
-      graph.vertices[_numCircleLevels] = graph.vertices[_numCircleLevels] || [];
+        if (!graph.isEmpty 
+         && (_numCircleLevels == 0 || graph.vertices[_numCircleLevels].length === graph.numVertexOnLevel)) {
 
-      graph.addVertexAt(_numCircleLevels, graph.vertices[_numCircleLevels].length, v);  
+          _numCircleLevels++;
+        }
+
+        graph.vertices[_numCircleLevels] = graph.vertices[_numCircleLevels] || [];
+
+        graph.addVertexAt(_numCircleLevels, graph.vertices[_numCircleLevels].length, v);  
+
+      });
 
       return graph.length;
     },
   
+    /**
+     *  The pop() method removes the last element from an Circle and returns that element. 
+     *  This method changes the length of the Circle.
+     *
+     *  Syntax:
+     *  var vertex = circle.pop()
+     *
+     *  @public
+     *  @return {Makrene.Vertex|undefined} - The removed element from the circle; 
+     *                                       undefined if the circle is empty.
+     */
     pop: function(){
       return graph.removeVertex(graph.last);
     },
 
+    /**
+     *  The shift() method removes the first element from an Circle and returns that removed element. 
+     *  This method changes the length of the Circle.
+     *
+     *  Syntax:
+     *  var vertex = circle.shift()
+     *
+     *  @public
+     *  @return {Makrene.Vertex|undefined} - The removed element from the circle; 
+     *                                       undefined if the circle is empty.
+     *
+     *  @remarks Algorithm-idea: fast rotate to center
+     *           - remove middle
+     *           - remove every first element of each level, shift rest one position to front
+     *           - add removed element one level lower on freed last position
+     */
     shift: function(){
       if (graph.isEmpty) { return; }
       if (graph.length === 1) {
         return graph.pop();
       } else {
+
         // remove all level index 0
         var indexZeroVertieces = [];
         for (var i = graph.vertices.length - 1; i >= 0; i--) {
           indexZeroVertieces[i] = graph.vertices[i][0];
           graph.removeVertex(graph.vertices[i][0]);
         }
-        
+
         // shift all levels --> undefined at last max level index
         for (var j = graph.vertices.length - 1; j >= 0; j--) {
           graph.vertices[j].shift();
 
           graph.vertices[j].forEach(function(v, index){
             if (v){
-              v.customData.degree = calculateVertexDegree(graph, j, index);
-              v.customData.level  = j;
-              v.id = v.customData.level + '_' + v.customData.degree;
+              v.data.degree = calculateVertexDegree(graph, j, index);
+              v.data.level  = j;
+              v.id = v.data.level + '_' + v.data.degree;
             }
           });
         }
@@ -300,40 +502,67 @@ module.exports = function Makrene_Circle(config) {
       }
     },
     
-    unshift: function(v){
-      if (graph.isEmpty) { return graph.push(v); }
+    /**
+     *  The unshift() method adds one or more elements to the beginning of 
+     *  an Circle and returns the new length of the Circle.
+     *
+     *  Syntax:
+     *  let newCircleLength = circle.unshift(vertex1[, ...[, vertexN]])
+     *
+     *  @public
+     *  @param {...Makrene.Vertex|object} v - The elements to add to the beginning of the Circle.
+     *                                        New vertex or data for new vertex.
+     *  @return {number} - Length after push of vertex
+     */
+    unshift: function(){
 
-      // remove every last index
-      var indexLastVertieces = [graph.center];
-      graph.removeVertex(graph.center);
-      for (var i = graph.vertices.length - 1; i >= 0; i--) {
-        if (graph.vertices[i][graph.numVertexOnLevel-1]){
-          indexLastVertieces[i] = graph.vertices[i][graph.numVertexOnLevel-1];
-          graph.removeVertex(graph.vertices[i][graph.numVertexOnLevel-1]);
+      [].forEach.call(arguments, function (v) {
+
+        if (typeof v === 'undefined' || !(v instanceof Makrene.Vertex)) {
+          v = Makrene.Vertex(v || {});
         }
-      }
-      
-      // unshift every level -> insert undefined at 0
-     for (var j = graph.vertices.length - 1; j >= 0; j--) {
-        graph.vertices[j].unshift(undefined);
 
-        graph.vertices[j].forEach(function(v, index){
-          if (v){
-            v.customData.degree = calculateVertexDegree(graph, j, index);
-            v.customData.level  = j;
-            v.id = v.customData.level + '_' + v.customData.degree;
+        if (graph.isEmpty) { return graph.push(v); }
+
+        // remove every last index
+        var indexLastVertieces = [graph.center];
+        graph.removeVertex(graph.center);
+        for (var i = graph.vertices.length - 1; i >= 0; i--) {
+          if (graph.vertices[i][graph.numVertexOnLevel-1]){
+            indexLastVertieces[i] = graph.vertices[i][graph.numVertexOnLevel-1];
+            graph.removeVertex(graph.vertices[i][graph.numVertexOnLevel-1]);
           }
-        });
-      }
+        }
 
-      // add all last index at beginning of level above
-      for (var k = indexLastVertieces.length - 1; k >= 0; k--) {
-        graph.addVertexAt(k + 1, 0, indexLastVertieces[k]);
-      }
-    
-      // add vertex at 0,0
-      graph.addVertexAt(0, 0, v);
-  
+        // unshift every level -> insert undefined at 0
+        for (var j = graph.vertices.length - 1; j >= 0; j--) {
+          graph.vertices[j].unshift(undefined);
+
+          graph.vertices[j].forEach(function(v, index){
+            if (v){
+              v.data.degree = calculateVertexDegree(graph, j, index);
+              v.data.level  = j;
+              v.id = v.data.level + '_' + v.data.degree;
+            }
+          });
+        }
+
+        // add all last index at beginning of level above
+        for (var k = indexLastVertieces.length - 1; k >= 0; k--) {
+          graph.addVertexAt(k + 1, 0, indexLastVertieces[k]);
+        }
+      
+        // add vertex at 0,0
+        graph.addVertexAt(0, 0, v);
+
+        if (!graph.isEmpty 
+         && (_numCircleLevels == 0 || graph.vertices[_numCircleLevels].length === graph.numVertexOnLevel)) {
+
+          _numCircleLevels++;
+        }
+
+      });
+
       return graph.length;
     },
 
@@ -345,6 +574,26 @@ module.exports = function Makrene_Circle(config) {
       }
 
       return graph.length;
+    },
+
+    fill: function (value, start, end) {
+
+      start = start < 0 ?
+        Math.max(graph.length + start, 0) :
+        Math.min(start, graph.length);
+
+      end = end || graph.length;
+
+      end = end < 0 ?
+        Math.max(graph.length + end, 0) :
+        Math.min(end, graph.length);
+
+      while (start < end) {
+        graph.addVertexAt()
+        start++;
+      }
+
+      return graph;
     },
 
     expandFromInside: function(num){
@@ -388,7 +637,7 @@ module.exports = function Makrene_Circle(config) {
       graph.edges       = [];
       graph.vertices    = [];
       graph.neighbours  = [];
-      graph.customData  = {};
+      graph.data  = {};
     },
 
     includes: function(vertex){
@@ -397,6 +646,24 @@ module.exports = function Makrene_Circle(config) {
 
     vertexAt: function(level, pos){
       return graph.vertices[level] ? graph.vertices[level][pos] : undefined;
+    },
+
+    facesAt: function(level){
+      return graph.faces.filter(function(f){ return f.data.level == level; });
+    },
+
+    getFacesLevelArray: function(){
+      var r = [];
+      graph.faces.forEach(function(f){ 
+        
+        if (typeof r[f.data.level] === 'undefined') {
+          r[f.data.level] = []; 
+        }
+
+        r[f.data.level].push(f); 
+      });
+
+      return r;
     },
 
     indexOf: function(vertex){
@@ -427,9 +694,9 @@ module.exports = function Makrene_Circle(config) {
         return;
       }
 
-      v.customData.degree = calculateVertexDegree(graph, level, pos);
-      v.customData.level  = level;
-      v.id = v.customData.level + '_' + v.customData.degree;
+      v.data.degree = calculateVertexDegree(graph, level, pos);
+      v.data.level  = level;
+      v.id = v.data.level + '_' + v.data.degree;
       graph.vertices[level][pos] = v;
 
       //Link center with everyone above
@@ -448,10 +715,16 @@ module.exports = function Makrene_Circle(config) {
         linkWithLevelAboveVertexes(graph, level, pos);
 
         //link with previous neighbour
-        linkWithNeighbourVertex(graph, v, graph.vertices[level][(pos - 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]);
+        linkWithNeighbourVertex(
+          graph, 
+          v, 
+          graph.vertices[level][(pos - 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]);
 
         //link with next neigour 
-        linkWithNeighbourVertex(graph, v, graph.vertices[level][(pos + 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]); 
+        linkWithNeighbourVertex(
+          graph, 
+          v, 
+          graph.vertices[level][(pos + 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]); 
       }  
 
       _circleLength++;    
@@ -692,6 +965,13 @@ function createFace(graph, v1, v2, v3){
   v3.faces.push(f);
 
   f.id = graph.faces.length;
+  f.data = {
+    level: Math.max(
+      v1.data.level,
+      v2.data.level,
+      v3.data.level)
+  };
+
   graph.faces.push(f);
 
   linkFaceWithVertexFaces(f, v1);
@@ -767,8 +1047,8 @@ module.exports = function(config){
         for (var c = graph.cols - 1; c >= 0; c--) {
           var v = Makrene.Vertex();
 
-          v.customData.row = r;
-          v.customData.col = c;
+          v.data.row = r;
+          v.data.col = c;
 
           graph.vertices[r][c] = v;
         }
@@ -916,31 +1196,31 @@ module.exports = function(){
   var ki = {
     init: function(circle){
       circle.forEach(function(v){
-        v.customData.degree = v.customData.degree % 360;
-        v.customData.Orginaldegree = v.customData.degree;
-        v.customData.OrginalLevel= v.customData.level;
+        v.data.degree = v.data.degree % 360;
+        v.data.Orginaldegree = v.data.degree;
+        v.data.OrginalLevel= v.data.level;
       });
     },
     step: function(circle){
       circle.forEach(function(v){
 
         // goto orginal angle
-        var a1 = v.customData.Orginaldegree;
-        var a2 = v.customData.degree ;
+        var a1 = v.data.Orginaldegree;
+        var a2 = v.data.degree ;
         var angle = 180 - Math.abs(Math.abs(a1 - a2) - 180);
 
         if (Math.abs(angle) >= 1) {
           var angle2 = 180 - Math.abs(Math.abs((a1+1) - a2) - 180);
-          v.customData.degree += angle2 > angle ? 1 : -1;
-          v.customData.degree = v.customData.degree % 360;
+          v.data.degree += angle2 > angle ? 1 : -1;
+          v.data.degree = v.data.degree % 360;
         }
 
         // goto orginal level
-        var l1 = v.customData.OrginalLevel;
-        var l2 = v.customData.level;
+        var l1 = v.data.OrginalLevel;
+        var l2 = v.data.level;
 
         if (Math.abs(l1 - l2) > 0.1) {
-          v.customData.level += l1 > l2 ? +0.1 : -0.1;
+          v.data.level += l1 > l2 ? +0.1 : -0.1;
         }
 
       });
@@ -997,8 +1277,8 @@ var Search = {
 
     if (visited.length === 0) {
       circle.forEach(function(vertex){
-        vertex.customData.visited   = false;
-        vertex.customData.lastVisit = Number.MAX_VALUE;
+        vertex.data.visited   = false;
+        vertex.data.lastVisit = Number.MAX_VALUE;
       });
     }
 
@@ -1009,11 +1289,11 @@ var Search = {
         if (vertex) {
 
           visited.push(vertex);
-          vertex.customData.visited   = true;
-          vertex.customData.lastVisit = Date.now();
+          vertex.data.visited   = true;
+          vertex.data.lastVisit = Date.now();
 
           vertex.neighbours.forEach(function(neighbour){
-            if (neighbour && !neighbour.customData.visited && !nextvertices.includes(neighbour)) {
+            if (neighbour && !neighbour.data.visited && !nextvertices.includes(neighbour)) {
               nextvertices.push(neighbour);
             }
           })
@@ -1049,14 +1329,146 @@ module.exports = function (context, circle, config) {
     circle,
     config,
     function(v) {
-      return offsetX + ((Math.cos(v.customData.degree * 0.0174532925) * (v.customData.level * config.levelOffset)) + config.vertexWidth  / 2);
+      return offsetX + ((Math.cos(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexWidth  / 2);
     },
     function(v) {
-      return offsetY + ((Math.sin(v.customData.degree * 0.0174532925) * (v.customData.level * config.levelOffset)) + config.vertexHeight / 2);
+      return offsetY + ((Math.sin(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexHeight / 2);
     });
 };
 
-},{"./makrene.visualizer":9}],8:[function(_dereq_,module,exports){
+},{"./makrene.visualizer":10}],8:[function(_dereq_,module,exports){
+/*global require, module */
+
+var base = _dereq_('./makrene.visualizer');
+
+/**
+ *  This visualizer draws a Makrene.Circle, from the center of the canvas, to the edges
+ *  of the canvas. The outer ring of the circle will be drag out to the edges of the canvas 
+ *  rectangle. This gives a special effect of filled space. By default each ring, will be
+ *  spaced equally to the outer edge. 
+ *
+ *   -------B-------
+ *   |     / \     | 
+ *   A----5---6----C
+ *   | \ / \ / \ / |
+ *   |  4---1---7  |
+ *   | / \ / \ / \ |  
+ *   9----3---2----D
+ *   |     \ /     |
+ *   -------8-------
+ *
+ *  @public
+ *  @param {RenderingContext} context   - The canvas 2d rendering context.
+ *  @param {Makrene.Circle} circle      - the circle structure
+ *  @param {object} config              - The settings
+ *  @param {number} config.width        - The width of the screen
+ *  @param {number} config.height       - The height of the screen
+ *  @param {number} config.levelOffset  - The space between each level
+ *  @param {number} config.vertexWidth  - The width of each vertex box
+ *  @param {number} config.vertexHeight - The height of each vertex box
+ *  @param {string} config.lineColor    - The color of the lines
+ *  @param {string} config.vertexColor  - The color of each vertex box
+ *  @param {number} config.lineWidth    - The width of each line
+ *  @return {undefined}
+ */
+module.exports = function (context, circle, config) {
+
+  var offsetX = (config.width  - config.vertexWidth ) / 2;
+  var offsetY = (config.height - config.vertexHeight) / 2;
+
+  config.levelOffset = config.levelOffset || (config.width/2)/circle.numCircleLevels;
+
+  base(context,
+    circle,
+    config,
+    function(v) {
+      return (v.data.level == circle.numCircleLevels) 
+      ? edgeOfView(config, v.data.degree).x
+      : offsetX + ((Math.cos(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexWidth  / 2);
+    },
+    function(v) {
+      return (v.data.level == circle.numCircleLevels)
+      ? edgeOfView(config, v.data.degree-180).y
+      : offsetY + ((Math.sin(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexHeight / 2);
+    });
+};
+
+/**
+ *  The edgeOfView() method finds the point on the rectangle by degree from the middle point.
+ *
+ *  -------------X------
+ *  |           /      |                Given an 2d rectangle with width and height, find the 
+ *  |          / 45°   |                x and y position, on the border of the rectangle, by an given
+ *  |         /________| height         angle from the center of the rectangle.
+ *  |                  |
+ *  |                  |
+ *  --------------------
+ *          width
+ *
+ *  @link https://stackoverflow.com/questions/4061576/finding-points-on-a-rectangle-at-a-given-angle/31886696
+ *  @remarks Solution was found as always on stackoverflow :P
+ *  
+ *  Syntax:
+ *  var point = edgeOfView({ height: 100, width: 40 }, 45);
+ *  console.log(point.x, point.y);  
+ *
+ *  @private
+ *  @param {object} rect        - the rectangle box, on which to find the point by degree
+ *  @param {nubmer} rect.height - the height of the rectangle
+ *  @param {nubmer} rect.width  - the width of the rectangle
+ *  @param {nubmer} deg         - the degree from the center to find the point
+ *  @return {object}            - The point with x, y coordinates.
+ */
+function edgeOfView (rect, deg) {
+
+  var twoPI = Math.PI*2;
+  var theta = deg * Math.PI / 180;
+  
+  while (theta < -Math.PI) {
+    theta += twoPI;
+  }
+  
+  while (theta > Math.PI) {
+    theta -= twoPI;
+  }
+  
+  var rectAtan = Math.atan2(rect.height, rect.width);
+  var tanTheta = Math.tan(theta);
+  var region;
+  
+  if ((theta > -rectAtan) && (theta <= rectAtan)) {
+      region = 1;
+  } else if ((theta > rectAtan) && (theta <= (Math.PI - rectAtan))) {
+      region = 2;
+  } else if ((theta > (Math.PI - rectAtan)) || (theta <= -(Math.PI - rectAtan))) {
+      region = 3;
+  } else {
+      region = 4;
+  }
+  
+  var edgePoint = {x: rect.width/2, y: rect.height/2};
+  var xFactor = 1;
+  var yFactor = 1;
+  
+  switch (region) {
+    case 1: yFactor = -1; break;
+    case 2: yFactor = -1; break;
+    case 3: xFactor = -1; break;
+    case 4: xFactor = -1; break;
+  }
+  
+  if ((region === 1) || (region === 3)) {
+    edgePoint.x += xFactor * (rect.width / 2.);
+    edgePoint.y += yFactor * (rect.width / 2.) * tanTheta;
+  } else {
+    edgePoint.x += xFactor * (rect.height / (2. * tanTheta));
+    edgePoint.y += yFactor * (rect.height /  2.);
+  }
+  
+  return edgePoint;
+}
+
+},{"./makrene.visualizer":10}],9:[function(_dereq_,module,exports){
 /*global require, module */
 
 var base = _dereq_('./makrene.visualizer');
@@ -1067,112 +1479,212 @@ module.exports = function (context, circle, config) {
     circle,
     config,
     function(v) {
-      return config.offset + (((config.vertexWidth + config.margin) * v.customData.col) + config.vertexWidth/2);
+      return config.offset + (((config.vertexWidth + config.margin) * v.data.col) + config.vertexWidth/2);
     },
     function(v) {
-      return config.offset + (((config.vertexHeight + config.margin ) * v.customData.row) + config.vertexHeight/2);
+      return config.offset + (((config.vertexHeight + config.margin ) * v.data.row) + config.vertexHeight/2);
     });
 };
 
-},{"./makrene.visualizer":9}],9:[function(_dereq_,module,exports){
+},{"./makrene.visualizer":10}],10:[function(_dereq_,module,exports){
 /*global module */
 
 module.exports = function(context, graph, config, getPosX, getPosY){
 
+  config = Object.assign({
+
+   /**
+    *  The width of the screen
+    *  @type {number}
+    */
+    width: 100,
+
+   /**
+    *  The height of the screen
+    *  @type {number}
+    */
+    height: 100,
+    
+   /**
+    *  The space between each level
+    *  @type {number}
+    */
+    levelOffset: 10,
+    
+   /**
+    *  The width of each vertex box
+    *  @type {number}
+    */
+    vertexWidth: 100,
+    
+   /**
+    *  The height of each vertex box
+    *  @type {number}
+    */
+    vertexHeight: 100,
+    
+   /**
+    *  The color of the lines
+    *  @type {number}
+    */
+    lineColor: 100,
+    
+   /**
+    *  The color of each vertex box
+    *  @type {number}
+    */
+    vertexColor: 100,
+    
+   /**
+    *  The width of each line
+    *  @type {number}
+    */
+    lineWidth: 100,
+
+    /**
+     *  Draw faces
+     *  @type {bool}
+     */
+     drawFaces: true,
+
+    /**
+     *  Draw edges
+     *  @type {bool}
+     */
+     drawEdges: true,
+
+    /**
+     *  Draw vertices
+     *  @type {bool}
+     */
+     drawVertices: true,
+
+    /**
+     *  Draw faces
+     *  @type {bool}
+     */
+     drawFacesDebugText: false,
+
+    /**
+     *  Draw faces
+     *  @type {bool}
+     */
+     drawEdgesDebugText: false,
+
+    /**
+     *  Draw faces
+     *  @type {bool}
+     */
+     drawVertexDebugText: false
+
+  }, config);
+
   getPosX = getPosX || function (v) {
-    if (v.customData.x)
-      return v.customData.x;
-    v.customData.x = Math.random() * config.width;
-    return v.customData.x;
+    if (v.data.x)
+      return v.data.x;
+    v.data.x = Math.random() * config.width;
+    return v.data.x;
   }
 
   getPosY = getPosY || function (v) {
-    if (v.customData.y)
-      return v.customData.y;
-    v.customData.y = Math.random() * config.height;
-    return v.customData.y;
+    if (v.data.y)
+      return v.data.y;
+    v.data.y = Math.random() * config.height;
+    return v.data.y;
   }
 
-  // draw Faces
-  graph.faces.forEach(function(face){
-    context.beginPath();
-    context.fillStyle = 'rgba(0,0,0,0.2)';
-    var vertex = face.vertices[0];
-    context.moveTo(getPosX(vertex), getPosY(vertex));
-    face.vertices.forEach(function(vertex){
-      context.lineTo(getPosX(vertex), getPosY(vertex));
-    })
-    context.fill();
-  })
-
-  // draw Edges
-  graph.edges.forEach(function(edge){
-    context.beginPath();
-    context.lineWidth = config.lineWidth;
-    context.strokeStyle = config.lineColor;
-    var v1 = edge.vertices[0];
-    var v2 = edge.vertices[1];
-    context.moveTo(getPosX(v1), getPosY(v1));
-    context.lineTo(getPosX(v2), getPosY(v2));
-    context.stroke();
-  });
-
-  // draw vertexes
-  graph.forEach(function(v){
-    if (v){
+  if (config.drawFaces) {
+    // draw Faces
+    graph.faces.forEach(function(face){
       context.beginPath();
-      context.fillStyle = config.vertexColor;
-      context.fillRect(
-        getPosX(v) - config.vertexWidth/2,
-        getPosY(v) - config.vertexHeight/2,
-        config.vertexWidth,
-        config.vertexHeight);     
-    }
-  });
+      context.fillStyle = 'rgba(0,0,0,0.2)';
+      var vertex = face.vertices[0];
+      context.moveTo(getPosX(vertex), getPosY(vertex));
+      face.vertices.forEach(function(vertex){
+        context.lineTo(getPosX(vertex), getPosY(vertex));
+      })
+      context.fill();
+    })
+  }
 
-  // Draw text
-  graph.forEach(function(v){
-    if (v){
+  if (config.drawEdges) {
+    // draw Edges
+    graph.edges.forEach(function(edge){
+      context.beginPath();
+      context.lineWidth = config.lineWidth;
+      context.strokeStyle = config.lineColor;
+      var v1 = edge.vertices[0];
+      var v2 = edge.vertices[1];
+      context.moveTo(getPosX(v1), getPosY(v1));
+      context.lineTo(getPosX(v2), getPosY(v2));
+      context.stroke();
+    });
+  }
+
+  if (config.drawVertices) {
+    // draw vertexes
+    graph.forEach(function(v){
+      if (v){
+        context.beginPath();
+        context.fillStyle = config.vertexColor;
+        context.fillRect(
+          getPosX(v) - config.vertexWidth/2,
+          getPosY(v) - config.vertexHeight/2,
+          config.vertexWidth,
+          config.vertexHeight);     
+      }
+    });
+  }
+
+  if (config.drawVertexDebugText) {
+    // Draw text
+    graph.forEach(function(v){
+      if (v){
+        drawText(
+          context, 
+          'i' + v.id +
+          'n' + v.neighbours.length + 
+          'e' + v.edges.length + 
+          'f' + v.faces.length,
+          getPosX(v),
+          getPosY(v),
+          'red');
+      }
+    });
+  }
+
+  if (config.drawEdgesDebugText) {
+    graph.edges.forEach(function(edge){
+      var v1 = edge.vertices[0];
+      var v2 = edge.vertices[1];
       drawText(
-        context, 
-        'i' + v.id +
-        'n' + v.neighbours.length + 
-        'e' + v.edges.length + 
-        'f' + v.faces.length,
-        getPosX(v),
-        getPosY(v),
-        'red');
-    }
-  });
+        context,
+        'i' + edge.id +
+        'n' + edge.neighbours.length + 
+        'v' + edge.vertices.length + 
+        'f' + edge.faces.length,
+        getPosX(v1) + (getPosX(v2)- getPosX(v1))/2,
+        getPosY(v1) + (getPosY(v2) - getPosY(v1))/2,
+        'blue');
+    });
+  }
 
-  graph.edges.forEach(function(edge){
-    var v1 = edge.vertices[0];
-    var v2 = edge.vertices[1];
-    drawText(
-      context,
-      'i' + edge.id +
-      'n' + edge.neighbours.length + 
-      'v' + edge.vertices.length + 
-      'f' + edge.faces.length,
-      getPosX(v1) + (getPosX(v2)- getPosX(v1))/2,
-      getPosY(v1) + (getPosY(v2) - getPosY(v1))/2,
-      'blue');
-  });
-
-  graph.faces.forEach(function(face){
-    var centerX = (getPosX(face.vertices[0]) + getPosX(face.vertices[1]) + getPosX(face.vertices[2])) / 3;
-    var centerY = (getPosY(face.vertices[0]) + getPosY(face.vertices[1]) + getPosY(face.vertices[2])) / 3;
-    
-    drawText(
-      context,
-      'i' + face.id +
-      'n' + face.neighbours.length + 
-      'v' + face.vertices.length + 
-      'e' + face.edges.length,
-      centerX,
-      centerY,
-      'black')
-  })
+  if (config.drawFacesDebugText) {
+    graph.faces.forEach(function(face){
+      var centerX = (getPosX(face.vertices[0]) + getPosX(face.vertices[1]) + getPosX(face.vertices[2])) / 3;
+      var centerY = (getPosY(face.vertices[0]) + getPosY(face.vertices[1]) + getPosY(face.vertices[2])) / 3;
+      
+      drawText(
+        context,
+        'i' + face.id +
+        'n' + face.neighbours.length + 
+        'v' + face.vertices.length + 
+        'e' + face.edges.length,
+        centerX,
+        centerY,
+        'black')
+    });
+  }
 };
 
 function drawText(context, content, x, y, color){
@@ -1189,7 +1701,7 @@ function drawText(context, content, x, y, color){
   context.strokeStyle = context.fillStyle = color;
   context.fillText(content, x - (width/2), y + (lineHeight/2));
 }
-},{}],10:[function(_dereq_,module,exports){
+},{}],11:[function(_dereq_,module,exports){
 // Polyfils
 
 /**

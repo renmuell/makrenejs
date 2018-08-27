@@ -44,8 +44,8 @@ var Search = {
 
     if (visited.length === 0) {
       circle.forEach(function(vertex){
-        vertex.customData.visited   = false;
-        vertex.customData.lastVisit = Number.MAX_VALUE;
+        vertex.data.visited   = false;
+        vertex.data.lastVisit = Number.MAX_VALUE;
       });
     }
 
@@ -56,11 +56,11 @@ var Search = {
         if (vertex) {
 
           visited.push(vertex);
-          vertex.customData.visited   = true;
-          vertex.customData.lastVisit = Date.now();
+          vertex.data.visited   = true;
+          vertex.data.lastVisit = Date.now();
 
           vertex.neighbours.forEach(function(neighbour){
-            if (neighbour && !neighbour.customData.visited && !nextvertices.includes(neighbour)) {
+            if (neighbour && !neighbour.data.visited && !nextvertices.includes(neighbour)) {
               nextvertices.push(neighbour);
             }
           })

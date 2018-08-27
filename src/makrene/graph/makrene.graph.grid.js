@@ -39,8 +39,8 @@ module.exports = function(config){
         for (var c = graph.cols - 1; c >= 0; c--) {
           var v = Makrene.Vertex();
 
-          v.customData.row = r;
-          v.customData.col = c;
+          v.data.row = r;
+          v.data.col = c;
 
           graph.vertices[r][c] = v;
         }

@@ -11,9 +11,9 @@ module.exports = function (context, circle, config) {
     circle,
     config,
     function(v) {
-      return offsetX + ((Math.cos(v.customData.degree * 0.0174532925) * (v.customData.level * config.levelOffset)) + config.vertexWidth  / 2);
+      return offsetX + ((Math.cos(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexWidth  / 2);
     },
     function(v) {
-      return offsetY + ((Math.sin(v.customData.degree * 0.0174532925) * (v.customData.level * config.levelOffset)) + config.vertexHeight / 2);
+      return offsetY + ((Math.sin(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexHeight / 2);
     });
 };
