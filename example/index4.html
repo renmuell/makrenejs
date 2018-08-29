@@ -8,16 +8,21 @@
     <script type="text/javascript" src="../release/makrene.js"></script>
     <script type="text/javascript">
 
+      var t0 = performance.now();
+
       var canvas  = document.querySelector('#canvas');
       var context = canvas.getContext('2d');
-  
+      
       var circle = Makrene.Circle({
         numVertexOnLevel: 18
       });
-
+      
       for (var i = 0; i < (circle.numVertexOnLevel*circle.numVertexOnLevel)+1; i++) {
         circle.push({});
       }
+
+      var t1 = performance.now();
+      console.log("Create Graph took " + (t1 - t0) + " milliseconds.")
 
       draw();
 
@@ -35,6 +40,8 @@
         })
       }
 
+      var t2 = performance.now();
+      console.log("Draw Graph took " + (t2 - t1) + " milliseconds.")
 
     </script>
   </body>

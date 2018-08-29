@@ -118,4 +118,4 @@ gulp.task('default', ['build']);
 
 gulp.task('build', ['copy-example', 'test']);
 
-gulp.task('release', ['release-js']);
+gulp.task('release', ['copy-example', 'release-js']);

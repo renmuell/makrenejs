@@ -141,21 +141,145 @@ var Makrene = {
    */
   Graph: function Makrene_Graph(data){
 
+    // new graph instance
     var graph = Object.create(Makrene_Graph.prototype, {});
 
     return Object.assign(graph, {
 
+      /**
+       *  List of callback function for the onChange() Method.
+       *
+       *  @private
+       *  @type {array<function>}
+       */
+      _onChangeCallbacks: [],
+ 
+      /**
+       *  List of vertices.
+       *
+       *  @public
+       *  @type {array<Makrene.Vertex>}
+       */
       vertices   : [],
+ 
+      /**
+       *  List of edges.
+       *
+       *  @public
+       *  @type {array<Makrene.Edge>}
+       */
       edges      : [],
+ 
+      /**
+       *  List of faces.
+       *
+       *  @public
+       *  @type {array<Makrene.Face>}
+       */
       faces      : [],
+ 
+      /**
+       *  List of neighbours.
+       *
+       *  @public
+       *  @type {array<Makrene.Graph>}
+       */
       neighbours : [],
+ 
+      /**
+       *  Data object.
+       *
+       *  @public
+       *  @type {object}
+       */
       data       : data || {},
 
-      addVertex : function(v) { graph.vertices.push(v); return graph; },
-      addEdge   : function(e) { graph.edges.push(e);    return graph; },
-      addFace   : function(f) { graph.faces.push(f);    return graph; },
+      /**
+       *  Add vertex to graph.
+       *
+       *  @public
+       *  @fires Change-Event
+       *  @param {Makrene.Vertex} vertex - object to add
+       *  @return {Makrene.Graph}        - this graph instance
+       */
+      addVertex : function(vertex) { 
+        graph.vertices.push(vertex); 
 
-      forEach   : function(fn){ graph.vertices.forEach(fn); }
+        graph.emitChange({
+          action: "addVertex",
+          graph: graph,
+          newObject: vertex
+        }); 
+        
+        return graph; 
+      },
+
+      /**
+       *  Add edge to graph.
+       *
+       *  @public
+       *  @fires Change-Event
+       *  @param {Makrene.Edge} edge - object to add
+       *  @return {Makrene.Graph}    - this graph instance
+       */
+      addEdge   : function(edge) { 
+        graph.edges.push(edge);    
+      
+        graph.emitChange({
+          action: "addEdge",
+          graph: graph,
+          newObject: edge
+        }); 
+
+        return graph; 
+      },
+
+      /**
+       *  Add face to graph.
+       *
+       *  @public
+       *  @fires Change-Event
+       *  @param {Makrene.Face} face - object to add
+       *  @return {Makrene.Graph}    - this graph instance
+       */
+      addFace   : function(face)   { 
+        graph.faces.push(face);    
+
+        graph.emitChange({
+          action: "addFace",
+          graph: graph,
+          newObject: face
+        }); 
+
+        return graph;
+      },
+
+      /**
+       *  The forEach() method executes a provided function once for each vertex of the graph.
+       *
+       *  @public
+       *  @param {function} fn - callback function for each vertex
+       *  @return {undefined}
+       */
+      forEach   : function(fn)     { graph.vertices.forEach(fn); },
+
+      /**
+       *  The onchange event occurs when the value of an graph component has been changed.
+       *
+       *  @public
+       *  @param {function} fn - callback when an change is been emitted. 
+       *  @return {undefined}
+       */
+      onChange  : function(fn)     { graph._onChangeCallbacks.push(fn); },
+
+      /**
+       *  Triggers a change event, which will call all listeners.
+       *
+       *  @public
+       *  @param {object} event - the event data which will be sent
+       *  @return {undefined}
+       */
+      emitChange: function(event)  { graph._onChangeCallbacks.forEach(function(fn){ fn(event) }); }
     });
   },
 

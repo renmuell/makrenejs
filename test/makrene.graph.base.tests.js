@@ -34,6 +34,37 @@ test('isGraph', function (t) {
     t.notOk(Makrene.isGraph())
 });
 
+test('onChange', function (t) {
+    t.plan(3)
+    var g = Makrene.Graph();
+
+    var v = Makrene.Vertex({
+        id: 1001
+    });
+    
+    g.onChange(function(event){
+        t.equal(event.action, "addVertex");
+        t.deepEqual(event.graph, g);
+        t.deepEqual(event.newObject, v)
+    });
+
+    g.addVertex(v);
+});
+
+test('emitChange', function (t) {
+    t.plan(1)
+
+    var g = Makrene.Graph();
+    
+    g.onChange(function(event){
+        t.equal(event.test, "10000000")
+    });
+
+    g.emitChange({
+        test: "10000000"
+    })
+});
+
 test('addVertex', function (t) {
     t.plan(6)
     var g = Makrene.Graph();

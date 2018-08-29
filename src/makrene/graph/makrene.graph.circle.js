@@ -207,6 +207,7 @@ module.exports = function Makrene_Circle(config) {
      *  let newCircleLength = circle.push(vertex1[, ...[, vertexN]])
      *
      *  @public
+     *  @fires Change-Event
      *  @param {...Makrene.Vertex|object} v - The elements to add to the end of the Circle.
      *                                        New vertex or data for new vertex.
      *  @return {number} - Length after push of vertex
@@ -229,6 +230,12 @@ module.exports = function Makrene_Circle(config) {
 
         graph.addVertexAt(_numCircleLevels, graph.vertices[_numCircleLevels].length, v);  
 
+        graph.emitChange({
+          action: "push",
+          graph: graph,
+          newObject: v
+        }); 
+
       });
 
       return graph.length;
@@ -242,11 +249,21 @@ module.exports = function Makrene_Circle(config) {
      *  var vertex = circle.pop()
      *
      *  @public
+     *  @fires Change-Event
      *  @return {Makrene.Vertex|undefined} - The removed element from the circle; 
      *                                       undefined if the circle is empty.
      */
     pop: function(){
-      return graph.removeVertex(graph.last);
+
+      var object = graph.removeVertex(graph.last);
+
+      graph.emitChange({
+        action: "pop",
+        graph: graph,
+        removedObject: object
+      }); 
+
+      return object;
     },
 
     /**
@@ -257,6 +274,7 @@ module.exports = function Makrene_Circle(config) {
      *  var vertex = circle.shift()
      *
      *  @public
+     *  @fires Change-Event
      *  @return {Makrene.Vertex|undefined} - The removed element from the circle; 
      *                                       undefined if the circle is empty.
      *
@@ -266,9 +284,13 @@ module.exports = function Makrene_Circle(config) {
      *           - add removed element one level lower on freed last position
      */
     shift: function(){
+
+      var removedVertex;
+
       if (graph.isEmpty) { return; }
       if (graph.length === 1) {
-        return graph.pop();
+        removedVertex = graph.last;
+        graph.removeVertex(graph.last);
       } else {
 
         // remove all level index 0
@@ -290,15 +312,24 @@ module.exports = function Makrene_Circle(config) {
             }
           });
         }
-        
+        _circleLength--;
+
         // add all index 0 at the end of level below
         graph.addVertexAt(0, 0, indexZeroVertieces[1]);
         for (var k = indexZeroVertieces.length - 1; k >= 2; k--) {
           graph.addVertexAt(k - 1, graph.numVertexOnLevel - 1, indexZeroVertieces[k]);
         }
-      
-        return indexZeroVertieces[0];
+
+        removedVertex = indexZeroVertieces[0];
       }
+
+      graph.emitChange({
+        action: "shift",
+        graph: graph,
+        removedObject:removedVertex
+      }); 
+
+      return removedVertex;
     },
     
     /**
@@ -309,6 +340,7 @@ module.exports = function Makrene_Circle(config) {
      *  let newCircleLength = circle.unshift(vertex1[, ...[, vertexN]])
      *
      *  @public
+     *  @fires Change-Event
      *  @param {...Makrene.Vertex|object} v - The elements to add to the beginning of the Circle.
      *                                        New vertex or data for new vertex.
      *  @return {number} - Length after push of vertex
@@ -321,62 +353,80 @@ module.exports = function Makrene_Circle(config) {
           v = Makrene.Vertex(v || {});
         }
 
-        if (graph.isEmpty) { return graph.push(v); }
+        if (graph.isEmpty) { 
+          graph.addVertexAt(0, 0, v);  
+          _circleLength = 1;
+        } else {
+          var oldLength = graph.length;
+          // remove every last index
+          var indexLastVertieces = [graph.center];
+          graph.removeVertex(graph.center);
+          for (var i = graph.vertices.length - 1; i >= 0; i--) {
+            if (graph.vertices[i][graph.numVertexOnLevel-1]){
+              indexLastVertieces[i] = graph.vertices[i][graph.numVertexOnLevel-1];
+              graph.removeVertex(graph.vertices[i][graph.numVertexOnLevel-1]);
+            }
+          }
 
-        // remove every last index
-        var indexLastVertieces = [graph.center];
-        graph.removeVertex(graph.center);
-        for (var i = graph.vertices.length - 1; i >= 0; i--) {
-          if (graph.vertices[i][graph.numVertexOnLevel-1]){
-            indexLastVertieces[i] = graph.vertices[i][graph.numVertexOnLevel-1];
-            graph.removeVertex(graph.vertices[i][graph.numVertexOnLevel-1]);
+          // unshift every level -> insert undefined at 0
+          for (var j = graph.vertices.length - 1; j >= 0; j--) {
+            graph.vertices[j].unshift(undefined);
+
+            graph.vertices[j].forEach(function(v, index){
+              if (v){
+                v.data.degree = calculateVertexDegree(graph, j, index);
+                v.data.level  = j;
+                v.id = v.data.level + '_' + v.data.degree;
+              }
+            });
+          }
+          _circleLength = oldLength;
+
+          // add all last index at beginning of level above
+          for (var k = indexLastVertieces.length - 1; k >= 0; k--) {
+            graph.addVertexAt(k + 1, 0, indexLastVertieces[k]);
+          }
+        
+          // add vertex at 0,0
+          graph.addVertexAt(0, 0, v);
+
+          if (!graph.isEmpty 
+           && (_numCircleLevels == 0 || graph.vertices[_numCircleLevels].length === graph.numVertexOnLevel)) {
+
+            _numCircleLevels++;
           }
         }
 
-        // unshift every level -> insert undefined at 0
-        for (var j = graph.vertices.length - 1; j >= 0; j--) {
-          graph.vertices[j].unshift(undefined);
-
-          graph.vertices[j].forEach(function(v, index){
-            if (v){
-              v.data.degree = calculateVertexDegree(graph, j, index);
-              v.data.level  = j;
-              v.id = v.data.level + '_' + v.data.degree;
-            }
-          });
-        }
-
-        // add all last index at beginning of level above
-        for (var k = indexLastVertieces.length - 1; k >= 0; k--) {
-          graph.addVertexAt(k + 1, 0, indexLastVertieces[k]);
-        }
-      
-        // add vertex at 0,0
-        graph.addVertexAt(0, 0, v);
-
-        if (!graph.isEmpty 
-         && (_numCircleLevels == 0 || graph.vertices[_numCircleLevels].length === graph.numVertexOnLevel)) {
-
-          _numCircleLevels++;
-        }
+        graph.emitChange({
+          action: "unshift",
+          graph: graph,
+          newObject: v
+        });
 
       });
 
       return graph.length;
     },
 
-    expandFromOudside: function(num){
-      num = num || graph.numVertexOnLevel;
-
-      for(;num>0;num--){ 
-        graph.push(Makrene.Vertex());
-      }
-
-      return graph.length;
-    },
-
+    /**
+     *  The fill() method fills all the elements of an circle from a start index to an end index with a static value. 
+     *  The end index is not included.
+     *
+     *  Syntax:
+     *  circle.fill(value[, start[, end]])
+     *
+     *  @param {Makrene.Vertex|object} value - Value to fill an circle.
+     *  @param {number} start - Start index, defaults to 0.
+     *  @param {number} end - End index, defaults to this.length.
+     *  @return {Makrene.Circle} - The modified circle. 
+     */
     fill: function (value, start, end) {
 
+      if (typeof value === 'undefined' || !(value instanceof Makrene.Vertex)) {
+        value = Makrene.Vertex(value || {});
+      }
+
+      start = start || 0;
       start = start < 0 ?
         Math.max(graph.length + start, 0) :
         Math.min(start, graph.length);
@@ -388,11 +438,22 @@ module.exports = function Makrene_Circle(config) {
         Math.min(end, graph.length);
 
       while (start < end) {
-        graph.addVertexAt()
+        var pos = getPositionLevel(graph, start);
+        graph.addVertexAt(pos.level, pos.position, value);
         start++;
       }
 
       return graph;
+    },
+
+    expandFromOudside: function(num){
+      num = num || graph.numVertexOnLevel;
+
+      for(;num>0;num--){ 
+        graph.push(Makrene.Vertex());
+      }
+
+      return graph.length;
     },
 
     expandFromInside: function(num){
@@ -490,43 +551,46 @@ module.exports = function Makrene_Circle(config) {
 
       if (typeof v === 'undefined') {
         graph.vertices[level][pos] = undefined;
-        return;
-      }
-
-      v.data.degree = calculateVertexDegree(graph, level, pos);
-      v.data.level  = level;
-      v.id = v.data.level + '_' + v.data.degree;
-      graph.vertices[level][pos] = v;
-
-      //Link center with everyone above
-      if (level === 0) {
-        if (graph.vertices[1]) {
-          graph.vertices[1].forEach(function(vertex, index){
-            graph.removeVertex(vertex);
-            graph.addVertexAt(1, index, vertex);
-          });
-        }
       } else {
-        //linking with level below
-        linkWithLevelBelowVertexes(graph, level, pos);
 
-        //linking with level above
-        linkWithLevelAboveVertexes(graph, level, pos);
+        v.data.degree = calculateVertexDegree(graph, level, pos);
+        v.data.level  = level;
+        v.id = v.data.level + '_' + v.data.degree;
+        graph.vertices[level][pos] = v;
 
-        //link with previous neighbour
-        linkWithNeighbourVertex(
-          graph, 
-          v, 
-          graph.vertices[level][(pos - 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]);
+        //Link center with everyone above
+        if (level === 0) {
+          if (graph.vertices[1]) {
+            graph.vertices[1].forEach(function(vertex, index){
+              graph.removeVertex(vertex);
+              graph.addVertexAt(1, index, vertex);
+            });
+          }
+        } else {
+          //linking with level below
+          linkWithLevelBelowVertexes(graph, level, pos);
 
-        //link with next neigour 
-        linkWithNeighbourVertex(
-          graph, 
-          v, 
-          graph.vertices[level][(pos + 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]); 
+          //linking with level above
+          linkWithLevelAboveVertexes(graph, level, pos);
+
+          //link with previous neighbour
+          linkWithNeighbourVertex(
+            graph, 
+            v, 
+            graph.vertices[level][(pos - 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]);
+
+          //link with next neigour 
+          linkWithNeighbourVertex(
+            graph, 
+            v, 
+            graph.vertices[level][(pos + 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]); 
+        }  
+      }
+      
+      var index = getIndex(graph, pos, level);
+      if (index > graph.length - 1) {
+        _circleLength = index + 1;  
       }  
-
-      _circleLength++;    
     },
 
     removeVertexFrom: function(level, pos){
@@ -579,16 +643,17 @@ module.exports = function Makrene_Circle(config) {
           graph.faces.splice(graph.faces.indexOf(face), 1);
         });
 
+        var vertexIndex = 0;
         // remove vertex
         graph.vertices.forEach(function(level, index){
           if (level.includes(vertex)){
-            
+            vertexIndex = getIndex(graph, level.indexOf(vertex), index);
             if (level.indexOf(vertex) == level.length - 1){
               level.length = level.length - 1;
             } else {
               delete level[level.indexOf(vertex)];
             }
-
+            
             if (_numCircleLevels == index && level.length === 0) {
               if (graph.numCircleLevels === 0) {
                 graph.vertices = [];
@@ -604,45 +669,119 @@ module.exports = function Makrene_Circle(config) {
         vertex.faces = [];
         vertex.neighbours = [];
 
-        _circleLength--;
-
+        if (vertexIndex == _circleLength - 1) {
+          _circleLength--;
+        }
+        
         return vertex;
       }
     },
 
-    forEach: function(fn){
-      graph.vertices.forEach(function(level){ 
-        level.forEach(fn); 
+    /**
+     *  The forEach() method executes a provided function once for each array element.
+     *
+     *  Syntax:
+     *  circle.forEach(function callback(currentVertex[, index[, graph]]) {
+     *    //your iterator
+     *  }[, thisArg]);
+     *
+     *  @public
+     *  @param {function} callback - Function is a predicate, to test each element of the circle. 
+     *                               Return true to keep the element, false otherwise. It accepts three arguments:
+     *                          currentVertex  Optional
+     *                              The current element being processed in the circle.
+     *                          index   Optional
+     *                              The index of the current element being processed in the circle.
+     *                          circle   Optional
+     *                              The circle filter was called upon.
+     *
+     *  @return {array} - A new array with the elements that pass the test. If no elements pass the test, an empty array will be returned.
+     */
+    forEach: function(callback){
+      graph.vertices.forEach(function(levels, level){ 
+        levels.forEach(function(item, position){
+          callback(item, getIndex(graph, position, level), graph);
+        }); 
       });
     },
 
-    filter: function(fn){
+    /**
+     *  The filter() method creates a new array with all elements 
+     *  that pass the test implemented by the provided function.
+     *
+     *  Syntax:
+     *  var newArray = circle.filter(callback(vertex[, index[, graph]])[, thisArg])
+     *
+     *  @public
+     *  @param {function} callback - Function is a predicate, to test each element of the circle. 
+     *                               Return true to keep the element, false otherwise. It accepts three arguments:
+     *                          vertex  Optional
+     *                              The current element being processed in the circle.
+     *                          index   Optional
+     *                              The index of the current element being processed in the circle.
+     *                          graph   Optional
+     *                              The circle filter was called upon.
+     *
+     *  @return {array} - A new array with the elements that pass the test. If no elements pass the test, an empty array will be returned.
+     */
+    filter: function(callback){
       var res = [];
 
-      graph.forEach(function(v){
-        if (fn(v)){
-          res.push(v);
+      graph.forEach(function(vertex, index){
+        if (callback(vertex, index, graph)){
+          res.push(vertex);
         }
       });
 
       return res;
     },
 
-    map: function(fn){
+    /**
+     *  The map() method creates a new array with the results of calling a provided function on 
+     *  every element in the calling circle.
+     *
+     *  Syntax:
+     *  var new_array = arr.map(function callback(currentVertex[, index[, graph]]) {
+     *    // Return element for new_array
+     *  }[, thisArg])
+     *
+     *  @public
+     *  @param {function} callback - Function that produces an element of the new Array, taking three arguments:
+     *                          currentVertex  Optional
+     *                              The value of the current element being processed in the circle.
+     *                          index   Optional
+     *                              The index of the current element being processed in the circle.
+     *                          graph   Optional
+     *                              The circle that forEach() is being applied to.
+     *
+     *  @return {array} - A new array with each element being the result of the callback function.
+     */
+    map: function(callback){
       var res = [];
 
-      graph.forEach(function(v){
-        res.push(fn(v));
+      graph.forEach(function(vertex, index){
+        res.push(callback(vertex, index, graph));
       });
 
       return res;
     },
 
-    toString: function(){
-      return 'Makrene.Circle \n' + 
-             '\tLength: ' + graph.length + '\n' +
-             '\tEdges: ' + graph.edges.length + '\n' +
-             '\tFaces: ' + graph.faces.length;
+    /**
+     *  The toString() method returns a string representing the circle.
+     *
+     *  Syntax:
+     *  circle.toString()
+     *
+     *  @public
+     *  @return {string} - A string representing the circle.
+     */
+    toString: function () {
+      return 'Makrene.Circle' +
+             '\n\tNumVertexOnLevel: ' + graph.numVertexOnLevel +
+             '\n\tNumCircleLevels: ' + graph.numCircleLevels +
+             '\n\tLength: ' + graph.length +
+             '\n\tEdges: ' + graph.edges.length +
+             '\n\tFaces: ' + graph.faces.length;
     }
   });
 };
@@ -656,6 +795,25 @@ module.exports = function Makrene_Circle(config) {
  *     |_|   |_|  |_| \_/ \__,_|\__\___||___/
  *                                                                                    
  */
+
+function getIndex (graph, position, level) {
+  return (level === 0) ? 0 : (((level - 1) * graph.numVertexOnLevel) + position) + 1;
+}
+
+function getPositionLevel (graph, index) {
+
+  if (index == 0) {
+    return {
+      level: 0,
+      position: 0
+    };
+  } else {
+    return {
+      level: Math.floor(index / graph.numVertexOnLevel) + 1,
+      position: Math.floor(index % graph.numVertexOnLevel) - 1
+    };
+  }
+}
 
 function linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex){
   var lastLevelVertexes = graph.vertices[levelIndex - 1];
@@ -770,7 +928,7 @@ function createFace(graph, v1, v2, v3){
       v2.data.level,
       v3.data.level)
   };
-
+  
   graph.faces.push(f);
 
   linkFaceWithVertexFaces(f, v1);

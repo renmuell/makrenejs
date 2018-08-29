@@ -10,6 +10,7 @@ module.exports = function(){
         v.data.OrginalLevel= v.data.level;
       });
     },
+
     step: function(circle){
       circle.forEach(function(v){
 

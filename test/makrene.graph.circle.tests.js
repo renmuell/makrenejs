@@ -186,6 +186,21 @@ test('push', function (t) {
     t.equal(circle.faces.length, 9);
 });
 
+test("push change evnet", function (t){
+    t.plan(2)
+
+    var circle = Makrene.Circle();
+
+    circle.onChange(function(event){
+        t.equal(event.action, "push");
+        t.equal(event.newObject.data.test, "z");
+    });
+
+    var v = Makrene.Vertex({ test: "z" });
+
+    circle.push(v);
+});
+
 test("pop", function (t){
     t.plan(3)
 
@@ -202,6 +217,21 @@ test("pop", function (t){
     t.equal(v_pop.data.test, "z");
 
     t.equal(circle.length, 0);
+});
+
+test("pop change evnet", function (t){
+    t.plan(2)
+
+    var circle = Makrene.Circle();
+    var v = Makrene.Vertex({ test: "hhh" });
+    circle.push(v);
+
+    circle.onChange(function(event){
+        t.equal(event.action, "pop");
+        t.equal(event.removedObject.data.test, "hhh");
+    });
+
+    circle.pop();
 });
 
 test("shift", function (t){
@@ -248,6 +278,20 @@ test("shift", function (t){
    t.equal(circle.length, 0);
 });
 
+test("shift change evnet", function (t){
+    t.plan(2)
+
+    var circle = Makrene.Circle();
+    var v = Makrene.Vertex({ test: "hhh" });
+    circle.push(v);
+
+    circle.onChange(function(event){
+        t.equal(event.action, "shift");
+        t.equal(event.removedObject.data.test, "hhh");
+    });
+
+    circle.shift();
+});
 
 test('unshift', function (t) {
     t.plan(44)
@@ -324,6 +368,43 @@ test('unshift', function (t) {
     t.equal(circle.faces.length, 9);
 });
 
+test("unshift change evnet", function (t){
+    t.plan(2)
+
+    var circle = Makrene.Circle();
+
+    circle.onChange(function(event){
+        t.equal(event.action, "unshift");
+        t.equal(event.newObject.data.test, "z");
+    });
+
+    var v = Makrene.Vertex({ test: "z" });
+
+    circle.unshift(v);
+});
+
+test('fill', function (t){
+    t.plan(4);
+    var circle = Makrene.Circle();
+    circle.push({ num: 12 });
+    circle.push({ num: 45 });
+    circle.push({ num: 66 });
+
+    circle.fill({ num: "Tom" });
+
+    t.equal(circle.length, 3);
+    t.equal(circle.vertexAt(0, 0).data.num,  "Tom");
+    t.equal(circle.vertexAt(1, 0).data.num,  "Tom");
+    t.equal(circle.vertexAt(1, 1).data.num,  "Tom");
+});
+
+test('getFacesLevelArray', function (t){
+    t.plan(1);
+    var circle = Makrene.Circle();
+
+    t.equal(circle.push(Makrene.Vertex()), 1);
+});
+
 test('empty map', function (t) {
     Makrene.Circle().map(function () {
         t.fail('this callback should never fire');
@@ -333,20 +414,87 @@ test('empty map', function (t) {
 });
 
 test('map with elements', function (t) {
-    t.plan(2);
+    t.plan(37);
+
     var circle = Makrene.Circle();
 
-    circle.push(Makrene.Vertex());
-    circle.push(Makrene.Vertex());
+    circle.push({ num: 6 });
+    circle.push({ num: 1 });
+    circle.push({ num: 5 });
+    circle.push({ num: 9 });
+    circle.push({ num: 4 });
+    circle.push({ num: 7 });
+    circle.push({ num: 8 });
+    circle.push({ num: 3 });
+    circle.push({ num: 2 });
+    circle.push({ num: 15 });
+    circle.push({ num: 35 });
+    circle.push({ num: 12 });
 
-    circle.map(function () {
-        t.pass();
+    var result = circle.map(function (currentVertex, index, graph) {
+        return {
+            num: currentVertex.data.num,
+            index: index,
+            graph: graph
+        };
     });
+
+    t.equal(result.length, 12);
+    t.equal(result[0].num, 6);
+    t.equal(result[0].index, 0);
+    t.deepEqual(result[0].graph, circle);
+
+    t.equal(result[1].num, 1);
+    t.equal(result[1].index, 1);
+    t.deepEqual(result[1].graph, circle);
+
+    t.equal(result[2].num, 5);
+    t.equal(result[2].index, 2);
+    t.deepEqual(result[2].graph, circle);
+
+    t.equal(result[3].num, 9);
+    t.equal(result[3].index, 3);
+    t.deepEqual(result[3].graph, circle);
+
+    t.equal(result[4].num, 4);
+    t.equal(result[4].index, 4);
+    t.deepEqual(result[4].graph, circle);
+
+    t.equal(result[5].num, 7);
+    t.equal(result[5].index, 5);
+    t.deepEqual(result[5].graph, circle);
+
+    t.equal(result[6].num, 8);
+    t.equal(result[6].index, 6);
+    t.deepEqual(result[6].graph, circle);
+
+    t.equal(result[7].num, 3);
+    t.equal(result[7].index, 7);
+    t.deepEqual(result[7].graph, circle);
+
+    t.equal(result[8].num, 2);
+    t.equal(result[8].index, 8);
+    t.deepEqual(result[8].graph, circle);
+
+    t.equal(result[9].num, 15);
+    t.equal(result[9].index, 9);
+    t.deepEqual(result[9].graph, circle);
+
+    t.equal(result[10].num, 35);
+    t.equal(result[10].index, 10);
+    t.deepEqual(result[10].graph, circle);
+
+    t.equal(result[11].num, 12);
+    t.equal(result[11].index, 11);
+    t.deepEqual(result[11].graph, circle);
 });
 
-test('getFacesLevelArray', function (t){
-    t.plan(1);
-    var circle = Makrene.Circle();
+test('toString', function (t){
+    t.plan(2);
 
-    t.equal(circle.push(Makrene.Vertex()), 1);
+    var circle = Makrene.Circle();
+    circle.push(Makrene.Vertex());
+
+    t.equal(typeof circle.toString(), 'string');
+    t.equal(circle.toString().length, 86);
 });
