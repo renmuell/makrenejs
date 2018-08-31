@@ -1602,16 +1602,16 @@ module.exports = function(){
     init: function(circle){
       circle.forEach(function(v){
         v.data.degree = v.data.degree % 360;
-        v.data.Orginaldegree = v.data.degree;
-        v.data.OrginalLevel= v.data.level;
+        v.data.OriginalLevel = v.data.degree;
+        v.data.OriginalLevel= v.data.level;
       });
     },
 
     step: function(circle){
       circle.forEach(function(v){
 
-        // goto orginal angle
-        var a1 = v.data.Orginaldegree;
+        // goto original angle
+        var a1 = v.data.OriginalLevel;
         var a2 = v.data.degree ;
         var angle = 180 - Math.abs(Math.abs(a1 - a2) - 180);
 
@@ -1621,8 +1621,8 @@ module.exports = function(){
           v.data.degree = v.data.degree % 360;
         }
 
-        // goto orginal level
-        var l1 = v.data.OrginalLevel;
+        // goto original level
+        var l1 = v.data.OriginalLevel;
         var l2 = v.data.level;
 
         if (Math.abs(l1 - l2) > 0.1) {
@@ -1641,7 +1641,7 @@ module.exports = function(){
 
 var Search = {
 
-  DephFirstSearch: function(vertex, distance, visited){
+  DepthFirstSearch: function(vertex, distance, visited){
     visited = visited || [];
     var newVisited = [];
     newVisited.pushArray(visited);
@@ -1650,7 +1650,7 @@ var Search = {
       vertex.visit();
       vertex.neighbours.forEach(function(neighbour){
         if (neighbour) {
-          Search.DephFirstSearch(neighbour, distance - 1, newVisited);
+          Search.DepthFirstSearch(neighbour, distance - 1, newVisited);
         }
       });
     }
@@ -1660,7 +1660,7 @@ var Search = {
     visited = visited || [];
 
     if (distance > 0) {
-      var nextvertices = [];
+      var nextVertices = [];
 
       vertices.forEach(function(vertex){
         if (vertex) {
@@ -1668,13 +1668,13 @@ var Search = {
           vertex.visit();
           for (var i = vertex.neighbours.length - 1; i >= 0; i--) {
             if (!visited.includes(vertex.neighbours[i])) {
-              nextvertices.push(vertex.neighbours[i]);
+              nextVertices.push(vertex.neighbours[i]);
             }
           }
         }
       })
 
-      Search.BreadthFirstSearch(nextvertices, distance - 1, visited);
+      Search.BreadthFirstSearch(nextVertices, distance - 1, visited);
     }
   },
 
@@ -1689,7 +1689,7 @@ var Search = {
     }
 
     if (vertices.length != 0) {
-      var nextvertices = [];
+      var nextVertices = [];
 
       vertices.forEach(function(vertex){
         if (vertex) {
@@ -1699,8 +1699,8 @@ var Search = {
           vertex.data.lastVisit = Date.now();
 
           vertex.neighbours.forEach(function(neighbour){
-            if (neighbour && !neighbour.data.visited && !nextvertices.includes(neighbour)) {
-              nextvertices.push(neighbour);
+            if (neighbour && !neighbour.data.visited && !nextVertices.includes(neighbour)) {
+              nextVertices.push(neighbour);
             }
           })
         }
@@ -1709,10 +1709,10 @@ var Search = {
       return {
         visited      : vertices,
         visitedAll   : visited,
-        nextvertices : nextvertices,
+        nextVertices : nextVertices,
 
         next : function () {
-          return Search.BreadthFirstSearchIterate(circle, nextvertices, visited);
+          return Search.BreadthFirstSearchIterate(circle, nextVertices, visited);
         }
       };
     }
@@ -1825,9 +1825,9 @@ module.exports = function (context, circle, config) {
  *
  *  @private
  *  @param {object} rect        - the rectangle box, on which to find the point by degree
- *  @param {nubmer} rect.height - the height of the rectangle
- *  @param {nubmer} rect.width  - the width of the rectangle
- *  @param {nubmer} deg         - the degree from the center to find the point
+ *  @param {number} rect.height - the height of the rectangle
+ *  @param {number} rect.width  - the width of the rectangle
+ *  @param {number} deg         - the degree from the center to find the point
  *  @return {object}            - The point with x, y coordinates.
  */
 function edgeOfView (rect, deg) {
@@ -2123,10 +2123,10 @@ function drawText(context, content, x, y, color){
   context.fillText(content, x - (width/2), y + (lineHeight/2));
 }
 },{}],11:[function(_dereq_,module,exports){
-// Polyfils
+// Polyfills
 
 /**
- *  Object.assign polyfil
+ *  Object.assign polyfill
  *  @by https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
  */
 if (typeof Object.assign != 'function') {
@@ -2154,7 +2154,7 @@ if (typeof Object.assign != 'function') {
 }
 
 /**
- *  Array.prototype.includes polyfil
+ *  Array.prototype.includes polyfill
  *  @by https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
  */
 if (!Array.prototype.includes) {

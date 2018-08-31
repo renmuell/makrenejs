@@ -1,7 +1,7 @@
-// Polyfils
+// Polyfills
 
 /**
- *  Object.assign polyfil
+ *  Object.assign polyfill
  *  @by https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
  */
 if (typeof Object.assign != 'function') {
@@ -29,7 +29,7 @@ if (typeof Object.assign != 'function') {
 }
 
 /**
- *  Array.prototype.includes polyfil
+ *  Array.prototype.includes polyfill
  *  @by https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
  */
 if (!Array.prototype.includes) {

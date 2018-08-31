@@ -2,7 +2,7 @@
 
 var Search = {
 
-  DephFirstSearch: function(vertex, distance, visited){
+  DepthFirstSearch: function(vertex, distance, visited){
     visited = visited || [];
     var newVisited = [];
     newVisited.pushArray(visited);
@@ -11,7 +11,7 @@ var Search = {
       vertex.visit();
       vertex.neighbours.forEach(function(neighbour){
         if (neighbour) {
-          Search.DephFirstSearch(neighbour, distance - 1, newVisited);
+          Search.DepthFirstSearch(neighbour, distance - 1, newVisited);
         }
       });
     }
@@ -21,7 +21,7 @@ var Search = {
     visited = visited || [];
 
     if (distance > 0) {
-      var nextvertices = [];
+      var nextVertices = [];
 
       vertices.forEach(function(vertex){
         if (vertex) {
@@ -29,13 +29,13 @@ var Search = {
           vertex.visit();
           for (var i = vertex.neighbours.length - 1; i >= 0; i--) {
             if (!visited.includes(vertex.neighbours[i])) {
-              nextvertices.push(vertex.neighbours[i]);
+              nextVertices.push(vertex.neighbours[i]);
             }
           }
         }
       })
 
-      Search.BreadthFirstSearch(nextvertices, distance - 1, visited);
+      Search.BreadthFirstSearch(nextVertices, distance - 1, visited);
     }
   },
 
@@ -50,7 +50,7 @@ var Search = {
     }
 
     if (vertices.length != 0) {
-      var nextvertices = [];
+      var nextVertices = [];
 
       vertices.forEach(function(vertex){
         if (vertex) {
@@ -60,8 +60,8 @@ var Search = {
           vertex.data.lastVisit = Date.now();
 
           vertex.neighbours.forEach(function(neighbour){
-            if (neighbour && !neighbour.data.visited && !nextvertices.includes(neighbour)) {
-              nextvertices.push(neighbour);
+            if (neighbour && !neighbour.data.visited && !nextVertices.includes(neighbour)) {
+              nextVertices.push(neighbour);
             }
           })
         }
@@ -70,10 +70,10 @@ var Search = {
       return {
         visited      : vertices,
         visitedAll   : visited,
-        nextvertices : nextvertices,
+        nextVertices : nextVertices,
 
         next : function () {
-          return Search.BreadthFirstSearchIterate(circle, nextvertices, visited);
+          return Search.BreadthFirstSearchIterate(circle, nextVertices, visited);
         }
       };
     }

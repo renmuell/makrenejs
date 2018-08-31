@@ -80,9 +80,9 @@ module.exports = function (context, circle, config) {
  *
  *  @private
  *  @param {object} rect        - the rectangle box, on which to find the point by degree
- *  @param {nubmer} rect.height - the height of the rectangle
- *  @param {nubmer} rect.width  - the width of the rectangle
- *  @param {nubmer} deg         - the degree from the center to find the point
+ *  @param {number} rect.height - the height of the rectangle
+ *  @param {number} rect.width  - the width of the rectangle
+ *  @param {number} deg         - the degree from the center to find the point
  *  @return {object}            - The point with x, y coordinates.
  */
 function edgeOfView (rect, deg) {
