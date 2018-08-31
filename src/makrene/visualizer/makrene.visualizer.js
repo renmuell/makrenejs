@@ -86,7 +86,20 @@ module.exports = function(context, graph, config, getPosX, getPosY){
      *  Draw faces
      *  @type {bool}
      */
-     drawVertexDebugText: false
+     drawVertexDebugText: false,
+     
+     /**
+      *  Draw Vertex Text Callback.
+      *  @type {function}
+      *  @param {Makrene.Vertex} v - the vertex
+      *  @return {string} - the text
+      */
+     getVertexDebugText: function (v) {
+      return 'i' + v.id +
+             'n' + v.neighbours.length + 
+             'e' + v.edges.length + 
+             'f' + v.faces.length;
+     }
 
   }, config);
 
@@ -153,10 +166,7 @@ module.exports = function(context, graph, config, getPosX, getPosY){
       if (v){
         drawText(
           context, 
-          'i' + v.id +
-          'n' + v.neighbours.length + 
-          'e' + v.edges.length + 
-          'f' + v.faces.length,
+          config.getVertexDebugText(v),
           getPosX(v),
           getPosY(v),
           'red');

@@ -34,6 +34,11 @@ var base = require('./makrene.visualizer');
  */
 module.exports = function (context, circle, config) {
 
+  config.padding = config.padding || 0;
+
+  config.width -= config.padding * 2;
+  config.height -= config.padding * 2;
+
   var offsetX = (config.width  - config.vertexWidth ) / 2;
   var offsetY = (config.height - config.vertexHeight) / 2;
 
@@ -43,14 +48,14 @@ module.exports = function (context, circle, config) {
     circle,
     config,
     function(v) {
-      return (v.data.level == circle.numCircleLevels) 
+      return (config.padding + ((v.data.level == circle.numCircleLevels) 
       ? edgeOfView(config, v.data.degree).x
-      : offsetX + ((Math.cos(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexWidth  / 2);
+      : offsetX + ((Math.cos(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexWidth  / 2)));
     },
     function(v) {
-      return (v.data.level == circle.numCircleLevels)
+      return (config.padding + ((v.data.level == circle.numCircleLevels)
       ? edgeOfView(config, v.data.degree-180).y
-      : offsetY + ((Math.sin(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexHeight / 2);
+      : offsetY + ((Math.sin(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexHeight / 2)));
     });
 };
 

@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <title>Example</title>
+    <meta charset="UTF-8"> 
+  </head>
+  <body>
+    <canvas id="canvas" width="1000" height="1000" style="border:1px solid black;"></canvas>
+    <script type="text/javascript" src="../release/makrene.js"></script>
+    <script type="text/javascript">
+
+      var t0 = performance.now();
+
+      var canvas  = document.querySelector('#canvas');
+      var context = canvas.getContext('2d');
+      context.font="20px Arial";
+      var circle = Makrene.Circle({
+        numVertexOnLevel: 18
+      });
+      
+      var num = 0;
+      create((circle.numVertexOnLevel*4)+1, function () {
+        remove((circle.numVertexOnLevel*4)+1, function(){
+            console.log("done");
+        })
+      });
+
+      function create (count, callback) {
+        if (count === 0) {
+            callback();
+        } else {
+            circle.unshift({ index: num++ });
+            console.log(circle.length);
+            console.log(circle.numCircleLevels);
+            console.log(circle);
+            draw();
+
+            setTimeout(function(){
+                create(--count,callback);
+            }, 500);
+        }
+      }
+
+      function remove (count, callback) {
+        if (count === 0) {
+            callback();
+        } else {
+            circle.pop();
+            console.log(circle.length);
+            console.log(circle.numCircleLevels);
+            console.log(circle);
+            draw();
+            setTimeout(function(){
+                remove(--count,callback);
+            }, 500);
+        }
+      }
+
+      function draw(){
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        Makrene.Visualizer.CircleFullscreen(context, circle, {
+          width       : canvas.width,
+          height      : canvas.height,     
+          padding     : 60, 
+          vertexWidth : 100,
+          vertexHeight: 100,
+          lineWidth   : 1,
+          lineColor   : "red",
+          drawVertices: false,
+          drawVertexDebugText: true,
+          getVertexDebugText: function (v) {
+              return v.data.index;
+          }
+        })
+      }
+
+    </script>
+  </body>
+</html>

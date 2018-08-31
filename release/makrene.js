@@ -156,6 +156,14 @@ var Makrene = {
       _onChangeCallbacks: [],
  
       /**
+       *  If true no event should be fired.
+       * 
+       *  @private
+       *  @type {bool}
+       */
+      _suppressEventFires: false,
+
+      /**
        *  List of vertices.
        *
        *  @public
@@ -280,7 +288,11 @@ var Makrene = {
        *  @param {object} event - the event data which will be sent
        *  @return {undefined}
        */
-      emitChange: function(event)  { graph._onChangeCallbacks.forEach(function(fn){ fn(event) }); }
+      emitChange: function(event)  { 
+        if (!graph._suppressEventFires) {
+          graph._onChangeCallbacks.forEach(function(fn){ fn(event) });
+        } 
+      }
     });
   },
 
@@ -361,7 +373,7 @@ var Makrene = _dereq_('../base/makrene.base')
  *
  *  @public
  *  @implements {Makrene.Graph}
- *  @param {object} config - the Settigns
+ *  @param {object} config - the Settings
  *  @param {number} config.numVertexOnLevel - @see graph.numVertexOnLevel
  *  @returns {Makrene.Circle} Circle
  */
@@ -399,17 +411,17 @@ module.exports = function Makrene_Circle(config) {
    *                                
    */
 
-   /**
-    *  @private
-    *  @see graph.numCircleLevels
-    */
-   var _numCircleLevels = 0;
+  /**
+   *  @private
+   *  @see graph.numCircleLevels
+   */
+  var _numCircleLevels = 0;
    
-   /**
-    *  @private
-    *  @see graph.length
-    */
-   var _circleLength = 0;
+  /**
+   *  @private
+   *  @see graph.length
+   */
+  var _circleLength = 0;
 
   /***
    *      _____                           _   _           
@@ -541,6 +553,8 @@ module.exports = function Makrene_Circle(config) {
 
       [].forEach.call(arguments, function (v) {
 
+        graph._suppressEventFires = true;
+
         if (typeof v === 'undefined' || !(v instanceof Makrene.Vertex)) {
           v = Makrene.Vertex(v || {});
         }
@@ -554,6 +568,8 @@ module.exports = function Makrene_Circle(config) {
         graph.vertices[_numCircleLevels] = graph.vertices[_numCircleLevels] || [];
 
         graph.addVertexAt(_numCircleLevels, graph.vertices[_numCircleLevels].length, v);  
+
+        graph._suppressEventFires = false;
 
         graph.emitChange({
           action: "push",
@@ -580,7 +596,11 @@ module.exports = function Makrene_Circle(config) {
      */
     pop: function(){
 
+      graph._suppressEventFires = true;
+
       var object = graph.removeVertex(graph.last);
+
+      graph._suppressEventFires = false;
 
       graph.emitChange({
         action: "pop",
@@ -610,18 +630,22 @@ module.exports = function Makrene_Circle(config) {
      */
     shift: function(){
 
+      graph._suppressEventFires = true;
+
       var removedVertex;
 
       if (graph.isEmpty) { return; }
-      if (graph.length === 1) {
+      else if (graph.length === 1) {
+
         removedVertex = graph.last;
         graph.removeVertex(graph.last);
+
       } else {
 
         // remove all level index 0
-        var indexZeroVertieces = [];
+        var indexZeroVertices = [];
         for (var i = graph.vertices.length - 1; i >= 0; i--) {
-          indexZeroVertieces[i] = graph.vertices[i][0];
+          indexZeroVertices[i] = graph.vertices[i][0];
           graph.removeVertex(graph.vertices[i][0]);
         }
 
@@ -640,13 +664,15 @@ module.exports = function Makrene_Circle(config) {
         _circleLength--;
 
         // add all index 0 at the end of level below
-        graph.addVertexAt(0, 0, indexZeroVertieces[1]);
-        for (var k = indexZeroVertieces.length - 1; k >= 2; k--) {
-          graph.addVertexAt(k - 1, graph.numVertexOnLevel - 1, indexZeroVertieces[k]);
+        graph.addVertexAt(0, 0, indexZeroVertices[1]);
+        for (var k = indexZeroVertices.length - 1; k >= 2; k--) {
+          graph.addVertexAt(k - 1, graph.numVertexOnLevel - 1, indexZeroVertices[k]);
         }
 
-        removedVertex = indexZeroVertieces[0];
+        removedVertex = indexZeroVertices[0];
       }
+      
+      graph._suppressEventFires = false;
 
       graph.emitChange({
         action: "shift",
@@ -668,11 +694,13 @@ module.exports = function Makrene_Circle(config) {
      *  @fires Change-Event
      *  @param {...Makrene.Vertex|object} v - The elements to add to the beginning of the Circle.
      *                                        New vertex or data for new vertex.
-     *  @return {number} - Length after push of vertex
+     *  @return {number} - The new length property of the circle upon which the method was called.
      */
     unshift: function(){
 
       [].forEach.call(arguments, function (v) {
+
+        graph._suppressEventFires = true;
 
         if (typeof v === 'undefined' || !(v instanceof Makrene.Vertex)) {
           v = Makrene.Vertex(v || {});
@@ -682,13 +710,14 @@ module.exports = function Makrene_Circle(config) {
           graph.addVertexAt(0, 0, v);  
           _circleLength = 1;
         } else {
+          var shouldIncreaseLevelAfter = _numCircleLevels == 0 || graph.vertices[_numCircleLevels].length === graph.numVertexOnLevel;
           var oldLength = graph.length;
           // remove every last index
-          var indexLastVertieces = [graph.center];
+          var indexLastVertices = [graph.center];
           graph.removeVertex(graph.center);
           for (var i = graph.vertices.length - 1; i >= 0; i--) {
             if (graph.vertices[i][graph.numVertexOnLevel-1]){
-              indexLastVertieces[i] = graph.vertices[i][graph.numVertexOnLevel-1];
+              indexLastVertices[i] = graph.vertices[i][graph.numVertexOnLevel-1];
               graph.removeVertex(graph.vertices[i][graph.numVertexOnLevel-1]);
             }
           }
@@ -705,22 +734,22 @@ module.exports = function Makrene_Circle(config) {
               }
             });
           }
-          _circleLength = oldLength;
+          _circleLength = oldLength + 1;
 
           // add all last index at beginning of level above
-          for (var k = indexLastVertieces.length - 1; k >= 0; k--) {
-            graph.addVertexAt(k + 1, 0, indexLastVertieces[k]);
+          for (var k = indexLastVertices.length - 1; k >= 0; k--) {
+            graph.addVertexAt(k + 1, 0, indexLastVertices[k]);
           }
-        
+
           // add vertex at 0,0
           graph.addVertexAt(0, 0, v);
 
-          if (!graph.isEmpty 
-           && (_numCircleLevels == 0 || graph.vertices[_numCircleLevels].length === graph.numVertexOnLevel)) {
-
+          if (shouldIncreaseLevelAfter) {
             _numCircleLevels++;
           }
         }
+
+        graph._suppressEventFires = false;
 
         graph.emitChange({
           action: "unshift",
@@ -740,12 +769,16 @@ module.exports = function Makrene_Circle(config) {
      *  Syntax:
      *  circle.fill(value[, start[, end]])
      *
+     *  @public
+     *  @fires Change-Event
      *  @param {Makrene.Vertex|object} value - Value to fill an circle.
      *  @param {number} start - Start index, defaults to 0.
      *  @param {number} end - End index, defaults to this.length.
      *  @return {Makrene.Circle} - The modified circle. 
      */
     fill: function (value, start, end) {
+
+      graph._suppressEventFires = true;
 
       if (typeof value === 'undefined' || !(value instanceof Makrene.Vertex)) {
         value = Makrene.Vertex(value || {});
@@ -768,61 +801,130 @@ module.exports = function Makrene_Circle(config) {
         start++;
       }
 
+      graph._suppressEventFires = false;
+
+      graph.emitChange({
+        action: "fill",
+        graph: graph
+      });
+
       return graph;
     },
 
-    expandFromOudside: function(num){
-      num = num || graph.numVertexOnLevel;
+    /**
+     *  The expandFromOutside() method pushes new empty vertices to the end
+     *  of the Circle.
+     * 
+     *  Syntax:
+     *  circle.expandFromOutside(number)
+     * 
+     *  @public
+     *  @fires Change-Event for each vertex
+     *  @param {number} number - How many vertices to push to the end.
+     *  @return {number} - The new length property of the circle upon which the method was called.
+     */
+    expandFromOutside: function(number){
+      number = number || graph.numVertexOnLevel;
 
-      for(;num>0;num--){ 
+      for(;number>0;number--){ 
         graph.push(Makrene.Vertex());
       }
 
       return graph.length;
     },
 
-    expandFromInside: function(num){
-      num = num || graph.numVertexOnLevel;
+    /**
+     *  The expandFromInside() method unshifts new empty vertices to the beginning
+     *  of the Circle.
+     * 
+     *  Syntax:
+     *  circle.expandFromInside(number)
+     * 
+     *  @public
+     *  @fires Change-Event for each vertex
+     *  @param {number} number - How many vertices to unshift to the beginning.
+     *  @return {number} - The new length property of the circle upon which the method was called.
+     */
+    expandFromInside: function(number){
+      number = number || graph.numVertexOnLevel;
 
-      for(;num>0;num--){ 
+      for(;number>0;number--){ 
         graph.unshift(Makrene.Vertex());
       }
 
       return graph.length;
     },
 
-    collapseFromOudside: function(num){
+    /**
+     *  The collapseFromOutside() method pops vertices from the end of the Circle.
+     * 
+     *  Syntax:
+     *  circle.collapseFromOutside(number)
+     * 
+     *  @public
+     *  @fires Change-Event for each vertex
+     *  @param {number} number - How many vertices to pop from the end.
+     *  @return {number} - The new length property of the circle upon which the method was called.
+     */
+    collapseFromOutside: function(number){
       var deletedLevel = [];
 
-      num = num || graph.numVertexOnLevel;
+      number = number || graph.numVertexOnLevel;
 
-      for(;num>0;num--){ 
+      for(;number>0;number--){ 
         deletedLevel.push(graph.pop());
       }
 
       return deletedLevel;
     },
 
-    collapseFromInside: function(num){
+    /**
+     *  The collapseFromInside() method shift vertices from the beginning of the Circle.
+     * 
+     *  Syntax:
+     *  circle.collapseFromInside(number)
+     * 
+     *  @public
+     *  @fires Change-Event for each vertex
+     *  @param {number} number - How many vertices to shift from the beginning.
+     *  @return {number} - The new length property of the circle upon which the method was called.
+     */
+    collapseFromInside: function(number){
       var deletedLevel = [];
 
-      num = num || graph.numVertexOnLevel;
+      number = number || graph.numVertexOnLevel;
 
-      for(;num>0;num--){ 
+      for(;number>0;number--){ 
         deletedLevel.push(graph.shift());
       }
 
       return deletedLevel;
     },
 
+    /**
+     *  Clears all vertices form the circle. And resets all data.
+     * 
+     *  Syntax:
+     *  circle.clear()
+     * 
+     *  @public
+     *  @fires Change-Event
+     *  @return {undefined} 
+     */
     clear: function(){
-      _numCircleLevels = 0;
-      _circleLength    = 0;
+
+      _numCircleLevels  = 0;
+      _circleLength     = 0;
       graph.faces       = [];
       graph.edges       = [];
       graph.vertices    = [];
       graph.neighbours  = [];
-      graph.data  = {};
+      graph.data        = {};
+
+      graph.emitChange({
+        action: "clear",
+        graph: graph
+      });
     },
 
     includes: function(vertex){
@@ -886,12 +988,10 @@ module.exports = function Makrene_Circle(config) {
         //Link center with everyone above
         if (level === 0) {
           if (graph.vertices[1]) {
-            graph.vertices[1].forEach(function(vertex, index){
-              graph.removeVertex(vertex);
-              graph.addVertexAt(1, index, vertex);
-            });
+            linkCenterWithLevelAboveVertexes(graph);
           }
         } else {
+          
           //linking with level below
           linkWithLevelBelowVertexes(graph, level, pos);
 
@@ -904,7 +1004,7 @@ module.exports = function Makrene_Circle(config) {
             v, 
             graph.vertices[level][(pos - 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]);
 
-          //link with next neigour 
+          //link with next neighbour 
           linkWithNeighbourVertex(
             graph, 
             v, 
@@ -915,7 +1015,7 @@ module.exports = function Makrene_Circle(config) {
       var index = getIndex(graph, pos, level);
       if (index > graph.length - 1) {
         _circleLength = index + 1;  
-      }  
+      }
     },
 
     removeVertexFrom: function(level, pos){
@@ -924,7 +1024,8 @@ module.exports = function Makrene_Circle(config) {
 
     removeVertex: function(vertex) {
       if (vertex){
-        // remove neighbour
+
+        // remove neighbours
         vertex.neighbours.forEach(function(neighbour){
           neighbour.neighbours.splice(neighbour.neighbours.indexOf(vertex), 1);
         });
@@ -1168,46 +1269,68 @@ function linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex){
 }
 
 function linkWithLevelAboveVertexes(graph, levelIndex, vertexLevelIndex){
-  var aboveLeveVertexes = graph.vertices[levelIndex + 1];
+  var aboveLevelVertexes = graph.vertices[levelIndex + 1];
 
-  if (aboveLeveVertexes){
+  if (aboveLevelVertexes){
     var v = graph.vertices[levelIndex][vertexLevelIndex];
     var index1 = vertexLevelIndex
     var index2 = vertexLevelIndex - 1 < 0 ? graph.numVertexOnLevel - 1 : vertexLevelIndex - 1;
 
-    if (aboveLeveVertexes[index1]){
-       v.neighbours.push(aboveLeveVertexes[index1]);
-      aboveLeveVertexes[index1].neighbours.push(v);
+    if (aboveLevelVertexes[index1]){
+       v.neighbours.push(aboveLevelVertexes[index1]);
+       aboveLevelVertexes[index1].neighbours.push(v);
     
-      createEdge(graph, v, aboveLeveVertexes[index1]); 
+      createEdge(graph, v, aboveLevelVertexes[index1]); 
     }
 
-    if (index1 != index2 && aboveLeveVertexes[index2]){
-      v.neighbours.push(aboveLeveVertexes[index2]);
-      aboveLeveVertexes[index2].neighbours.push(v);
+    if (index1 != index2 && aboveLevelVertexes[index2]){
+      v.neighbours.push(aboveLevelVertexes[index2]);
+      aboveLevelVertexes[index2].neighbours.push(v);
       
-      createEdge(graph, v, aboveLeveVertexes[index2]);
+      createEdge(graph, v, aboveLevelVertexes[index2]);
 
-      if (aboveLeveVertexes[index1]){
-        createFace(graph, v, aboveLeveVertexes[index1], aboveLeveVertexes[index2]);
+      if (aboveLevelVertexes[index1]){
+        createFace(graph, v, aboveLevelVertexes[index1], aboveLevelVertexes[index2]);
       }
     }
   }
 }
 
-function linkWithNeighbourVertex(graph, vertex, neigbour){
-  if (neigbour) {
-    vertex.neighbours.push(neigbour);
-    neigbour.neighbours.push(vertex);
-    createEdge(graph, vertex, neigbour);
+function linkCenterWithLevelAboveVertexes(graph){
+
+  graph.vertices[1].forEach(function(aboveLevelVertex){
+    if (aboveLevelVertex){
+
+      graph.first.neighbours.push(aboveLevelVertex);
+      aboveLevelVertex.neighbours.push(graph.first);
+      createEdge(graph, graph.first, aboveLevelVertex);
+    }
+  });
+
+  graph.vertices[1].forEach(function(aboveLevelVertex, index){
+    if (aboveLevelVertex){
+      var indexNext = index - 1 < 0 ? graph.numVertexOnLevel - 1 : index - 1;
+
+      if (index != indexNext && graph.vertices[1][indexNext]){
+        createFace(graph, graph.first, aboveLevelVertex, graph.vertices[1][indexNext]);
+      }
+    }
+  });
+}
+
+function linkWithNeighbourVertex(graph, vertex, neighbour){
+  if (neighbour) {
+    vertex.neighbours.push(neighbour);
+    neighbour.neighbours.push(vertex);
+    createEdge(graph, vertex, neighbour);
 
     vertex.neighbours
           .filter(function(n){ 
-            if (neigbour != n){
-              return neigbour.neighbours.includes(n); 
+            if (neighbour != n){
+              return neighbour.neighbours.includes(n); 
             }
           }).forEach(function(n){
-            createFace(graph, vertex, neigbour, n);
+            createFace(graph, vertex, neighbour, n);
           })
   }
 }
@@ -1656,6 +1779,11 @@ var base = _dereq_('./makrene.visualizer');
  */
 module.exports = function (context, circle, config) {
 
+  config.padding = config.padding || 0;
+
+  config.width -= config.padding * 2;
+  config.height -= config.padding * 2;
+
   var offsetX = (config.width  - config.vertexWidth ) / 2;
   var offsetY = (config.height - config.vertexHeight) / 2;
 
@@ -1665,14 +1793,14 @@ module.exports = function (context, circle, config) {
     circle,
     config,
     function(v) {
-      return (v.data.level == circle.numCircleLevels) 
+      return (config.padding + ((v.data.level == circle.numCircleLevels) 
       ? edgeOfView(config, v.data.degree).x
-      : offsetX + ((Math.cos(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexWidth  / 2);
+      : offsetX + ((Math.cos(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexWidth  / 2)));
     },
     function(v) {
-      return (v.data.level == circle.numCircleLevels)
+      return (config.padding + ((v.data.level == circle.numCircleLevels)
       ? edgeOfView(config, v.data.degree-180).y
-      : offsetY + ((Math.sin(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexHeight / 2);
+      : offsetY + ((Math.sin(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexHeight / 2)));
     });
 };
 
@@ -1858,7 +1986,20 @@ module.exports = function(context, graph, config, getPosX, getPosY){
      *  Draw faces
      *  @type {bool}
      */
-     drawVertexDebugText: false
+     drawVertexDebugText: false,
+     
+     /**
+      *  Draw Vertex Text Callback.
+      *  @type {function}
+      *  @param {Makrene.Vertex} v - the vertex
+      *  @return {string} - the text
+      */
+     getVertexDebugText: function (v) {
+      return 'i' + v.id +
+             'n' + v.neighbours.length + 
+             'e' + v.edges.length + 
+             'f' + v.faces.length;
+     }
 
   }, config);
 
@@ -1925,10 +2066,7 @@ module.exports = function(context, graph, config, getPosX, getPosY){
       if (v){
         drawText(
           context, 
-          'i' + v.id +
-          'n' + v.neighbours.length + 
-          'e' + v.edges.length + 
-          'f' + v.faces.length,
+          config.getVertexDebugText(v),
           getPosX(v),
           getPosY(v),
           'red');

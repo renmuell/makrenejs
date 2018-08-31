@@ -155,6 +155,14 @@ var Makrene = {
       _onChangeCallbacks: [],
  
       /**
+       *  If true no event should be fired.
+       * 
+       *  @private
+       *  @type {bool}
+       */
+      _suppressEventFires: false,
+
+      /**
        *  List of vertices.
        *
        *  @public
@@ -279,7 +287,11 @@ var Makrene = {
        *  @param {object} event - the event data which will be sent
        *  @return {undefined}
        */
-      emitChange: function(event)  { graph._onChangeCallbacks.forEach(function(fn){ fn(event) }); }
+      emitChange: function(event)  { 
+        if (!graph._suppressEventFires) {
+          graph._onChangeCallbacks.forEach(function(fn){ fn(event) });
+        } 
+      }
     });
   },
 

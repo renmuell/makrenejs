@@ -186,7 +186,7 @@ test('push', function (t) {
     t.equal(circle.faces.length, 9);
 });
 
-test("push change evnet", function (t){
+test("push change event", function (t){
     t.plan(2)
 
     var circle = Makrene.Circle();
@@ -219,7 +219,7 @@ test("pop", function (t){
     t.equal(circle.length, 0);
 });
 
-test("pop change evnet", function (t){
+test("pop change event", function (t){
     t.plan(2)
 
     var circle = Makrene.Circle();
@@ -278,7 +278,7 @@ test("shift", function (t){
    t.equal(circle.length, 0);
 });
 
-test("shift change evnet", function (t){
+test("shift change event", function (t){
     t.plan(2)
 
     var circle = Makrene.Circle();
@@ -294,7 +294,7 @@ test("shift change evnet", function (t){
 });
 
 test('unshift', function (t) {
-    t.plan(44)
+    t.plan(59)
 
     var circle = Makrene.Circle();
 
@@ -355,9 +355,20 @@ test('unshift', function (t) {
     t.equal(circle.edges.length, 11);
     t.equal(circle.faces.length, 5);
 
-    // eight to ten
+    // eight to nine
 
-    t.equal(circle.unshift({}, {}, {}), 10);
+    t.equal(circle.unshift({}, {}), 9);
+
+    t.equal(circle.length, 9);
+    t.equal(circle.numCircleLevels, 1);
+    t.equal(circle.vertices.length, 2);
+    t.equal(circle.vertices[1].length, 8);
+    t.equal(circle.edges.length, 16);
+    t.equal(circle.faces.length, 8);
+
+    // ten items
+
+    t.equal(circle.unshift({}), 10);
 
     t.equal(circle.length, 10);
     t.equal(circle.numCircleLevels, 2);
@@ -366,9 +377,21 @@ test('unshift', function (t) {
     t.equal(circle.vertices[2].length, 1);
     t.equal(circle.edges.length, 18);
     t.equal(circle.faces.length, 9);
+
+    // eleven to thirteen
+
+    t.equal(circle.unshift({}, {}, {}), 13);
+
+    t.equal(circle.length, 13);
+    t.equal(circle.numCircleLevels, 2);
+    t.equal(circle.vertices.length, 3);
+    t.equal(circle.vertices[1].length, 8);
+    t.equal(circle.vertices[2].length, 4);
+    t.equal(circle.edges.length, 27);
+    t.equal(circle.faces.length, 15);
 });
 
-test("unshift change evnet", function (t){
+test("unshift change event", function (t){
     t.plan(2)
 
     var circle = Makrene.Circle();
@@ -396,6 +419,127 @@ test('fill', function (t){
     t.equal(circle.vertexAt(0, 0).data.num,  "Tom");
     t.equal(circle.vertexAt(1, 0).data.num,  "Tom");
     t.equal(circle.vertexAt(1, 1).data.num,  "Tom");
+});
+
+test('expandFromOutside', function (t){
+    t.plan(13);
+
+    var circle = Makrene.Circle();
+    circle.push({ num: 12 });
+    circle.push({ num: 45 });
+    circle.expandFromOutside(10);
+
+    t.equal(circle.length, 12);
+    t.equal(circle.vertexAt(0, 0).data.num,  12);
+    t.equal(circle.vertexAt(1, 0).data.num,  45);
+    t.equal(circle.vertexAt(1, 1).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 2).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 3).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 4).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 5).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 6).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 7).data.num,  undefined);
+    t.equal(circle.vertexAt(2, 0).data.num,  undefined);
+    t.equal(circle.vertexAt(2, 1).data.num,  undefined);
+    t.equal(circle.vertexAt(2, 2).data.num,  undefined);
+});
+
+test('expandFromInside', function (t){
+    t.plan(13);
+
+    var circle = Makrene.Circle();
+    circle.push({ num: 12 });
+    circle.push({ num: 45 });
+    circle.expandFromInside(10);
+
+    t.equal(circle.length, 12);
+    t.equal(circle.vertexAt(0, 0).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 0).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 1).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 2).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 3).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 4).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 5).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 6).data.num,  undefined);
+    t.equal(circle.vertexAt(1, 7).data.num,  undefined);
+    t.equal(circle.vertexAt(2, 0).data.num,  undefined);
+    t.equal(circle.vertexAt(2, 1).data.num,  12);
+    t.equal(circle.vertexAt(2, 2).data.num,  45);
+});
+
+test('collapseFromOutside', function (t){
+    t.plan(4);
+
+    var circle = Makrene.Circle();
+    circle.push({ num: 12 });
+    circle.push({ num: 45 });
+    circle.push({ num: 1 });
+    circle.push({ num: 745 });
+    circle.push({ num: 24 });
+    circle.push({ num: 753 });
+    circle.push({ num: 452 });
+    circle.push({ num: 3 });
+    circle.push({ num: 54 });
+    circle.push({ num: 15 });
+    circle.collapseFromOutside(8);
+
+    t.equal(circle.length, 2);
+    t.equal(circle.vertexAt(0, 0).data.num,  12);
+    t.equal(circle.vertexAt(1, 0).data.num,  45);
+
+    circle.collapseFromOutside(2);
+
+    t.equal(circle.length, 0);
+});
+
+test('collapseFromInside', function (t){
+    t.plan(4);
+
+    var circle = Makrene.Circle();
+    circle.push({ num: 12 });
+    circle.push({ num: 45 });
+    circle.push({ num: 1 });
+    circle.push({ num: 745 });
+    circle.push({ num: 24 });
+    circle.push({ num: 753 });
+    circle.push({ num: 452 });
+    circle.push({ num: 3 });
+    circle.push({ num: 54 });
+    circle.push({ num: 15 });
+    circle.collapseFromInside(8);
+
+    t.equal(circle.length, 2);
+    t.equal(circle.vertexAt(0, 0).data.num,  54);
+    t.equal(circle.vertexAt(1, 0).data.num,  15);
+
+    circle.collapseFromInside(2);
+
+    t.equal(circle.length, 0);
+});
+
+test('collapseFromInside than collapseFromOutside', function (t){
+    t.plan(4);
+
+    var circle = Makrene.Circle();
+    circle.push({ num: 12 });
+    circle.push({ num: 45 });
+    circle.push({ num: 1 });
+    circle.push({ num: 745 });
+    circle.push({ num: 24 });
+    circle.push({ num: 753 });
+    circle.push({ num: 452 });
+    circle.push({ num: 3 });
+    circle.push({ num: 54 });
+    circle.push({ num: 15 });
+    circle.collapseFromInside(8);
+
+    t.equal(circle.length, 2);
+    t.equal(circle.vertexAt(0, 0).data.num,  54);
+    t.equal(circle.vertexAt(1, 0).data.num,  15);
+
+    circle.collapseFromOutside(2);
+
+    t.equal(circle.length, 0);
 });
 
 test('getFacesLevelArray', function (t){
@@ -497,4 +641,52 @@ test('toString', function (t){
 
     t.equal(typeof circle.toString(), 'string');
     t.equal(circle.toString().length, 86);
+});
+
+test('Bug: Cannot read property "faces" of undefined', function (t){
+    t.plan(20);
+
+    var circle = Makrene.Circle({
+        numVertexOnLevel: 18
+    });
+
+    circle.unshift({ index: 0 });
+    t.equal(circle.length, 1);
+    t.equal(circle.numCircleLevels, 0);
+
+    circle.unshift({ index: 1 });
+    t.equal(circle.length, 2);
+    t.equal(circle.numCircleLevels, 1);
+
+    circle.unshift({ index: 2 });
+    t.equal(circle.length, 3);
+    t.equal(circle.numCircleLevels, 1);
+
+    circle.unshift({ index: 3 });
+    t.equal(circle.length, 4);
+    t.equal(circle.numCircleLevels, 1);
+
+    circle.unshift({ index: 4 });
+    t.equal(circle.length, 5);
+    t.equal(circle.numCircleLevels, 1);
+
+    circle.unshift({ index: 5 });
+    t.equal(circle.length, 6);
+    t.equal(circle.numCircleLevels, 1);
+
+    circle.unshift({ index: 6 });
+    t.equal(circle.length, 7);
+    t.equal(circle.numCircleLevels, 1);
+
+    circle.unshift({ index: 7 });
+    t.equal(circle.length, 8);
+    t.equal(circle.numCircleLevels, 1);
+
+    circle.unshift({ index: 8 });
+    t.equal(circle.length, 9);
+    t.equal(circle.numCircleLevels, 1);
+
+    circle.unshift({ index: 9 });
+    t.equal(circle.length, 10);
+    t.equal(circle.numCircleLevels, 1);
 });
