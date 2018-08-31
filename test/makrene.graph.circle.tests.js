@@ -407,11 +407,17 @@ test("unshift change event", function (t){
 });
 
 test('fill', function (t){
-    t.plan(4);
+    t.plan(7);
     var circle = Makrene.Circle();
+
     circle.push({ num: 12 });
     circle.push({ num: 45 });
     circle.push({ num: 66 });
+
+    var events = [];
+    circle.onChange(function(event){
+        events.push(event);
+    });
 
     circle.fill({ num: "Tom" });
 
@@ -419,14 +425,24 @@ test('fill', function (t){
     t.equal(circle.vertexAt(0, 0).data.num,  "Tom");
     t.equal(circle.vertexAt(1, 0).data.num,  "Tom");
     t.equal(circle.vertexAt(1, 1).data.num,  "Tom");
+
+    t.equal(events.length, 1);
+    t.equal(events[0].action, "fill");
+    t.deepEqual(events[0].graph, circle);
 });
 
 test('expandFromOutside', function (t){
-    t.plan(13);
+    t.plan(16);
 
     var circle = Makrene.Circle();
     circle.push({ num: 12 });
     circle.push({ num: 45 });
+
+    var events = [];
+    circle.onChange(function(event){
+        events.push(event);
+    });
+
     circle.expandFromOutside(10);
 
     t.equal(circle.length, 12);
@@ -442,14 +458,29 @@ test('expandFromOutside', function (t){
     t.equal(circle.vertexAt(2, 0).data.num,  undefined);
     t.equal(circle.vertexAt(2, 1).data.num,  undefined);
     t.equal(circle.vertexAt(2, 2).data.num,  undefined);
+
+    t.equal(events.length, 10);
+
+    var unshift_events = events.filter(function(e){ 
+        return e.action == "push"; 
+    });
+
+    t.equal(unshift_events.length, 10);
+    t.deepEqual(events[0].graph, circle);
 });
 
 test('expandFromInside', function (t){
-    t.plan(13);
+    t.plan(16);
 
     var circle = Makrene.Circle();
     circle.push({ num: 12 });
     circle.push({ num: 45 });
+
+    var events = [];
+    circle.onChange(function(event){
+        events.push(event);
+    });
+
     circle.expandFromInside(10);
 
     t.equal(circle.length, 12);
@@ -465,10 +496,19 @@ test('expandFromInside', function (t){
     t.equal(circle.vertexAt(2, 0).data.num,  undefined);
     t.equal(circle.vertexAt(2, 1).data.num,  12);
     t.equal(circle.vertexAt(2, 2).data.num,  45);
+
+    t.equal(events.length, 10);
+
+    var unshift_events = events.filter(function(e){ 
+        return e.action == "unshift"; 
+    });
+
+    t.equal(unshift_events.length, 10);
+    t.deepEqual(events[0].graph, circle);
 });
 
 test('collapseFromOutside', function (t){
-    t.plan(4);
+    t.plan(7);
 
     var circle = Makrene.Circle();
     circle.push({ num: 12 });
@@ -481,6 +521,12 @@ test('collapseFromOutside', function (t){
     circle.push({ num: 3 });
     circle.push({ num: 54 });
     circle.push({ num: 15 });
+
+    var events = [];
+    circle.onChange(function(event){
+        events.push(event);
+    });
+
     circle.collapseFromOutside(8);
 
     t.equal(circle.length, 2);
@@ -490,12 +536,22 @@ test('collapseFromOutside', function (t){
     circle.collapseFromOutside(2);
 
     t.equal(circle.length, 0);
+
+    t.equal(events.length, 10);
+
+    var unshift_events = events.filter(function(e){ 
+        return e.action == "pop"; 
+    });
+
+    t.equal(unshift_events.length, 10);
+    t.deepEqual(events[0].graph, circle);
 });
 
 test('collapseFromInside', function (t){
-    t.plan(4);
+    t.plan(7);
 
     var circle = Makrene.Circle();
+
     circle.push({ num: 12 });
     circle.push({ num: 45 });
     circle.push({ num: 1 });
@@ -506,6 +562,12 @@ test('collapseFromInside', function (t){
     circle.push({ num: 3 });
     circle.push({ num: 54 });
     circle.push({ num: 15 });
+
+    var events = [];
+    circle.onChange(function(event){
+        events.push(event);
+    });
+
     circle.collapseFromInside(8);
 
     t.equal(circle.length, 2);
@@ -515,6 +577,15 @@ test('collapseFromInside', function (t){
     circle.collapseFromInside(2);
 
     t.equal(circle.length, 0);
+
+    t.equal(events.length, 10);
+
+    var unshift_events = events.filter(function(e){ 
+        return e.action == "shift"; 
+    });
+
+    t.equal(unshift_events.length, 10);
+    t.deepEqual(events[0].graph, circle);
 });
 
 test('collapseFromInside than collapseFromOutside', function (t){
@@ -540,6 +611,41 @@ test('collapseFromInside than collapseFromOutside', function (t){
     circle.collapseFromOutside(2);
 
     t.equal(circle.length, 0);
+});
+
+test('clear', function (t){
+    t.plan(7);
+
+    var circle = Makrene.Circle();
+
+    circle.push({ num: 1 });
+    circle.push({ num: 1 });
+    circle.push({ num: 1 });
+    circle.push({ num: 1 });
+    circle.push({ num: 1 });
+    circle.push({ num: 1 });
+    circle.push({ num: 1 });
+    circle.push({ num: 1 });
+    circle.push({ num: 1 });
+    circle.push({ num: 1 });
+    circle.push({ num: 1 });
+
+    t.equal(circle.length, 11);
+
+    var events = [];
+    circle.onChange(function(event){
+        events.push(event);
+    });
+
+    circle.clear();
+    
+    t.equal(circle.length, 0);
+    t.equal(circle.numCircleLevels, 0);
+    t.deepEqual(circle.data, {});
+
+    t.equal(events.length, 1);
+    t.equal(events[0].action, "clear");
+    t.deepEqual(events[0].graph, circle);
 });
 
 test('getFacesLevelArray', function (t){

@@ -6,8 +6,6 @@ var replace    = require('gulp-replace');
 var sourcemaps = require('gulp-sourcemaps');
 var browserify = require('gulp-browserify');
 var tape       = require('gulp-tape');
-var tapSpec    = require('tap-spec');
-var tapMin     = require('tap-min');
 
 // path
 
@@ -107,8 +105,8 @@ gulp.task('test',  ['bundle-js'],function() {
     //.pipe(eslint.failAfterError())
     .on('error', onError)
     .pipe(tape({
-      //reporter: tapSpec()
-      reporter: tapMin()
+      nyc: true,
+      bail: true
     }));
 });
 
