@@ -13,15 +13,19 @@ var path = {
   src : {
     js       : 'src/makrene/**/*.js',
     vendorJs : 'src/vendorJs/**/*.js',
-    example  : 'example/**/*.*',
+    docs     : 'docs/**/*.*',
     test     : 'test/**/*.js'
   },
   build : {
     src      : 'build/src/makrene',
     mainJs   : 'build/src/makrene/makrene.js',
     vendorJs : 'build/src/vendorJs',
-    example  : 'build/example',
+    docs     : 'build/docs',
     test     : 'build/test'
+  },
+  doc: {
+    release : 'docs/release',
+    release_src: 'release/**/*.js'
   },
   release : {
     main    : 'release/'
@@ -82,17 +86,22 @@ gulp.task('copy-vendorjs', function(){
 
 // Copy Example to build
 
-gulp.task('copy-example', function(){
-  return gulp.src(path.src.example)
-             .pipe(replace(/\/release\//g, '/src/makrene/'))
-             .pipe(gulp.dest(path.build.example));
+gulp.task('copy-docs', function(){
+  return gulp.src(path.src.docs)
+             .pipe(replace(/release\//g, '../src/makrene/'))
+             .pipe(gulp.dest(path.build.docs));
+});
+
+gulp.task('copy-release-to-doc', ['copy-docs', 'release-js'], function(){
+  return gulp.src(path.doc.release_src)
+             .pipe(gulp.dest(path.doc.release));
 });
 
 // Watch
 
 gulp.task('watch', ['build'], function(){
   gulp.watch(path.src.js      , ['build']);
-  gulp.watch(path.src.example , ['build']);
+  gulp.watch(path.src.docs , ['build']);
   gulp.watch(path.src.test    , ['build']);
 });
 
@@ -114,6 +123,6 @@ gulp.task('test',  ['bundle-js'],function() {
 
 gulp.task('default', ['build']);
 
-gulp.task('build', ['copy-example', 'test']);
+gulp.task('build', ['copy-docs', 'test']);
 
-gulp.task('release', ['copy-example', 'release-js']);
+gulp.task('release', ['copy-release-to-doc']);

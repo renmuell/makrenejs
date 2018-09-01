@@ -15,7 +15,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </head>
   <body>
-    <script type="text/javascript" src="../release/makrene.js"></script>
+    <script type="text/javascript" src="release/makrene.js"></script>
     <script src="vendors/cEngine/cEngine-min.js"></script>
     <script src="vendors/cEngine/plugins/cEngine.fill-min.js"></script>
     <script src="vendors/cEngine/plugins/cEngine.frameRate-min.js"></script>
@@ -49,7 +49,7 @@
                     aspectRetion: true
                 })
             },
-            step: (context, width, height, stepTimeElapsed) => {
+            step: function (context, width, height, stepTimeElapsed) {
                 draw(context, width, height);
             }
         }).step(10);
@@ -71,15 +71,15 @@
                     }]
                 })
             },
-            step: (context, width, height, stepTimeElapsed) => {
+            step: function (context, width, height, stepTimeElapsed) {
 
-                circle.faces.filter(f => f.data.deathOffset>0).forEach(f => {
-                    f.data.deathOffset--;
+                circle.faces.filter(function(f) { return f.data.deathOffset>0; }).forEach(function (f) {
+                    return f.data.deathOffset--;
                 });
 
-                circle.faces.filter(f => f.data.alive).forEach(f => {
+                circle.faces.filter(function (f) { return f.data.alive; }).forEach(function (f) {
                     do {
-                        var deadNeighbours = f.neighbours.filter(n => n.data.deathOffset <= 0);
+                        var deadNeighbours = f.neighbours.filter(function (n) { return n.data.deathOffset <= 0; });
                         if (deadNeighbours.length > 0) {                        
                             var indexRandom = Math.floor(Math.random() * (deadNeighbours.length-1));
                             deadNeighbours[indexRandom].data.alive = true;
@@ -179,7 +179,7 @@
                 domElement: document.getElementById("example"),
                 width: 300,
                 height: 300,
-                step: (context, width, height) => {
+                step: function (context, width, height) {
                     context.font="20px Arial";
                     Makrene.Visualizer.Circle(context, circle2, {
                         width       : width,
@@ -237,7 +237,7 @@
                 domElement: document.getElementById("example2"),
                 width: 200,
                 height: 200,
-                step: (context, width, height) => {
+                step: function (context, width, height) {
                     context.font="20px Arial";
                     Makrene.Visualizer.Circle(context, circle3, {
                         width       : width,
@@ -273,7 +273,7 @@
                 domElement: document.getElementById("example3"),
                 width: 200,
                 height: 200,
-                step: (context, width, height) => {
+                step: function (context, width, height) {
                     context.font="20px Arial";
                     Makrene.Visualizer.Circle(context, circle4, {
                         width       : width,
@@ -309,7 +309,7 @@
                 domElement: document.getElementById("example4"),
                 width: 200,
                 height: 200,
-                step: (context, width, height) => {
+                step: function (context, width, height) {
                     context.font="20px Arial";
                     Makrene.Visualizer.Circle(context, circle5, {
                         width       : width,
