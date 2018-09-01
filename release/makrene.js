@@ -1936,16 +1936,22 @@ module.exports = function(context, graph, config, getPosX, getPosY){
     
    /**
     *  The color of the lines
-    *  @type {number}
+    *  @type {string}
     */
-    lineColor: 100,
+    lineColor: "red",
     
    /**
     *  The color of each vertex box
-    *  @type {number}
+    *  @type {string}
     */
-    vertexColor: 100,
-    
+    vertexColor: "white",
+        
+   /**
+    *  The color of each vertex box
+    *  @type {string}
+    */
+    faceColor: "black",
+
    /**
     *  The width of each line
     *  @type {number}
@@ -2017,11 +2023,18 @@ module.exports = function(context, graph, config, getPosX, getPosY){
     return v.data.y;
   }
 
+  /**
+   * From underscore.js
+   */
+  isCallable = function (obj) {
+    return !!(obj && obj.constructor && obj.call && obj.apply);
+  }
+
   if (config.drawFaces) {
     // draw Faces
     graph.faces.forEach(function(face){
       context.beginPath();
-      context.fillStyle = 'rgba(0,0,0,0.2)';
+      context.fillStyle = isCallable(config.faceColor) ? config.faceColor(face) : config.faceColor;
       var vertex = face.vertices[0];
       context.moveTo(getPosX(vertex), getPosY(vertex));
       face.vertices.forEach(function(vertex){
@@ -2036,7 +2049,7 @@ module.exports = function(context, graph, config, getPosX, getPosY){
     graph.edges.forEach(function(edge){
       context.beginPath();
       context.lineWidth = config.lineWidth;
-      context.strokeStyle = config.lineColor;
+      context.strokeStyle = isCallable(config.lineColor) ? config.lineColor(edge) : config.lineColor;
       var v1 = edge.vertices[0];
       var v2 = edge.vertices[1];
       context.moveTo(getPosX(v1), getPosY(v1));
@@ -2050,7 +2063,7 @@ module.exports = function(context, graph, config, getPosX, getPosY){
     graph.forEach(function(v){
       if (v){
         context.beginPath();
-        context.fillStyle = config.vertexColor;
+        context.fillStyle = isCallable(config.vertexColor) ? config.vertexColor(v) : config.vertexColor;
         context.fillRect(
           getPosX(v) - config.vertexWidth/2,
           getPosY(v) - config.vertexHeight/2,

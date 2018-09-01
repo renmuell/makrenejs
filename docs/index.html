@@ -1,0 +1,336 @@
+<html>
+  <head>
+    <title>makrene.js</title>
+    <meta charset="UTF-8"> 
+    <style>
+        html, body {
+            font-family:Arial;
+            padding:0;
+            margin:0;
+            background-color: white;
+            overflow: hidden;
+        }
+    </style>
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript" src="../release/makrene.js"></script>
+    <script src="vendors/cEngine/cEngine-min.js"></script>
+    <script src="vendors/cEngine/plugins/cEngine.fill-min.js"></script>
+    <script src="vendors/cEngine/plugins/cEngine.frameRate-min.js"></script>
+    <script src="vendors/cEngine/plugins/cEngine.filter-min.js"></script>
+    <script>
+
+        var circle = Makrene.Circle({
+            numVertexOnLevel: 18
+        });
+
+        var maxDeadOffset = 20;
+
+        circle.expandFromOutside((circle.numVertexOnLevel*circle.numVertexOnLevel)+1);
+        circle.faces.forEach(function(f){
+            //f.data.color = '#'+Math.random().toString(16).substr(-6);
+            f.data.colorRed = 100;
+            f.data.colorBlue= 200;
+            f.data.colorGreen = 10;
+            f.data.alive = false;
+            f.data.deathOffset = 0;
+        })
+        circle.faces[0].data.alive = true;
+        
+        /*
+        cEngine.create({
+            autoClear: false,
+            height:512,
+            plugins: {
+                fill: cEngine.fill.create({
+                    mode: 'stretch',
+                    aspectRetion: true
+                })
+            },
+            step: (context, width, height, stepTimeElapsed) => {
+                draw(context, width, height);
+            }
+        }).step(10);
+        */
+
+        cEngine.create({
+            autoClear: true,
+            height:512,
+            plugins: {
+                fill: cEngine.fill.create({
+                    mode: 'stretch',
+                    aspectRetion: true
+                }),
+                frameRate: cEngine.frameRate.create({
+                  fps: 10
+                }),
+                filter: cEngine.filter.create({
+                    filters: [{
+                    }]
+                })
+            },
+            step: (context, width, height, stepTimeElapsed) => {
+
+                circle.faces.filter(f => f.data.deathOffset>0).forEach(f => {
+                    f.data.deathOffset--;
+                });
+
+                circle.faces.filter(f => f.data.alive).forEach(f => {
+                    do {
+                        var deadNeighbours = f.neighbours.filter(n => n.data.deathOffset <= 0);
+                        if (deadNeighbours.length > 0) {                        
+                            var indexRandom = Math.floor(Math.random() * (deadNeighbours.length-1));
+                            deadNeighbours[indexRandom].data.alive = true;
+                            f.data.alive = false;
+                            f.data.deathOffset = maxDeadOffset;
+                        }
+                    } while (Math.random()<0.01);
+                });
+
+                draw(context, width, height);
+            },
+            style: {
+                //filter: "contrast(60)",
+               // filter: "blur(10px) ",
+               // mixBlendMode: "screen",
+                opacity: "1"
+            }
+        }).start();
+        
+        function draw(context, width, height){
+            context.font="20px Arial";
+            Makrene.Visualizer.CircleFullscreen(context, circle, {
+                width       : width,
+                height      : height,     
+                padding     : 0, 
+                vertexWidth : 1,
+                vertexHeight: 1,
+                lineWidth   : 1,
+                faceColor   : function(face){
+                    if (face.data.alive){
+                        return "black";
+                    } else if (face.data.deathOffset>0) {
+                        return "rgb("+(face.data.colorRed * (maxDeadOffset/face.data.deathOffset))+
+                                  ","+(face.data.colorGreen * (maxDeadOffset/face.data.deathOffset))+
+                                  ","+(face.data.colorBlue * (maxDeadOffset/face.data.deathOffset))+")";
+                        
+                    } else {
+                        return "white";
+                    }
+                    //return '#'+Math.random().toString(16).substr(-6);
+                },
+                lineColor   : "white",
+                drawVertices: false
+            })
+        }
+
+    </script>
+
+    <style>
+        .background {
+            width: 40%;
+            min-width: 600px;
+            background-color: rgba(255, 255, 255, 0.8);
+            position: absolute;
+            left: -60px;
+            top: -60px;
+            bottom:-60px;
+            transform: rotate(-5deg);
+            box-shadow: 0 0 32px rgba(0,0,0,.2);
+        }
+        .main {
+            position: absolute;
+            top:0;
+            left:0;
+            bottom:0;
+            width:30%;
+            min-width: 400px;
+            padding:40px;
+        }
+    </style>
+    <div class="background">
+
+    </div>
+    <div class="main">
+        <h1>makrene.js</h1>
+
+        <a class="github-button" href="https://github.com/renmuell/makrenejs" data-icon="octicon-star" data-size="large" aria-label="Star renmuell/makrenejs on GitHub">Star</a>
+        <a class="github-button" href="https://github.com/renmuell/makrenejs/archive/master.zip" data-icon="octicon-cloud-download" data-size="large" aria-label="Download renmuell/makrenejs on GitHub">Download</a>
+        <a class="github-button" href="https://github.com/renmuell" data-size="large" aria-label="Follow @renmuell on GitHub">Follow @renmuell</a>
+        
+        <hr>
+        <p>
+            javascript graph/mash library
+        </p>
+        <div id="example"></div>
+        <script>
+        
+            var circle2 = Makrene.Circle({
+                numVertexOnLevel: 6
+            });
+
+            for (let index = 0; index < 13; index++) {
+                circle2.push({ index: index});
+            }
+            
+            cEngine.create({
+                domElement: document.getElementById("example"),
+                width: 300,
+                height: 300,
+                step: (context, width, height) => {
+                    context.font="20px Arial";
+                    Makrene.Visualizer.Circle(context, circle2, {
+                        width       : width,
+                        height      : height,     
+                        vertexWidth : 7,
+                        vertexHeight: 7,
+                        lineWidth   : 1,
+                        levelOffset : 50,
+                        vertexColor : "black",
+                        lineColor   : "red",
+                        drawVertices: false,
+                        drawEdges   : true,
+                        drawFaces   : true,
+                        faceColor   : "rgb(250,250,250)",
+                        getVertexDebugText: function(v){
+                            return v.data.index;
+                        },
+                        drawVertexDebugText: true
+                    })
+                }
+            }).step();
+
+        </script>
+        <hr> 
+        <p>
+            A graph includes linked vertices, edges and faces:
+        </p><br>    
+        <div>
+            <div id="example3" style="width:220px;float:left"></div>
+            <div id="example4" style="width:220px;float:left"></div>
+            <div id="example2" style="width:220px;float:left"></div>
+            
+            
+            <div style="clear:both"></div>
+        </div>
+        <br><br>
+        <hr>
+            <footer><br>
+                <i class="fas fa-code"></i> with <i class="fas fa-heart"></i> by Rene Müller
+                <br><br>
+                This is a private page without profits hosted by GitHub.com. 
+            </footer>
+        <br><br>
+        <script>
+
+            var circle3 = Makrene.Circle({
+                numVertexOnLevel: 6
+            });
+
+            for (let index = 0; index < 13; index++) {
+                circle3.push({ index: index});
+            }
+            
+            cEngine.create({
+                domElement: document.getElementById("example2"),
+                width: 200,
+                height: 200,
+                step: (context, width, height) => {
+                    context.font="20px Arial";
+                    Makrene.Visualizer.Circle(context, circle3, {
+                        width       : width,
+                        height      : height,     
+                        vertexWidth : 7,
+                        vertexHeight: 7,
+                        lineWidth   : 2,
+                        levelOffset : 45,
+                        vertexColor : "black",
+                        lineColor   : "white",
+                        drawVertices: false,
+                        drawEdges   : true,
+                        drawFaces   : true,
+                        faceColor   : "red"
+                    })
+                }
+            }).step();
+
+        </script>
+
+        
+        <script>
+
+            var circle4 = Makrene.Circle({
+                numVertexOnLevel: 6
+            });
+
+            for (let index = 0; index < 13; index++) {
+                circle4.push({ index: index});
+            }
+            
+            cEngine.create({
+                domElement: document.getElementById("example3"),
+                width: 200,
+                height: 200,
+                step: (context, width, height) => {
+                    context.font="20px Arial";
+                    Makrene.Visualizer.Circle(context, circle4, {
+                        width       : width,
+                        height      : height,     
+                        vertexWidth : 7,
+                        vertexHeight: 7,
+                        lineWidth   : 2,
+                        levelOffset : 45,
+                        vertexColor : "red",
+                        lineColor   : "white",
+                        drawVertices: true,
+                        drawEdges   : false,
+                        drawFaces   : false,
+                        faceColor   : "red"
+                    })
+                }
+            }).step();
+
+        </script>
+
+        
+        <script>
+
+            var circle5 = Makrene.Circle({
+                numVertexOnLevel: 6
+            });
+
+            for (let index = 0; index < 13; index++) {
+                circle5.push({ index: index});
+            }
+            
+            cEngine.create({
+                domElement: document.getElementById("example4"),
+                width: 200,
+                height: 200,
+                step: (context, width, height) => {
+                    context.font="20px Arial";
+                    Makrene.Visualizer.Circle(context, circle5, {
+                        width       : width,
+                        height      : height,     
+                        vertexWidth : 7,
+                        vertexHeight: 7,
+                        lineWidth   : 1,
+                        levelOffset : 45,
+                        vertexColor : "red",
+                        lineColor   : "red",
+                        drawVertices: false,
+                        drawEdges   : true,
+                        drawFaces   : false,
+                        faceColor   : "red"
+                    })
+                }
+            }).step();
+
+        </script>
+
+    </div>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+  </body>
+</html>
