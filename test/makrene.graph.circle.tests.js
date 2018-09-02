@@ -4,9 +4,10 @@ var test = require('tape');
 var Makrene = require('../build/src/makrene/makrene.js');
 
 test('create', function (t) {
-    t.plan(2)
+    t.plan(3)
     t.equal(8, Makrene.Circle().numVertexOnLevel);
     t.equal(4, Makrene.Circle({ numVertexOnLevel: 4 }).numVertexOnLevel);
+    t.equal(Makrene.Circle()._suppressEventFires, false);
 });
 
 test('instanceof', function (t) {
@@ -863,6 +864,432 @@ test('indexOf', function (t){
     t.equal(circle.indexOf(v_1), 0);
     t.equal(circle.indexOf(v_2), 1);
     t.equal(circle.indexOf(v_3), 2);
+});
+
+test('addVertexAt', function (t){
+    t.plan(30);
+    var circle = Makrene.Circle();
+
+    t.equal(circle.addVertexAt(0, 0, Makrene.Vertex()), 1);
+    t.equal(circle.length, 1);
+    t.equal(circle.numCircleLevels, 0);
+
+    t.equal(circle.addVertexAt(1, 0, Makrene.Vertex()), 2);
+    t.equal(circle.length, 2);
+    t.equal(circle.numCircleLevels, 1);
+
+    t.equal(circle.addVertexAt(1, 1, Makrene.Vertex()), 3);
+    t.equal(circle.length, 3);
+    t.equal(circle.numCircleLevels, 1);
+
+    t.equal(circle.addVertexAt(1, 2, Makrene.Vertex()), 4);
+    t.equal(circle.length, 4);
+    t.equal(circle.numCircleLevels, 1);
+
+    t.equal(circle.addVertexAt(1, 3, Makrene.Vertex()), 5);
+    t.equal(circle.length, 5);
+    t.equal(circle.numCircleLevels, 1);
+
+    t.equal(circle.addVertexAt(1, 4, Makrene.Vertex()), 6);
+    t.equal(circle.length, 6);
+    t.equal(circle.numCircleLevels, 1);
+
+    t.equal(circle.addVertexAt(1, 5, Makrene.Vertex()), 7);
+    t.equal(circle.length, 7);
+    t.equal(circle.numCircleLevels, 1);
+
+    t.equal(circle.addVertexAt(1, 6, Makrene.Vertex()), 8);
+    t.equal(circle.length, 8);
+    t.equal(circle.numCircleLevels, 1);
+
+    t.equal(circle.addVertexAt(1, 7, Makrene.Vertex()), 9);
+    t.equal(circle.length, 9);
+    t.equal(circle.numCircleLevels, 1);
+
+    t.equal(circle.addVertexAt(2, 0, Makrene.Vertex()), 10);
+    t.equal(circle.length, 10);
+    t.equal(circle.numCircleLevels, 2);
+});
+
+test('addVertexAt - add with gap', function (t){
+    t.plan(6);
+    var circle = Makrene.Circle();
+
+    t.equal(circle.addVertexAt(5, 2, Makrene.Vertex()), 36);
+    t.equal(circle.length, 36);
+    t.equal(circle.numCircleLevels, 5);
+
+    t.equal(circle.addVertexAt(3, 4, Makrene.Vertex()), 36);
+    t.equal(circle.length, 36);
+    t.equal(circle.numCircleLevels, 5);
+});
+
+test('removeVertexFrom', function (t) {
+    t.plan(36);
+
+    var circle = Makrene.Circle();
+
+    var vertex_1 = Makrene.Vertex({ index: 1 });
+    circle.push(vertex_1);
+   
+    var vertex_2 = Makrene.Vertex({ index: 2 });
+    circle.push(vertex_2);
+
+    var vertex_3 = Makrene.Vertex({ index: 3 });
+     circle.push(vertex_3);
+
+    var vertex_4 = Makrene.Vertex({ index: 4 });
+    circle.push(vertex_4);
+
+    var vertex_5 = Makrene.Vertex({ index: 5 });
+    circle.push(vertex_5);
+
+    var vertex_6 = Makrene.Vertex({ index: 6 });
+    circle.push(vertex_6);
+
+    var vertex_7 = Makrene.Vertex({ index: 7 });
+    circle.push(vertex_7);
+
+    var vertex_8 = Makrene.Vertex({ index: 8 });
+    circle.push(vertex_8);
+
+    var vertex_9 = Makrene.Vertex({ index: 9 });
+    circle.push(vertex_9);
+
+    var vertex_10 = Makrene.Vertex({ index: 10 });
+    circle.push(vertex_10);
+
+    var vertex_11 = Makrene.Vertex({ index: 11 });
+    circle.push(vertex_11);
+
+    var vertex_12 = Makrene.Vertex({ index: 12 });
+    circle.push(vertex_12);
+
+    var removedVertex = circle.removeVertexFrom(2, 2);
+    t.deepEqual(removedVertex, vertex_12);
+    t.equal(circle.length, 11);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(2, 1);
+    t.deepEqual(removedVertex, vertex_11);
+    t.equal(circle.length, 10);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(2, 0);
+    t.deepEqual(removedVertex, vertex_10);
+    t.equal(circle.length, 9);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertexFrom(1, 7);
+    t.deepEqual(removedVertex, vertex_9);
+    t.equal(circle.length, 8);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertexFrom(1, 6);
+    t.deepEqual(removedVertex, vertex_8);
+    t.equal(circle.length, 7);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertexFrom(1, 5);
+    t.deepEqual(removedVertex, vertex_7);
+    t.equal(circle.length, 6);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertexFrom(1, 4);
+    t.deepEqual(removedVertex, vertex_6);
+    t.equal(circle.length, 5);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertexFrom(1, 3);
+    t.deepEqual(removedVertex, vertex_5);
+    t.equal(circle.length, 4);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertexFrom(1, 2);
+    t.deepEqual(removedVertex, vertex_4);
+    t.equal(circle.length, 3);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertexFrom(1, 1);
+    t.deepEqual(removedVertex, vertex_3);
+    t.equal(circle.length, 2);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertexFrom(1, 0);
+    t.deepEqual(removedVertex, vertex_2);
+    t.equal(circle.length, 1);
+    t.equal(circle.numCircleLevels, 0);
+
+    removedVertex = circle.removeVertexFrom(0, 0);
+    t.deepEqual(removedVertex, vertex_1);
+    t.equal(circle.length, 0);
+    t.equal(circle.numCircleLevels, 0);
+});
+
+test('removeVertexFrom - reverse', function (t) {
+    t.plan(36);
+
+    var circle = Makrene.Circle();
+
+    var vertex_1 = Makrene.Vertex({ index: 1 });
+    circle.push(vertex_1);
+   
+    var vertex_2 = Makrene.Vertex({ index: 2 });
+    circle.push(vertex_2);
+
+    var vertex_3 = Makrene.Vertex({ index: 3 });
+     circle.push(vertex_3);
+
+    var vertex_4 = Makrene.Vertex({ index: 4 });
+    circle.push(vertex_4);
+
+    var vertex_5 = Makrene.Vertex({ index: 5 });
+    circle.push(vertex_5);
+
+    var vertex_6 = Makrene.Vertex({ index: 6 });
+    circle.push(vertex_6);
+
+    var vertex_7 = Makrene.Vertex({ index: 7 });
+    circle.push(vertex_7);
+
+    var vertex_8 = Makrene.Vertex({ index: 8 });
+    circle.push(vertex_8);
+
+    var vertex_9 = Makrene.Vertex({ index: 9 });
+    circle.push(vertex_9);
+
+    var vertex_10 = Makrene.Vertex({ index: 10 });
+    circle.push(vertex_10);
+
+    var vertex_11 = Makrene.Vertex({ index: 11 });
+    circle.push(vertex_11);
+
+    var vertex_12 = Makrene.Vertex({ index: 12 });
+    circle.push(vertex_12);
+
+    var removedVertex = circle.removeVertexFrom(0, 0);
+    t.deepEqual(removedVertex, vertex_1);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(1, 0);
+    t.deepEqual(removedVertex, vertex_2);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(1, 1);
+    t.deepEqual(removedVertex, vertex_3);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(1, 2);
+    t.deepEqual(removedVertex, vertex_4);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(1, 3);
+    t.deepEqual(removedVertex, vertex_5);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(1, 4);
+    t.deepEqual(removedVertex, vertex_6);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(1, 5);
+    t.deepEqual(removedVertex, vertex_7);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(1, 6);
+    t.deepEqual(removedVertex, vertex_8);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(1, 7);
+    t.deepEqual(removedVertex, vertex_9);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(2, 0);
+    t.deepEqual(removedVertex, vertex_10);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(2, 1);
+    t.deepEqual(removedVertex, vertex_11);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertexFrom(2, 2);
+    t.deepEqual(removedVertex, vertex_12);
+    t.equal(circle.length, 0);
+    t.equal(circle.numCircleLevels, 0);
+});
+
+test('removeVertex', function (t) {
+    t.plan(36);
+
+    var circle = Makrene.Circle();
+
+    var vertex_1 = Makrene.Vertex({ index: 1 });
+    circle.push(vertex_1);
+   
+    var vertex_2 = Makrene.Vertex({ index: 2 });
+    circle.push(vertex_2);
+
+    var vertex_3 = Makrene.Vertex({ index: 3 });
+     circle.push(vertex_3);
+
+    var vertex_4 = Makrene.Vertex({ index: 4 });
+    circle.push(vertex_4);
+
+    var vertex_5 = Makrene.Vertex({ index: 5 });
+    circle.push(vertex_5);
+
+    var vertex_6 = Makrene.Vertex({ index: 6 });
+    circle.push(vertex_6);
+
+    var vertex_7 = Makrene.Vertex({ index: 7 });
+    circle.push(vertex_7);
+
+    var vertex_8 = Makrene.Vertex({ index: 8 });
+    circle.push(vertex_8);
+
+    var vertex_9 = Makrene.Vertex({ index: 9 });
+    circle.push(vertex_9);
+
+    var vertex_10 = Makrene.Vertex({ index: 10 });
+    circle.push(vertex_10);
+
+    var vertex_11 = Makrene.Vertex({ index: 11 });
+    circle.push(vertex_11);
+
+    var vertex_12 = Makrene.Vertex({ index: 12 });
+    circle.push(vertex_12);
+
+    var removedVertex = circle.removeVertex(vertex_12);
+    t.deepEqual(removedVertex, vertex_12);
+    t.equal(circle.length, 11);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertex(vertex_11);
+    t.deepEqual(removedVertex, vertex_11);
+    t.equal(circle.length, 10);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertex(vertex_10);
+    t.deepEqual(removedVertex, vertex_10);
+    t.equal(circle.length, 9);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertex(vertex_9);
+    t.deepEqual(removedVertex, vertex_9);
+    t.equal(circle.length, 8);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertex(vertex_8);
+    t.deepEqual(removedVertex, vertex_8);
+    t.equal(circle.length, 7);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertex(vertex_7);
+    t.deepEqual(removedVertex, vertex_7);
+    t.equal(circle.length, 6);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertex(vertex_6);
+    t.deepEqual(removedVertex, vertex_6);
+    t.equal(circle.length, 5);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertex(vertex_5);
+    t.deepEqual(removedVertex, vertex_5);
+    t.equal(circle.length, 4);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertex(vertex_4);
+    t.deepEqual(removedVertex, vertex_4);
+    t.equal(circle.length, 3);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertex(vertex_3);
+    t.deepEqual(removedVertex, vertex_3);
+    t.equal(circle.length, 2);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertex(vertex_2);
+    t.deepEqual(removedVertex, vertex_2);
+    t.equal(circle.length, 1);
+    t.equal(circle.numCircleLevels, 0);
+
+    removedVertex = circle.removeVertex(vertex_1);
+    t.deepEqual(removedVertex, vertex_1);
+    t.equal(circle.length, 0);
+    t.equal(circle.numCircleLevels, 0);
+});
+
+test('removeVertexFrom - with gap', function (t) {
+    t.plan(15);
+
+    var circle = Makrene.Circle();
+
+    var vertex_1 = Makrene.Vertex({ index: 1 });
+    circle.addVertexAt(0, 0, vertex_1);
+
+    var vertex_4 = Makrene.Vertex({ index: 4 });
+    circle.addVertexAt(1, 2, vertex_4);
+
+    var vertex_7 = Makrene.Vertex({ index: 7 });
+    circle.addVertexAt(1, 5, vertex_7);
+
+    var vertex_11 = Makrene.Vertex({ index: 11 });
+    circle.addVertexAt(2, 1, vertex_11);
+
+    var vertex_12 = Makrene.Vertex({ index: 12 });
+    circle.addVertexAt(2, 2, vertex_12);
+
+    var removedVertex = circle.removeVertex(vertex_11);
+    t.deepEqual(removedVertex, vertex_11);
+    t.equal(circle.length, 12);
+    t.equal(circle.numCircleLevels, 2);
+
+    removedVertex = circle.removeVertex(vertex_12);
+    t.deepEqual(removedVertex, vertex_12);
+    t.equal(circle.length, 7);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertex(vertex_4);
+    t.deepEqual(removedVertex, vertex_4);
+    t.equal(circle.length, 7);
+    t.equal(circle.numCircleLevels, 1);
+
+    removedVertex = circle.removeVertex(vertex_7);
+    t.deepEqual(removedVertex, vertex_7);
+    t.equal(circle.length, 1);
+    t.equal(circle.numCircleLevels, 0);
+
+    removedVertex = circle.removeVertex(vertex_1);
+    t.deepEqual(removedVertex, vertex_1);
+    t.equal(circle.length, 0);
+    t.equal(circle.numCircleLevels, 0);
+});
+
+test('empty forEach', function (t) {
+    Makrene.Circle().forEach(function () {
+        t.fail('this callback should never fire');
+    });
+
+    t.end();
+});
+
+test('empty filter', function (t) {
+    Makrene.Circle().filter(function () {
+        t.fail('this callback should never fire');
+    });
+
+    t.end();
 });
 
 test('empty map', function (t) {

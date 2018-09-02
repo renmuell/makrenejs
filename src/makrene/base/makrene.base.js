@@ -136,14 +136,17 @@ var Makrene = {
    *  var face = Makrene.Graph();
    *
    *  @public
-   *  @param {object} data - The data of the graph
-   *  @return {Makrene.Graph} - New graph object
+   *  @param {object} data - The data of the graph.
+   *  @param {object} graph - Use this for inheritance.
+   *  @return {Makrene.Graph} - New graph object.
    */
-  Graph: function Makrene_Graph(data){
+  Graph: function Makrene_Graph(data, graph){
 
     // new graph instance
-    var graph = Object.create(Makrene_Graph.prototype, {});
-
+    if (typeof graph === 'undefined') {
+      graph = Object.create(Makrene_Graph.prototype, {});
+    }
+    
     return Object.assign(graph, {
 
       /**

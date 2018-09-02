@@ -204,7 +204,7 @@ module.exports = function Makrene_Circle(config) {
    *     |_|  |_|\___|\__|_| |_|\___/ \__,_|___/
    *                                                                                     
    */
-  return Object.assign(graph, Makrene.Graph(), {
+  return Object.assign(graph, Makrene.Graph({}, graph), {
 
     /**
      *  The push() method adds one or more elements to the end of 
@@ -229,15 +229,13 @@ module.exports = function Makrene_Circle(config) {
           v = Makrene.Vertex(v || {});
         }
 
-        if (!graph.isEmpty 
-         && (_numCircleLevels == 0 || graph.vertices[_numCircleLevels].length === graph.numVertexOnLevel)) {
-
-          _numCircleLevels++;
+        if (graph.isEmpty) {
+          graph.addVertexAt(0, 0, v);  
+        } else if (_numCircleLevels == 0 || graph.vertices[_numCircleLevels].length === graph.numVertexOnLevel) {
+          graph.addVertexAt(_numCircleLevels + 1, 0, v);  
+        } else {
+          graph.addVertexAt(_numCircleLevels, graph.vertices[_numCircleLevels].length, v);  
         }
-
-        graph.vertices[_numCircleLevels] = graph.vertices[_numCircleLevels] || [];
-
-        graph.addVertexAt(_numCircleLevels, graph.vertices[_numCircleLevels].length, v);  
 
         graph._suppressEventFires = false;
 
@@ -378,9 +376,7 @@ module.exports = function Makrene_Circle(config) {
 
         if (graph.isEmpty) { 
           graph.addVertexAt(0, 0, v);  
-          _circleLength = 1;
         } else {
-          var shouldIncreaseLevelAfter = _numCircleLevels == 0 || graph.vertices[_numCircleLevels].length === graph.numVertexOnLevel;
           var oldLength = graph.length;
           // remove every last index
           var indexLastVertices = [graph.center];
@@ -413,10 +409,6 @@ module.exports = function Makrene_Circle(config) {
 
           // add vertex at 0,0
           graph.addVertexAt(0, 0, v);
-
-          if (shouldIncreaseLevelAfter) {
-            _numCircleLevels++;
-          }
         }
 
         graph._suppressEventFires = false;
@@ -705,22 +697,45 @@ module.exports = function Makrene_Circle(config) {
       return -1;
     },
     
-    addVertexAt: function(level, pos, v){
+    /**
+     *  Adds new Vertex on level and position on that level in the circle.
+     * 
+     *  Syntax:
+     *  circle.addVertexAt(level, position, vertex)
+     * 
+     *  @public
+     *  @fires Change-Event
+     *  @param {number} level - The level of the circle to add to.
+     *  @param {number} position - The position on the level.
+     *  @param {number} vertex - The vertex to add.
+     *  @return {number} - Length after push of vertex.
+     */
+    addVertexAt: function(level, position, vertex){
 
       if (graph.numVertexOnLevel == 0){ return; }
-      if (graph.numVertexOnLevel < pos){ return; }
-      if (graph.level == 0 && pos !== 0) { return; }
+      if (graph.numVertexOnLevel < position){ return; }
+      if (graph.level == 0 && position !== 0) { return; }
+
+      if (_numCircleLevels < level) {
+        _numCircleLevels = level;
+      }
 
       graph.vertices[level] = graph.vertices[level] || [];
 
-      if (typeof v === 'undefined') {
-        graph.vertices[level][pos] = undefined;
+      if (typeof vertex === 'undefined') {
+     
+        graph.vertices[level][position] = undefined;
+     
       } else {
 
-        v.data.degree = calculateVertexDegree(graph, level, pos);
-        v.data.level  = level;
-        v.id = v.data.level + '_' + v.data.degree;
-        graph.vertices[level][pos] = v;
+        if (!(vertex instanceof Makrene.Vertex)) {
+          vertex = Makrene.Vertex(vertex || {});
+        }
+
+        vertex.data.degree = calculateVertexDegree(graph, level, position);
+        vertex.data.level  = level;
+        vertex.id = vertex.data.level + '_' + vertex.data.degree;
+        graph.vertices[level][position] = vertex;
 
         //Link center with everyone above
         if (level === 0) {
@@ -730,35 +745,66 @@ module.exports = function Makrene_Circle(config) {
         } else {
           
           //linking with level below
-          linkWithLevelBelowVertexes(graph, level, pos);
+          linkWithLevelBelowVertexes(graph, level, position);
 
           //linking with level above
-          linkWithLevelAboveVertexes(graph, level, pos);
+          linkWithLevelAboveVertexes(graph, level, position);
 
           //link with previous neighbor
           linkWithNeighborVertex(
             graph, 
-            v, 
-            graph.vertices[level][(pos - 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]);
+            vertex, 
+            graph.vertices[level][(position - 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]);
 
           //link with next neighbor 
           linkWithNeighborVertex(
             graph, 
-            v, 
-            graph.vertices[level][(pos + 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]); 
-        }  
+            vertex, 
+            graph.vertices[level][(position + 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]); 
+        }
       }
       
-      var index = getIndex(graph, pos, level);
+      var index = getIndex(graph, position, level);
       if (index > graph.length - 1) {
         _circleLength = index + 1;  
       }
+
+      graph.emitChange({
+        action: "addVertex",
+        graph: graph,
+        newObject: vertex
+      }); 
+
+      return graph.length;
     },
 
-    removeVertexFrom: function(level, pos){
-      return graph.removeVertex(graph.vertexAt(level, pos));
+    /**
+     *  Removes a Vertex from a circle on level and position on that level.
+     * 
+     *  Syntax:
+     *  circle.removeVertexFrom(level, position)
+     *  
+     *  @public
+     *  @fires Change-Event
+     *  @param {number} level - The level of the circle to add to.
+     *  @param {number} position - The position on the level.
+     *  @return {Vertex} - The removed vertex from the circle.
+     */
+    removeVertexFrom: function(level, position){
+      return graph.removeVertex(graph.vertexAt(level, position));
     },
 
+    /**
+     *  Removes a vertex from a circle.
+     * 
+     *  Syntax:
+     *  circle.removeVertex(vertex)
+     *  
+     *  @public
+     *  @fires Change-Event
+     *  @param {vertex} vertex - The vertex to remove.
+     *  @return {vertex} - The removed vertex from the circle.
+     */
     removeVertex: function(vertex) {
       if (vertex){
 
@@ -807,6 +853,7 @@ module.exports = function Makrene_Circle(config) {
         });
 
         var vertexIndex = 0;
+
         // remove vertex
         graph.vertices.forEach(function(level, index){
           if (level.includes(vertex)){
@@ -821,21 +868,40 @@ module.exports = function Makrene_Circle(config) {
               if (graph.numCircleLevels === 0) {
                 graph.vertices = [];
               } else {
-                _numCircleLevels--;
                 graph.vertices.splice(graph.vertices.indexOf(level), 1);
               }
             }
-          }
+          } 
         });
 
         vertex.edges = [];
         vertex.faces = [];
         vertex.neighbors = [];
 
+        // if last vertex update circle length and umCircleLevels
         if (vertexIndex == _circleLength - 1) {
-          _circleLength--;
+
+          var previousVertexIndex = vertexIndex - 1;
+          
+          while (previousVertexIndex >= 0 && typeof graph.vertexAtIndex(previousVertexIndex) === 'undefined') {
+            previousVertexIndex--;
+          }
+
+          if (previousVertexIndex < 0) {
+            _circleLength = 0;
+            _numCircleLevels = 0;
+          } else {
+            _circleLength = previousVertexIndex + 1;
+            _numCircleLevels = getPositionLevel(graph, previousVertexIndex).level;
+          }
         }
         
+        graph.emitChange({
+          action: "removeVertex",
+          graph: graph,
+          removedOObject: vertex
+        }); 
+
         return vertex;
       }
     },
@@ -959,11 +1025,34 @@ module.exports = function Makrene_Circle(config) {
  *                                                                                    
  */
 
-function getIndex (graph, position, level) {
+/**
+ *  Returns index of vertex for level and position in circle.
+ * 
+ *  Syntax:
+ *  getIndex(graph, position, level)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph - The graph of the index.
+ *  @param {number} position - The position on the level.
+ *  @param {number} level - The level of the circle.
+ *  @return {number} - The index.
+ */
+function getIndex(graph, position, level){
   return (level === 0) ? 0 : (((level - 1) * graph.numVertexOnLevel) + position) + 1;
 }
 
-function getPositionLevel (graph, index) {
+/**
+ *  Returns level and position info for the index.
+ * 
+ *  Syntax:
+ *  getPositionLevel(graph, index)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph - The graph of the index.
+ *  @param {number} index - The index for the level and position data.
+ *  @return {object} - object with properties 'level' and 'position'
+ */
+function getPositionLevel(graph, index){
 
   if (index == 0) {
     return {
@@ -971,9 +1060,11 @@ function getPositionLevel (graph, index) {
       position: 0
     };
   } else {
+    var position = Math.floor(index % graph.numVertexOnLevel);
+    var level = Math.floor(index / graph.numVertexOnLevel);
     return {
-      level: Math.floor(index / graph.numVertexOnLevel) + 1,
-      position: Math.floor(index % graph.numVertexOnLevel) - 1
+      level: (position === 0) ? level : level + 1,
+      position: ((position === 0) ? (graph.numVertexOnLevel - 1 ) : (position - 1))
     };
   }
 }

@@ -14,10 +14,12 @@ var Dir = {
   BottomLeft  : 3
 };
 
-module.exports = function(config){
+module.exports = function Makrene_Grid(config){
   config = config || {};
 
-  var graph = Object.assign(Makrene.Graph(), {
+  var graph = Object.create(Makrene_Grid.prototype, {});
+
+  graph = Object.assign(Makrene.Graph({}, graph), {
 
     rows: config.rows || 0,
     cols: config.cols || 0,
