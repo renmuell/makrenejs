@@ -9,9 +9,9 @@ var Search = {
     if (!visited.includes(vertex) && distance>0) {
       newVisited.push(vertex);
       vertex.visit();
-      vertex.neighbours.forEach(function(neighbour){
-        if (neighbour) {
-          Search.DepthFirstSearch(neighbour, distance - 1, newVisited);
+      vertex.neighbors.forEach(function(neighbor){
+        if (neighbor) {
+          Search.DepthFirstSearch(neighbor, distance - 1, newVisited);
         }
       });
     }
@@ -27,9 +27,9 @@ var Search = {
         if (vertex) {
           visited.push(vertex);
           vertex.visit();
-          for (var i = vertex.neighbours.length - 1; i >= 0; i--) {
-            if (!visited.includes(vertex.neighbours[i])) {
-              nextVertices.push(vertex.neighbours[i]);
+          for (var i = vertex.neighbors.length - 1; i >= 0; i--) {
+            if (!visited.includes(vertex.neighbors[i])) {
+              nextVertices.push(vertex.neighbors[i]);
             }
           }
         }
@@ -59,9 +59,9 @@ var Search = {
           vertex.data.visited   = true;
           vertex.data.lastVisit = Date.now();
 
-          vertex.neighbours.forEach(function(neighbour){
-            if (neighbour && !neighbour.data.visited && !nextVertices.includes(neighbour)) {
-              nextVertices.push(neighbour);
+          vertex.neighbors.forEach(function(neighbor){
+            if (neighbor && !neighbor.data.visited && !nextVertices.includes(neighbor)) {
+              nextVertices.push(neighbor);
             }
           })
         }

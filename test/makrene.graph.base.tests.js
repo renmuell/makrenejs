@@ -15,7 +15,7 @@ test('Graph', function (t) {
     t.deepEqual(g.vertices, []);
     t.deepEqual(g.edges, []);
     t.deepEqual(g.faces, []);
-    t.deepEqual(g.neighbours, []);
+    t.deepEqual(g.neighbors, []);
     t.deepEqual(g.data, []);
 });
 
@@ -135,7 +135,7 @@ test('Face', function (t) {
     t.ok(f instanceof Makrene.Face);
     t.deepEqual(f.vertices, []);
     t.deepEqual(f.edges, []);
-    t.deepEqual(f.neighbours, []);
+    t.deepEqual(f.neighbors, []);
     t.deepEqual(f.data, []);
 });
 
@@ -160,7 +160,7 @@ test('Edge', function (t) {
     t.ok(e instanceof Makrene.Edge);
     t.deepEqual(e.vertices, []);
     t.deepEqual(e.faces, []);
-    t.deepEqual(e.neighbours, []);
+    t.deepEqual(e.neighbors, []);
     t.deepEqual(e.data, []);
 });
 
@@ -185,7 +185,7 @@ test('Vertex', function (t) {
     t.ok(v instanceof Makrene.Vertex);
     t.deepEqual(v.edges, []);
     t.deepEqual(v.faces, []);
-    t.deepEqual(v.neighbours, []);
+    t.deepEqual(v.neighbors, []);
     t.deepEqual(v.data, []);
 });
 

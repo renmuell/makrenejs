@@ -51,19 +51,19 @@ module.exports = function(config){
       graph.forEach(function(vertex, row, col){
 
         if (col > 0){
-          vertex.neighbours[Dir.Left] = graph.vertices[row][col - 1];
+          vertex.neighbors[Dir.Left] = graph.vertices[row][col - 1];
         }
 
         if (col < graph.cols -1) {
-          vertex.neighbours[Dir.Right] = graph.vertices[row][col + 1];
+          vertex.neighbors[Dir.Right] = graph.vertices[row][col + 1];
         }
 
         if (row > 0){
-          vertex.neighbours[Dir.Top] = graph.vertices[row - 1][col];
+          vertex.neighbors[Dir.Top] = graph.vertices[row - 1][col];
         }
 
         if (row < graph.rows -1){
-          vertex.neighbours[Dir.Bottom] = graph.vertices[row + 1][col];
+          vertex.neighbors[Dir.Bottom] = graph.vertices[row + 1][col];
         }
 
       });
@@ -82,12 +82,12 @@ module.exports = function(config){
 
     createEdges: function(){
       graph.forEach(function(vertex){
-        if (vertex.neighbours[Dir.Left]) {
-          graph.createEdge(vertex, vertex.neighbours[Dir.Left]);
+        if (vertex.neighbors[Dir.Left]) {
+          graph.createEdge(vertex, vertex.neighbors[Dir.Left]);
         }
 
-        if (vertex.neighbours[Dir.Top]) {
-          graph.createEdge(vertex, vertex.neighbours[Dir.Top]);
+        if (vertex.neighbors[Dir.Top]) {
+          graph.createEdge(vertex, vertex.neighbors[Dir.Top]);
         }
       });
     },
@@ -95,9 +95,9 @@ module.exports = function(config){
     linkEdges: function(){
       graph.edges.forEach(function(edge) {
         edge.vertices.forEach(function(vertex) {
-          vertex.edges.forEach(function(neighbour){
-            if (edge != neighbour) {
-              edge.neighbours.push(neighbour);
+          vertex.edges.forEach(function(neighbor){
+            if (edge != neighbor) {
+              edge.neighbors.push(neighbor);
             }
           });
         });
@@ -141,15 +141,15 @@ module.exports = function(config){
 
     createFaces: function(){
       graph.forEach(function(vertex){
-        if (vertex.neighbours[Dir.Left]
-         && vertex.neighbours[Dir.Top]) {
+        if (vertex.neighbors[Dir.Left]
+         && vertex.neighbors[Dir.Top]) {
 
           graph.createFace(
             vertex,
-            vertex.neighbours[Dir.Left],
-            vertex.neighbours[Dir.Top],
-            vertex.neighbours[Dir.Top]
-                  .neighbours[Dir.Left]);
+            vertex.neighbors[Dir.Left],
+            vertex.neighbors[Dir.Top],
+            vertex.neighbors[Dir.Top]
+                  .neighbors[Dir.Left]);
         }
       });
     },
@@ -157,9 +157,9 @@ module.exports = function(config){
     linkFaces: function(){
       graph.faces.forEach(function(face) {
         face.vertices.forEach(function(vertex) {
-          vertex.faces.forEach(function(neighbour){
-            if (face != neighbour) {
-              face.neighbours.push(neighbour);
+          vertex.faces.forEach(function(neighbor){
+            if (face != neighbor) {
+              face.neighbors.push(neighbor);
             }
           });
         });

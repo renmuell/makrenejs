@@ -32,7 +32,7 @@ var Makrene = {
     return Object.assign(vertex, {
       edges      : [],
       faces      : [],
-      neighbours : [],
+      neighbors  : [],
       data       : data || {}
     });
   },
@@ -70,7 +70,7 @@ var Makrene = {
     return Object.assign(edge, {
       vertices   : [],
       faces      : [],
-      neighbours : [],
+      neighbors  : [],
       data       : data || {}
     });
   },
@@ -108,7 +108,7 @@ var Makrene = {
     return Object.assign(face, {
       vertices   : [],
       edges      : [],
-      neighbours : [],
+      neighbors  : [],
       data       : data || {}
     });
   },
@@ -187,12 +187,12 @@ var Makrene = {
       faces      : [],
  
       /**
-       *  List of neighbours.
+       *  List of neighbors.
        *
        *  @public
        *  @type {array<Makrene.Graph>}
        */
-      neighbours : [],
+      neighbors   : [],
  
       /**
        *  Data object.

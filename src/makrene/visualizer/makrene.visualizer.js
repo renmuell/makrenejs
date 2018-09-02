@@ -102,7 +102,7 @@ module.exports = function(context, graph, config, getPosX, getPosY){
       */
      getVertexDebugText: function (v) {
       return 'i' + v.id +
-             'n' + v.neighbours.length + 
+             'n' + v.neighbors.length + 
              'e' + v.edges.length + 
              'f' + v.faces.length;
      }
@@ -124,9 +124,14 @@ module.exports = function(context, graph, config, getPosX, getPosY){
   }
 
   /**
-   * From underscore.js
+   *   Checks if an object is a function. 
+   *   
+   *   From underscore.js
+   * 
+   *   @param {any} obj - object to check.
+   *   @return {boolean} - true if object is function
    */
-  isCallable = function (obj) {
+  var isCallable = function (obj) {
     return !!(obj && obj.constructor && obj.call && obj.apply);
   }
 
@@ -194,7 +199,7 @@ module.exports = function(context, graph, config, getPosX, getPosY){
       drawText(
         context,
         'i' + edge.id +
-        'n' + edge.neighbours.length + 
+        'n' + edge.neighbors.length + 
         'v' + edge.vertices.length + 
         'f' + edge.faces.length,
         getPosX(v1) + (getPosX(v2)- getPosX(v1))/2,
@@ -211,7 +216,7 @@ module.exports = function(context, graph, config, getPosX, getPosY){
       drawText(
         context,
         'i' + face.id +
-        'n' + face.neighbours.length + 
+        'n' + face.neighbors.length + 
         'v' + face.vertices.length + 
         'e' + face.edges.length,
         centerX,

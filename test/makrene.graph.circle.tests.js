@@ -648,11 +648,221 @@ test('clear', function (t){
     t.deepEqual(events[0].graph, circle);
 });
 
-test('getFacesLevelArray', function (t){
-    t.plan(1);
+test('includes', function (t){
+    t.plan(36);
     var circle = Makrene.Circle();
 
-    t.equal(circle.push(Makrene.Vertex()), 1);
+    var vertex_1 = Makrene.Vertex({ index: 1 });
+    t.notOk(circle.includes(vertex_1));
+    circle.push(vertex_1);
+    t.ok(circle.includes(vertex_1));
+
+    var vertex_2 = Makrene.Vertex({ index: 2 });
+    t.notOk(circle.includes(vertex_2));
+    circle.push(vertex_2);
+    t.ok(circle.includes(vertex_2));
+
+    var vertex_3 = Makrene.Vertex({ index: 3 });
+    t.notOk(circle.includes(vertex_3));
+    circle.push(vertex_3);
+    t.ok(circle.includes(vertex_3));
+
+    var vertex_4 = Makrene.Vertex({ index: 4 });
+    t.notOk(circle.includes(vertex_4));
+    circle.push(vertex_4);
+    t.ok(circle.includes(vertex_4));
+
+    var vertex_5 = Makrene.Vertex({ index: 5 });
+    t.notOk(circle.includes(vertex_5));
+    circle.push(vertex_5);
+    t.ok(circle.includes(vertex_5));
+
+    var vertex_6 = Makrene.Vertex({ index: 6 });
+    t.notOk(circle.includes(vertex_6));
+    circle.push(vertex_6);
+    t.ok(circle.includes(vertex_6));
+
+    var vertex_7 = Makrene.Vertex({ index: 7 });
+    t.notOk(circle.includes(vertex_7));
+    circle.push(vertex_7);
+    t.ok(circle.includes(vertex_7));
+
+    var vertex_8 = Makrene.Vertex({ index: 8 });
+    t.notOk(circle.includes(vertex_8));
+    circle.push(vertex_8);
+    t.ok(circle.includes(vertex_8));
+
+    var vertex_9 = Makrene.Vertex({ index: 9 });
+    t.notOk(circle.includes(vertex_9));
+    circle.push(vertex_9);
+    t.ok(circle.includes(vertex_9));
+
+    var vertex_10 = Makrene.Vertex({ index: 10 });
+    t.notOk(circle.includes(vertex_10));
+    circle.push(vertex_10);
+    t.ok(circle.includes(vertex_10));
+
+    var vertex_11 = Makrene.Vertex({ index: 11 });
+    t.notOk(circle.includes(vertex_11));
+    circle.push(vertex_11);
+    t.ok(circle.includes(vertex_11));
+
+    var vertex_12 = Makrene.Vertex({ index: 12 });
+    t.notOk(circle.includes(vertex_12));
+    circle.push(vertex_12);
+    t.ok(circle.includes(vertex_12));
+
+    t.ok(circle.includes(vertex_1));
+    t.ok(circle.includes(vertex_2));
+    t.ok(circle.includes(vertex_3));
+    t.ok(circle.includes(vertex_4));
+    t.ok(circle.includes(vertex_5));
+    t.ok(circle.includes(vertex_6));
+    t.ok(circle.includes(vertex_8));
+    t.ok(circle.includes(vertex_9));
+    t.ok(circle.includes(vertex_10));
+    t.ok(circle.includes(vertex_11));
+    t.ok(circle.includes(vertex_12));
+
+    var vertex_like_vertex_5 = Makrene.Vertex({ index: 5 });
+
+    t.notOk(circle.includes(vertex_like_vertex_5));
+});
+
+test('vertexAt', function (t){
+    t.plan(13);
+
+    var circle = Makrene.Circle();
+
+    circle.push({ index: 1 });
+    circle.push({ index: 2 });
+    circle.push({ index: 3 });
+    circle.push({ index: 4 });
+    circle.push({ index: 5 });
+    circle.push({ index: 6 });
+    circle.push({ index: 7 });
+    circle.push({ index: 8 });
+    circle.push({ index: 9 });
+    circle.push({ index: 10 });
+
+    t.equal(circle.vertexAt(0, 0).data.index, 1);
+    t.equal(circle.vertexAt(1, 0).data.index, 2);
+    t.equal(circle.vertexAt(1, 1).data.index, 3);
+    t.equal(circle.vertexAt(1, 2).data.index, 4);
+    t.equal(circle.vertexAt(1, 3).data.index, 5);
+    t.equal(circle.vertexAt(1, 4).data.index, 6);
+    t.equal(circle.vertexAt(1, 5).data.index, 7);
+    t.equal(circle.vertexAt(1, 6).data.index, 8);
+    t.equal(circle.vertexAt(1, 7).data.index, 9);
+    t.equal(circle.vertexAt(2, 0).data.index, 10);
+
+    t.equal(circle.vertexAt(0, 1), undefined);
+    t.equal(circle.vertexAt(1, 8), undefined);
+    t.equal(circle.vertexAt(2, 1), undefined);
+});
+
+test('vertexAt - undefined', function (t){
+    t.plan(1);
+    var circle = Makrene.Circle();
+    t.equal(circle.vertexAt(10,4), undefined);
+});
+
+test('vertexAtIndex - undefined', function (t){
+    t.plan(1);
+    var circle = Makrene.Circle();
+    t.equal(circle.vertexAtIndex(100), undefined);
+});
+
+test('facesAt - empty', function (t){
+    t.plan(3);
+    var circle = Makrene.Circle();
+    var faces_0 = circle.facesAt(0);
+    var faces_1 = circle.facesAt(1);
+    var faces_89 = circle.facesAt(89);
+
+    t.equal(faces_0.length, 0);
+    t.equal(faces_1.length, 0);
+    t.equal(faces_89.length, 0);
+});
+
+test('facesAt', function (t){
+    t.plan(5);
+
+    var circle = Makrene.Circle();
+
+    circle.push({ index: 1 });
+    circle.push({ index: 2 });
+    circle.push({ index: 3 });
+    circle.push({ index: 4 });
+    circle.push({ index: 5 });
+    circle.push({ index: 6 });
+    circle.push({ index: 7 });
+    circle.push({ index: 8 });
+    circle.push({ index: 9 });
+    circle.push({ index: 10 });
+
+    var faces_0 = circle.facesAt(0);
+    var faces_1 = circle.facesAt(1);
+    var faces_2 = circle.facesAt(2);
+    var faces_89 = circle.facesAt(89);
+
+    t.equal(circle.faces.length, 9);
+    t.equal(faces_0.length, 8);
+    t.equal(faces_1.length, 1);
+    t.equal(faces_2.length, 0);
+    t.equal(faces_89.length, 0);
+});
+
+test('getFacesLevelArray', function (t){
+    t.plan(4);
+    var circle = Makrene.Circle();
+
+    circle.push({ index: 1 });
+    circle.push({ index: 2 });
+    circle.push({ index: 3 });
+    circle.push({ index: 4 });
+    circle.push({ index: 5 });
+    circle.push({ index: 6 });
+    circle.push({ index: 7 });
+    circle.push({ index: 8 });
+    circle.push({ index: 9 });
+    circle.push({ index: 10 });
+
+    var facesLevelArray = circle.getFacesLevelArray();
+
+    t.equal(circle.faces.length, 9);
+    t.equal(facesLevelArray.length, 2);
+    t.equal(facesLevelArray[0].length, 8);
+    t.equal(facesLevelArray[1].length, 1);
+});
+
+test('getFacesLevelArray - empty', function (t){
+    t.plan(2);
+    var circle = Makrene.Circle();
+
+    var facesLevelArray = circle.getFacesLevelArray();
+
+    t.equal(circle.faces.length, 0);
+    t.equal(facesLevelArray.length, 0);
+});
+
+test('indexOf', function (t){
+    t.plan(4);
+    var circle = Makrene.Circle();
+
+    var v = Makrene.Vertex();
+    t.equal(circle.indexOf(v), -1);
+
+    var v_1 = Makrene.Vertex({ num: 6 });
+    circle.push(v_1);
+    var v_2 = Makrene.Vertex({ num: 4 });
+    circle.push(v_2);
+    var v_3 = Makrene.Vertex({ num: 9 });
+    circle.push(v_3);
+
+    t.equal(circle.indexOf(v_1), 0);
+    t.equal(circle.indexOf(v_2), 1);
+    t.equal(circle.indexOf(v_3), 2);
 });
 
 test('empty map', function (t) {

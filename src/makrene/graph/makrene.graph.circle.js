@@ -20,7 +20,7 @@ var Makrene = require('../base/makrene.base')
  *  The circle contains multiple levels/rings, each with a 
  *  max number of vertices. The center contains one vertex, connected
  *  with each of the first level/ring. Each level vertex is connected
- *  with their visual neighbour and two vertices of the lower and 
+ *  with their visual neighbor and two vertices of the lower and 
  *  higher level/ring (because each level/ring is offset by half 
  *  the distance of each vertex, which puts every vertex in the 
  *  middle of the vertices below and above). 
@@ -35,10 +35,10 @@ var Makrene = require('../base/makrene.base')
  *  let circle = Makrene.Circle();
  *
  *  @public
- *  @implements {Makrene.Graph}
+ *  @implements {Graph}
  *  @param {object} config - the Settings
  *  @param {number} config.numVertexOnLevel - @see graph.numVertexOnLevel
- *  @returns {Makrene.Circle} Circle
+ *  @returns {Circle} Circle
  */
 module.exports = function Makrene_Circle(config) {
 
@@ -96,6 +96,13 @@ module.exports = function Makrene_Circle(config) {
    *                     | |                              
    *                     |_|                              
    */
+
+  /**
+   *  Circle Instance.
+   * 
+   *  @typedef Circle
+   *  @type {Object}
+   */
   var graph = Object.create(Makrene_Circle.prototype, {
 
     /**
@@ -137,7 +144,7 @@ module.exports = function Makrene_Circle(config) {
      *  Is circle empty.
      *
      *  @public
-     *  @type {bool}
+     *  @type {boolean}
      */
     isEmpty : {
       get: function(){
@@ -581,7 +588,7 @@ module.exports = function Makrene_Circle(config) {
       graph.faces       = [];
       graph.edges       = [];
       graph.vertices    = [];
-      graph.neighbours  = [];
+      graph.neighbors   = [];
       graph.data        = {};
 
       graph.emitChange({
@@ -590,20 +597,76 @@ module.exports = function Makrene_Circle(config) {
       });
     },
 
-    includes: function(vertex){
-      return graph.filter(function(v){ return v === vertex; }).length > 0;
+    /**
+     *  The includes() method determines whether an circle includes a certain
+     *  element, returning true or false as appropriate.
+     * 
+     *  Syntax:
+     *  circle.includes(searchElement)
+     * 
+     *  @public
+     *  @param {Makrene.Vertex} searchElement - The element to search for.
+     *  @return {boolean} - A Boolean which is true if the value searchElement 
+     *                      is found within the circle.
+     */
+    includes: function(searchElement){
+      return graph.filter(function(v){ return v === searchElement; }).length > 0;
     },
 
-    vertexAt: function(level, pos){
-      return graph.vertices[level] ? graph.vertices[level][pos] : undefined;
+    /**
+     *  Gets vertex at a certain level and position on that level of a circle.
+     *  
+     *  Syntax:
+     *  circle.vertexAt(level, position)
+     * 
+     *  @public
+     *  @param {number} level - The level of the circle.
+     *  @param {number} position - The position on the level.
+     *  @return {Vertex|undefined} - The vertex on the position.
+     */
+    vertexAt: function(level, position){
+      return graph.vertices[level] ? graph.vertices[level][position] : undefined;
     },
 
+    /**
+     *  Returns the vertex at a specified index in a circle.
+     * 
+     *  @public
+     *  @param {number} index - The zero-based index of the vertex to retrieve.
+     *  @param {Vertex|undefined} - The element at the specified position in the circle.
+     *  @return {Vertex|undefined} - The vertex on the position.
+     */
+    vertexAtIndex: function(index){
+      var positionLevel = getPositionLevel(graph, index)
+      return graph.vertexAt(positionLevel.level, positionLevel.position);
+    },
+
+    /**
+     *  Get all Faces of a circle level.
+     * 
+     *  Syntax:
+     *  circle.faceAt(level)
+     * 
+     *  @public
+     *  @param {number} level - The zero-based level of the circle.
+     *  @return {array<Face>} - A list of all Faces for one level.
+     */
     facesAt: function(level){
       return graph.faces.filter(function(f){ return f.data.level == level; });
     },
 
+    /**
+     *  Get all Faces grouped by level.
+     *  
+     *  Syntax:
+     *  circle.getFacesLevelArray()
+     * 
+     *  @public
+     *  @return {array<array<Face>>} - Grouped list of all Faces.
+     */
     getFacesLevelArray: function(){
       var r = [];
+
       graph.faces.forEach(function(f){ 
         
         if (typeof r[f.data.level] === 'undefined') {
@@ -616,6 +679,17 @@ module.exports = function Makrene_Circle(config) {
       return r;
     },
 
+    /**
+     *  The indexOf() method returns the first index at which a given 
+     *  vertex can be found in the circle, or -1 if it is not present.
+     * 
+     *  Syntax:
+     *  circle.indexOf(vertex)
+     *  
+     *  @public
+     *  @param {Vertex} vertex - Vertex to locate in the circle.
+     *  @return {number} - The first index of the vertex in the circle; -1 if not found.
+     */
     indexOf: function(vertex){
       var index = 0;
       
@@ -630,7 +704,7 @@ module.exports = function Makrene_Circle(config) {
 
       return -1;
     },
-
+    
     addVertexAt: function(level, pos, v){
 
       if (graph.numVertexOnLevel == 0){ return; }
@@ -661,14 +735,14 @@ module.exports = function Makrene_Circle(config) {
           //linking with level above
           linkWithLevelAboveVertexes(graph, level, pos);
 
-          //link with previous neighbour
-          linkWithNeighbourVertex(
+          //link with previous neighbor
+          linkWithNeighborVertex(
             graph, 
             v, 
             graph.vertices[level][(pos - 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]);
 
-          //link with next neighbour 
-          linkWithNeighbourVertex(
+          //link with next neighbor 
+          linkWithNeighborVertex(
             graph, 
             v, 
             graph.vertices[level][(pos + 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]); 
@@ -688,15 +762,15 @@ module.exports = function Makrene_Circle(config) {
     removeVertex: function(vertex) {
       if (vertex){
 
-        // remove neighbours
-        vertex.neighbours.forEach(function(neighbour){
-          neighbour.neighbours.splice(neighbour.neighbours.indexOf(vertex), 1);
+        // remove neighbors
+        vertex.neighbors.forEach(function(neighbor){
+          neighbor.neighbors.splice(neighbor.neighbors.indexOf(vertex), 1);
         });
         
         // remove edges
         vertex.edges.forEach(function(edge){
-          edge.neighbours.forEach(function(neighbour){
-            neighbour.neighbours.splice(neighbour.neighbours.indexOf(edge), 1);
+          edge.neighbors.forEach(function(neighbor){
+            neighbor.neighbors.splice(neighbor.neighbors.indexOf(edge), 1);
           });
 
           edge.vertices.forEach(function(v){
@@ -715,8 +789,8 @@ module.exports = function Makrene_Circle(config) {
 
         // remove faces
         vertex.faces.forEach(function(face){
-          face.neighbours.forEach(function(neighbour){
-            neighbour.neighbours.splice(neighbour.neighbours.indexOf(face), 1);
+          face.neighbors.forEach(function(neighbor){
+            neighbor.neighbors.splice(neighbor.neighbors.indexOf(face), 1);
           });
 
           face.vertices.forEach(function(v){
@@ -756,7 +830,7 @@ module.exports = function Makrene_Circle(config) {
 
         vertex.edges = [];
         vertex.faces = [];
-        vertex.neighbours = [];
+        vertex.neighbors = [];
 
         if (vertexIndex == _circleLength - 1) {
           _circleLength--;
@@ -913,15 +987,15 @@ function linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex){
     var index2 = (lastLevelVertexes.length - 1) < vertexLevelIndex + 1 ? 0 : vertexLevelIndex + 1;
 
     if (lastLevelVertexes[index1]) {
-      v.neighbours.push(lastLevelVertexes[index1]);
-      lastLevelVertexes[index1].neighbours.push(v);
+      v.neighbors.push(lastLevelVertexes[index1]);
+      lastLevelVertexes[index1].neighbors.push(v);
     
       createEdge(graph, v, lastLevelVertexes[index1]); 
     }
 
     if (index1 != index2 && lastLevelVertexes[index2]) {
-      v.neighbours.push(lastLevelVertexes[index2]);
-      lastLevelVertexes[index2].neighbours.push(v);
+      v.neighbors.push(lastLevelVertexes[index2]);
+      lastLevelVertexes[index2].neighbors.push(v);
       
       createEdge(graph, v, lastLevelVertexes[index2]);
       if (lastLevelVertexes[index1]){
@@ -940,15 +1014,15 @@ function linkWithLevelAboveVertexes(graph, levelIndex, vertexLevelIndex){
     var index2 = vertexLevelIndex - 1 < 0 ? graph.numVertexOnLevel - 1 : vertexLevelIndex - 1;
 
     if (aboveLevelVertexes[index1]){
-       v.neighbours.push(aboveLevelVertexes[index1]);
-       aboveLevelVertexes[index1].neighbours.push(v);
+       v.neighbors.push(aboveLevelVertexes[index1]);
+       aboveLevelVertexes[index1].neighbors.push(v);
     
       createEdge(graph, v, aboveLevelVertexes[index1]); 
     }
 
     if (index1 != index2 && aboveLevelVertexes[index2]){
-      v.neighbours.push(aboveLevelVertexes[index2]);
-      aboveLevelVertexes[index2].neighbours.push(v);
+      v.neighbors.push(aboveLevelVertexes[index2]);
+      aboveLevelVertexes[index2].neighbors.push(v);
       
       createEdge(graph, v, aboveLevelVertexes[index2]);
 
@@ -964,8 +1038,8 @@ function linkCenterWithLevelAboveVertexes(graph){
   graph.vertices[1].forEach(function(aboveLevelVertex){
     if (aboveLevelVertex){
 
-      graph.first.neighbours.push(aboveLevelVertex);
-      aboveLevelVertex.neighbours.push(graph.first);
+      graph.first.neighbors.push(aboveLevelVertex);
+      aboveLevelVertex.neighbors.push(graph.first);
       createEdge(graph, graph.first, aboveLevelVertex);
     }
   });
@@ -981,19 +1055,19 @@ function linkCenterWithLevelAboveVertexes(graph){
   });
 }
 
-function linkWithNeighbourVertex(graph, vertex, neighbour){
-  if (neighbour) {
-    vertex.neighbours.push(neighbour);
-    neighbour.neighbours.push(vertex);
-    createEdge(graph, vertex, neighbour);
+function linkWithNeighborVertex(graph, vertex, neighbor){
+  if (neighbor) {
+    vertex.neighbors.push(neighbor);
+    neighbor.neighbors.push(vertex);
+    createEdge(graph, vertex, neighbor);
 
-    vertex.neighbours
+    vertex.neighbors
           .filter(function(n){ 
-            if (neighbour != n){
-              return neighbour.neighbours.includes(n); 
+            if (neighbor != n){
+              return neighbor.neighbors.includes(n); 
             }
           }).forEach(function(n){
-            createFace(graph, vertex, neighbour, n);
+            createFace(graph, vertex, neighbor, n);
           })
   }
 }
@@ -1014,9 +1088,9 @@ function createEdge(graph, v1, v2){
 
 function linkEdgeWithVertexEdges (edge, vertex){
   vertex.edges.forEach(function(e){
-    if (edge != e && !edge.neighbours.includes(e)){
-      edge.neighbours.push(e);
-      e.neighbours.push(edge);
+    if (edge != e && !edge.neighbors.includes(e)){
+      edge.neighbors.push(e);
+      e.neighbors.push(edge);
     }
   });
 }
@@ -1034,7 +1108,7 @@ function createFace(graph, v1, v2, v3){
 
   f.id = graph.faces.length;
   f.data = {
-    level: Math.max(
+    level: Math.min(
       v1.data.level,
       v2.data.level,
       v3.data.level)
@@ -1060,9 +1134,9 @@ function createFace(graph, v1, v2, v3){
 
 function linkFaceWithVertexFaces(face, vertex){
   vertex.faces.forEach(function(f){
-    if (face != f && !face.neighbours.includes(f)){
-      face.neighbours.push(f);
-      f.neighbours.push(face);
+    if (face != f && !face.neighbors.includes(f)){
+      face.neighbors.push(f);
+      f.neighbors.push(face);
     }
   });
 }

@@ -12,6 +12,10 @@ module.exports = Object.assign(require('./base/makrene.base'), {
   Search : require('./search/makrene.search'),
   Visualizer : Object.assign(require('./visualizer/makrene.visualizer'), {
     Grid   : require('./visualizer/makrene.visualizer.grid'),
+
+    /**
+     *  @typedef Circle
+     */
     Circle : require('./visualizer/makrene.visualizer.circle'),
     CircleFullscreen : require('./visualizer/makrene.visualizer.circleFullscreen')
   })

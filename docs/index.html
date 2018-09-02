@@ -79,7 +79,7 @@
 
                 circle.faces.filter(function (f) { return f.data.alive; }).forEach(function (f) {
                     do {
-                        var deadNeighbours = f.neighbours.filter(function (n) { return n.data.deathOffset <= 0; });
+                        var deadNeighbours = f.neighbors.filter(function (n) { return n.data.deathOffset <= 0; });
                         if (deadNeighbours.length > 0) {                        
                             var indexRandom = Math.floor(Math.random() * (deadNeighbours.length-1));
                             deadNeighbours[indexRandom].data.alive = true;
