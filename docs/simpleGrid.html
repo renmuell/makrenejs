@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Simple Grid</title>
+    <meta charset="UTF-8"> 
+    <style> body{ font-family:'Monaco'; margin:0; padding:0; } </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="490" height="490" style="position: absolute;top:50%;left:50%;transform:translate(-50%,-50%)"></canvas>
+    <script type="text/javascript" src="release/makrene.js"></script>
+    <script id="code" type="text/javascript">
+
+      var canvas  = document.querySelector('#canvas');
+      var context = canvas.getContext('2d');
+  
+      var grid = Makrene.Grid({
+        rows: 7,
+        cols: 7
+      });
+
+      Makrene.Visualizer.Grid(context, grid, {
+        width       : canvas.width,
+        height      : canvas.height,
+        margin      : 70,
+        offset      : 0,
+        vertexWidth : 10,
+        vertexHeight: 10,
+        lineColor   : 'darkblue',
+        faceColor   : 'lightgray',
+        vertexColor : 'orangered',
+        lineWidth   : 1
+      })
+
+    </script>
+
+    <div id="code_view">
+    </div>
+
+    <script>
+      document.getElementById('code_view').innerHTML = document.getElementById("code").innerText.replace(/\n/g, "<br>").replace(/\s/g, "&nbsp;");
+    </script>
+  </body>
+</html>

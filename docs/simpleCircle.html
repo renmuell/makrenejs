@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <title>Simple Circle</title>
+    <meta charset="UTF-8"> 
+    <style> body{ font-family:'Monaco'; margin:0; padding:0; } </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="400" style="position: absolute;top:50%;left:50%;transform:translate(-50%,-50%)"></canvas>
+    <script type="text/javascript" src="release/makrene.js"></script>
+    <script id="code" type="text/javascript">
+
+      var canvas  = document.querySelector('#canvas');
+      var context = canvas.getContext('2d');
+  
+      var circle = Makrene.Circle({
+        numVertexOnLevel: 10
+      });
+
+      circle.expandFromOutside(21);
+
+      Makrene.Visualizer.Circle(context, circle, {
+        width       : canvas.width,
+        height      : canvas.height,
+        levelOffset : 50,
+        vertexWidth : 10,
+        vertexHeight: 10,
+        lineColor   : 'darkblue',
+        faceColor   : 'lightgray',
+        vertexColor : 'orangered',
+        lineWidth   : 1
+      })
+
+    </script>
+
+    <div id="code_view">
+    </div>
+
+    <script>
+      document.getElementById('code_view').innerHTML = document.getElementById("code").innerText.replace(/\n/g, "<br>").replace(/\s/g, "&nbsp;");
+    </script>
+
+  </body>
+</html>

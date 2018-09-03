@@ -1,20 +1,26 @@
 <html>
   <head>
-    <title>Example</title>
+    <title>Memory Test</title>
     <meta charset="UTF-8"> 
   </head>
   <body>
     <script type="text/javascript" src="release/makrene.js"></script>
     <script type="text/javascript">
-      var circle;
-      
-      function test(){
-        circle = Makrene.Circle({ create: false })
 
-        for (var i = 0; i < 1000; i++) {
-         circle.push(Makrene.Vertex())
-        }
+      var t0 = performance.now();
+
+      var circle = Makrene.Circle();
+
+      for (var i = 0; i < 10000; i++) {
+        circle.push(Makrene.Vertex())
       }
+
+      var t1 = performance.now();
+      console.log("Create Graph took " + (t1 - t0) + " milliseconds.")
+      console.log(circle.length)
+
+      // toggle comment to check cleared memory state // Chrome:check -> everything is gone
+      //circle.clear();
 
     </script>
   </body>

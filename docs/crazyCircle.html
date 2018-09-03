@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Crazy Circle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body {
+            padding:0;
+            margin:0;
+            background-color:white;
+            overflow: hidden;
+            width:100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <script type="text/javascript" src="release/makrene.js"></script>
+    <script src="vendors/cEngine/cEngine-min.js"></script>
+    <script src="vendors/cEngine/plugins/cEngine.fill-min.js"></script>
+    <script src="vendors/cEngine/plugins/cEngine.frameRate-min.js"></script>
+    <script>
+
+        document.body.style.backgroundColor = '#'+Math.random().toString(16).substr(-6);
+
+        var circle = Makrene.Circle({
+            numVertexOnLevel: Math.floor(5 + (Math.random()*16))
+        });
+
+        circle.expandFromOutside((circle.numVertexOnLevel*circle.numVertexOnLevel)+1);
+        circle.faces.forEach(function(f){
+            f.data.color = '#'+Math.random().toString(16).substr(-6);
+        })
+
+        if (Math.random() < 0.01) {
+            cEngine.create({
+                autoClear: true,
+                height:512,
+                plugins: {
+                    fill: cEngine.fill.create({
+                        mode: 'stretch',
+                        aspectRetion: true
+                    })
+                },
+                step: function (context, width, height, stepTimeElapsed) {
+                    draw(context, width, height);
+                }
+            }).start();
+        }
+
+        cEngine.create({
+            autoClear: true,
+            height:512,
+            plugins: {
+                fill: cEngine.fill.create({
+                    mode: 'stretch',
+                    aspectRetion: true
+                }),
+                frameRate: cEngine.frameRate.create({
+                  fps: 10
+                })
+            },
+            step: function (context, width, height, stepTimeElapsed) {
+                draw(context, width, height);
+            },
+            style: {
+                filter: "blur(30px) contrast(6)",
+                mixBlendMode: "screen",
+                opacity: ".95"
+            }
+        }).start();
+        
+        function draw(context, width, height){
+            Makrene.Visualizer.CircleFullscreen(context, circle, {
+                width       : width,
+                height      : height,     
+                padding     : -50, 
+                vertexWidth : 1,
+                vertexHeight: 1,
+                lineWidth   : 1,
+                faceColor   : function(face){
+                    if (Math.random() < 0.01) {
+                        face.data.color = '#'+Math.random().toString(16).substr(-6);
+                    } 
+                    return face.data.color;
+                },
+                lineColor   : "white",
+                drawVertices: false
+            })
+        }
+
+    </script>
+
+</body>
+</html>

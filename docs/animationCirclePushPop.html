@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Example</title>
+    <title>Animation Circle Push Pop</title>
     <meta charset="UTF-8"> 
   </head>
   <body>
@@ -28,10 +28,7 @@
         if (count === 0) {
             callback();
         } else {
-            circle.unshift({ index: num++ });
-            console.log(circle.length);
-            console.log(circle.numCircleLevels);
-            console.log(circle);
+            circle.push({ index: num++ });
             draw();
 
             setTimeout(function(){
@@ -45,9 +42,6 @@
             callback();
         } else {
             circle.pop();
-            console.log(circle.length);
-            console.log(circle.numCircleLevels);
-            console.log(circle);
             draw();
             setTimeout(function(){
                 remove(--count,callback);
@@ -65,7 +59,9 @@
           vertexWidth : 100,
           vertexHeight: 100,
           lineWidth   : 1,
-          lineColor   : "red",
+          lineColor   : 'darkblue',
+          faceColor   : 'lightgray',
+          vertexColor : 'orangered',
           drawVertices: false,
           drawVertexDebugText: true,
           getVertexDebugText: function (v) {
