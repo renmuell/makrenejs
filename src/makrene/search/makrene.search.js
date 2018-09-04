@@ -2,48 +2,51 @@
 
 var Search = {
 
-  DepthFirstSearch: function(vertex, distance, visited){
-    visited = visited || [];
-    var newVisited = [];
-    newVisited.pushArray(visited);
-    if (!visited.includes(vertex) && distance>0) {
-      newVisited.push(vertex);
-      vertex.visit();
+  /**
+   *  
+   */
+  DepthFirstSearch: function(vertex, distance, fn){
+    if (!vertex.data.visited && distance>0) {
+      vertex.data.visited = true;
+      fn && fn(vertex);
       vertex.neighbors.forEach(function(neighbor){
         if (neighbor) {
-          Search.DepthFirstSearch(neighbor, distance - 1, newVisited);
+          Search.DepthFirstSearch(neighbor, distance - 1, fn);
         }
       });
     }
   },
 
-  BreadthFirstSearch: function (vertices, distance, visited) {
-    visited = visited || [];
-
+  /**
+   *
+   */
+  BreadthFirstSearch: function (vertices, distance, fn) {
     if (distance > 0) {
       var nextVertices = [];
-
       vertices.forEach(function(vertex){
         if (vertex) {
-          visited.push(vertex);
-          vertex.visit();
+          vertex.data.visited = true; // for the firsts
+          fn && fn(vertex);
           for (var i = vertex.neighbors.length - 1; i >= 0; i--) {
-            if (!visited.includes(vertex.neighbors[i])) {
+            if (!vertex.neighbors[i].data.visited) {
+              vertex.neighbors[i].data.visited = true;
               nextVertices.push(vertex.neighbors[i]);
             }
           }
         }
       })
-
-      Search.BreadthFirstSearch(nextVertices, distance - 1, visited);
+      Search.BreadthFirstSearch(nextVertices, distance - 1, fn);
     }
   },
-
-  BreadthFirstSearchIterate: function (circle, vertices, visited) {
+  
+  /**
+   * 
+   */
+  BreadthFirstSearchIterate: function (graph, vertices, fn, visited) {
     visited = visited || [];
 
     if (visited.length === 0) {
-      circle.forEach(function(vertex){
+      graph.forEach(function(vertex){
         vertex.data.visited   = false;
         vertex.data.lastVisit = Number.MAX_VALUE;
       });
@@ -56,11 +59,14 @@ var Search = {
         if (vertex) {
 
           visited.push(vertex);
-          vertex.data.visited   = true;
+
+          vertex.data.visited   = true; // for the firsts
           vertex.data.lastVisit = Date.now();
+          fn && fn(vertex);
 
           vertex.neighbors.forEach(function(neighbor){
             if (neighbor && !neighbor.data.visited && !nextVertices.includes(neighbor)) {
+              neighbor.data.visited   = true;
               nextVertices.push(neighbor);
             }
           })
@@ -73,7 +79,7 @@ var Search = {
         nextVertices : nextVertices,
 
         next : function () {
-          return Search.BreadthFirstSearchIterate(circle, nextVertices, visited);
+          return Search.BreadthFirstSearchIterate(graph, nextVertices, fn, visited);
         }
       };
     }

@@ -10,7 +10,7 @@ var Makrene = {
    *  @public
    *  @type {string}
    */
-  version : '0.1.0',
+  version : '0.1.1',
 
   /**
    *  The factory Vertex(), create an new vertex object.

@@ -320,28 +320,61 @@ module.exports = Makrene;
 },{}],2:[function(_dereq_,module,exports){
 /*global require, module */
 
-_dereq_('../vendorJs/polyfill')
-
 /**
  *  Combines all Makrene components into on usable namespace object.
  */
 module.exports = Object.assign(_dereq_('./base/makrene.base'), {
+
+  /**
+   *  @typedef Makrene.Circle
+   */
   Circle : _dereq_('./graph/makrene.graph.circle'),
+
+  /**
+   *  @typedef Makrene.Grid
+   */
   Grid   : _dereq_('./graph/makrene.graph.grid'),
-  Ki     : { Circle : _dereq_('./ki/makrene.ki.circle') },
+
+  /**
+   *  @namespace
+   */
+  Ki     : { 
+
+    /**
+     *  @typedef Makrene.Ki.Circle
+     */
+    Circle : _dereq_('./ki/makrene.ki.circle') 
+  },
+
+  /**
+   *  @typedef Makrene.Search
+   */
   Search : _dereq_('./search/makrene.search'),
+
+  /**
+   *  @typedef Makrene.Visualizer
+   */
   Visualizer : Object.assign(_dereq_('./visualizer/makrene.visualizer'), {
+
+    /**
+     *  @typedef Makrene.Visualizer.Grid
+     */
     Grid   : _dereq_('./visualizer/makrene.visualizer.grid'),
 
     /**
-     *  @typedef Circle
+     *  @typedef Makrene.Visualizer.Circle
      */
     Circle : _dereq_('./visualizer/makrene.visualizer.circle'),
+  
+    /**
+     *  @typedef Makrene.Visualizer.CircleFullscreen
+     */
     CircleFullscreen : _dereq_('./visualizer/makrene.visualizer.circleFullscreen')
   })
+  
 });
 
-},{"../vendorJs/polyfill":11,"./base/makrene.base":1,"./graph/makrene.graph.circle":3,"./graph/makrene.graph.grid":4,"./ki/makrene.ki.circle":5,"./search/makrene.search":6,"./visualizer/makrene.visualizer":10,"./visualizer/makrene.visualizer.circle":7,"./visualizer/makrene.visualizer.circleFullscreen":8,"./visualizer/makrene.visualizer.grid":9}],3:[function(_dereq_,module,exports){
+},{"./base/makrene.base":1,"./graph/makrene.graph.circle":3,"./graph/makrene.graph.grid":4,"./ki/makrene.ki.circle":5,"./search/makrene.search":6,"./visualizer/makrene.visualizer":10,"./visualizer/makrene.visualizer.circle":7,"./visualizer/makrene.visualizer.circleFullscreen":8,"./visualizer/makrene.visualizer.grid":9}],3:[function(_dereq_,module,exports){
 (function() {
 
 /*global require, module */
@@ -467,6 +500,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {number}
      */
     numCircleLevels: {
+
+      /**
+       *  Getter for circle.numCircleLevels
+       */
       get: function(){
         return _numCircleLevels;
       }
@@ -479,6 +516,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {number}
      */
     length  : {
+
+      /**
+       *  Getter for circle.length
+       */
       get: function(){
         return _circleLength;
       }
@@ -491,6 +532,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {boolean}
      */
     isEmpty : {
+
+      /**
+       *  Getter for circle.isEmpty
+       */
       get: function(){
         return graph.vertices.length === 0;
       }
@@ -503,6 +548,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {Makrene.Vertex}
      */
     first: {
+
+      /**
+       *  Getter for circle.first
+       */
       get: function(){
         return graph.vertices[0] ? graph.vertices[0][0] : undefined;
       }
@@ -516,6 +565,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {Makrene.Vertex}
      */
     center: {
+
+      /**
+       *  Getter for circle.center
+       */
       get: function(){
         return graph.first;
       }
@@ -529,6 +582,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {Makrene.Vertex}
      */
     last: {
+
+      /**
+       *  Getter for circle.last
+       */
       get: function(){
         return graph.isEmpty 
           ? undefined 
@@ -1642,9 +1699,9 @@ function createFace(graph, v1, v2, v3){
 
   // Link edge with face
   var edges = [];
-  edges.push(v1.edges.filter(function(e){ return e.vertices.includes(v2); }).first());
-  edges.push(v2.edges.filter(function(e){ return e.vertices.includes(v3); }).first());
-  edges.push(v3.edges.filter(function(e){ return e.vertices.includes(v1); }).first());
+  edges.push(v1.edges.filter(function(e){ return e.vertices.includes(v2); })[0]);
+  edges.push(v2.edges.filter(function(e){ return e.vertices.includes(v3); })[0]);
+  edges.push(v3.edges.filter(function(e){ return e.vertices.includes(v1); })[0]);
   
   edges.forEach(function(e){
     e.faces.push(f);
@@ -2086,21 +2143,53 @@ function linkFaces(graph){
 }());
 
 },{"../base/makrene.base":1}],5:[function(_dereq_,module,exports){
+(function() {
+
 /*global module */
 
-module.exports = function(){
+/**
+ *  KI for Makrene Circle.
+ * 
+ *  @param {Makrene.Circle} circle - The circle instance.
+ */
+module.exports = function(circle){
 
+  /**
+   *  KI-Circle Instance.
+   * 
+   *  @type {Makrene.Ki.Circle}
+   */
   var ki = {
-    init: function(circle){
-      circle.forEach(function(v){
+
+    /**
+     *  Circle instance.
+     * 
+     *  @type {Makrene.Circle}
+     */
+    circle: circle,
+
+    /**
+     *  Initialize Circle KI.
+     * 
+     *  @public
+     *  @return {undefined}
+     */
+    init: function(){
+      ki.circle.forEach(function(v){
         v.data.degree = v.data.degree % 360;
         v.data.OriginalLevel = v.data.degree;
         v.data.OriginalLevel= v.data.level;
       });
     },
 
-    step: function(circle){
-      circle.forEach(function(v){
+    /**
+     *  Execute one logic step for the KI.
+     * 
+     *  @public
+     *  @return {undefined}
+     */
+    step: function(){
+      ki.circle.forEach(function(v){
 
         // goto original angle
         var a1 = v.data.OriginalLevel;
@@ -2128,53 +2217,58 @@ module.exports = function(){
   return ki;
 };
 
+}());
+
 },{}],6:[function(_dereq_,module,exports){
 /*global module */
 
 var Search = {
 
-  DepthFirstSearch: function(vertex, distance, visited){
-    visited = visited || [];
-    var newVisited = [];
-    newVisited.pushArray(visited);
-    if (!visited.includes(vertex) && distance>0) {
-      newVisited.push(vertex);
-      vertex.visit();
+  /**
+   *  
+   */
+  DepthFirstSearch: function(vertex, distance, fn){
+    if (!vertex.data.visited && distance>0) {
+      vertex.data.visited = true;
+      fn && fn(vertex);
       vertex.neighbors.forEach(function(neighbor){
         if (neighbor) {
-          Search.DepthFirstSearch(neighbor, distance - 1, newVisited);
+          Search.DepthFirstSearch(neighbor, distance - 1, fn);
         }
       });
     }
   },
 
-  BreadthFirstSearch: function (vertices, distance, visited) {
-    visited = visited || [];
-
+  /**
+   *
+   */
+  BreadthFirstSearch: function (vertices, distance, fn) {
     if (distance > 0) {
       var nextVertices = [];
-
       vertices.forEach(function(vertex){
         if (vertex) {
-          visited.push(vertex);
-          vertex.visit();
+          vertex.data.visited = true; // for the firsts
+          fn && fn(vertex);
           for (var i = vertex.neighbors.length - 1; i >= 0; i--) {
-            if (!visited.includes(vertex.neighbors[i])) {
+            if (!vertex.neighbors[i].data.visited) {
+              vertex.neighbors[i].data.visited = true;
               nextVertices.push(vertex.neighbors[i]);
             }
           }
         }
       })
-
-      Search.BreadthFirstSearch(nextVertices, distance - 1, visited);
+      Search.BreadthFirstSearch(nextVertices, distance - 1, fn);
     }
   },
-
-  BreadthFirstSearchIterate: function (circle, vertices, visited) {
+  
+  /**
+   * 
+   */
+  BreadthFirstSearchIterate: function (graph, vertices, fn, visited) {
     visited = visited || [];
 
     if (visited.length === 0) {
-      circle.forEach(function(vertex){
+      graph.forEach(function(vertex){
         vertex.data.visited   = false;
         vertex.data.lastVisit = Number.MAX_VALUE;
       });
@@ -2187,11 +2281,14 @@ var Search = {
         if (vertex) {
 
           visited.push(vertex);
-          vertex.data.visited   = true;
+
+          vertex.data.visited   = true; // for the firsts
           vertex.data.lastVisit = Date.now();
+          fn && fn(vertex);
 
           vertex.neighbors.forEach(function(neighbor){
             if (neighbor && !neighbor.data.visited && !nextVertices.includes(neighbor)) {
+              neighbor.data.visited   = true;
               nextVertices.push(neighbor);
             }
           })
@@ -2204,7 +2301,7 @@ var Search = {
         nextVertices : nextVertices,
 
         next : function () {
-          return Search.BreadthFirstSearchIterate(circle, nextVertices, visited);
+          return Search.BreadthFirstSearchIterate(graph, nextVertices, fn, visited);
         }
       };
     }
@@ -2631,77 +2728,6 @@ function drawText(context, content, x, y, color){
 
   context.strokeStyle = context.fillStyle = color;
   context.fillText(content, x - (width/2), y + (lineHeight/2));
-}
-},{}],11:[function(_dereq_,module,exports){
-// Polyfills
-
-/**
- *  Object.assign polyfill
- *  @by https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
- */
-if (typeof Object.assign != 'function') {
-  (function () {
-    Object.assign = function (target) {
-      'use strict';
-      if (target === undefined || target === null) {
-        throw new TypeError('Cannot convert undefined or null to object');
-      }
-
-      var output = Object(target);
-      for (var index = 1; index < arguments.length; index++) {
-        var source = arguments[index];
-        if (source !== undefined && source !== null) {
-          for (var nextKey in source) {
-            if (source.hasOwnProperty(nextKey)) {
-              output[nextKey] = source[nextKey];
-            }
-          }
-        }
-      }
-      return output;
-    };
-  })();
-}
-
-/**
- *  Array.prototype.includes polyfill
- *  @by https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
- */
-if (!Array.prototype.includes) {
-  Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
-    'use strict';
-    var O = Object(this);
-    var len = parseInt(O.length) || 0;
-    if (len === 0) {
-      return false;
-    }
-    var n = parseInt(arguments[1]) || 0;
-    var k;
-    if (n >= 0) {
-      k = n;
-    } else {
-      k = len + n;
-      if (k < 0) {k = 0;}
-    }
-    var currentElement;
-    while (k < len) {
-      currentElement = O[k];
-      if (searchElement === currentElement ||
-         (searchElement !== searchElement && currentElement !== currentElement)) { // NaN !== NaN
-        return true;
-      }
-      k++;
-    }
-    return false;
-  };
-}
-
-// My Polyfills
-
-if (!Array.prototype.first) {
-  Array.prototype.first = function(){
-    return this[0];
-  }
 }
 },{}]},{},[2])
 (2)

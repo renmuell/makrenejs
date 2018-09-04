@@ -123,6 +123,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {number}
      */
     numCircleLevels: {
+
+      /**
+       *  Getter for circle.numCircleLevels
+       */
       get: function(){
         return _numCircleLevels;
       }
@@ -135,6 +139,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {number}
      */
     length  : {
+
+      /**
+       *  Getter for circle.length
+       */
       get: function(){
         return _circleLength;
       }
@@ -147,6 +155,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {boolean}
      */
     isEmpty : {
+
+      /**
+       *  Getter for circle.isEmpty
+       */
       get: function(){
         return graph.vertices.length === 0;
       }
@@ -159,6 +171,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {Makrene.Vertex}
      */
     first: {
+
+      /**
+       *  Getter for circle.first
+       */
       get: function(){
         return graph.vertices[0] ? graph.vertices[0][0] : undefined;
       }
@@ -172,6 +188,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {Makrene.Vertex}
      */
     center: {
+
+      /**
+       *  Getter for circle.center
+       */
       get: function(){
         return graph.first;
       }
@@ -185,6 +205,10 @@ module.exports = function Makrene_Circle(config) {
      *  @type {Makrene.Vertex}
      */
     last: {
+
+      /**
+       *  Getter for circle.last
+       */
       get: function(){
         return graph.isEmpty 
           ? undefined 
@@ -1298,9 +1322,9 @@ function createFace(graph, v1, v2, v3){
 
   // Link edge with face
   var edges = [];
-  edges.push(v1.edges.filter(function(e){ return e.vertices.includes(v2); }).first());
-  edges.push(v2.edges.filter(function(e){ return e.vertices.includes(v3); }).first());
-  edges.push(v3.edges.filter(function(e){ return e.vertices.includes(v1); }).first());
+  edges.push(v1.edges.filter(function(e){ return e.vertices.includes(v2); })[0]);
+  edges.push(v2.edges.filter(function(e){ return e.vertices.includes(v3); })[0]);
+  edges.push(v3.edges.filter(function(e){ return e.vertices.includes(v1); })[0]);
   
   edges.forEach(function(e){
     e.faces.push(f);

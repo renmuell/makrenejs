@@ -7,7 +7,14 @@
   },
   "extends": "eslint:recommended",
   "rules": {
-    "valid-jsdoc": ["error", {
+    "require-jsdoc": ["error", {
+      "require": {
+          "FunctionDeclaration": true,
+          "MethodDefinition": true,
+          "ClassDeclaration": true,
+          "ArrowFunctionExpression": true,
+          "FunctionExpression": true
+      }
     }]
   }
 }

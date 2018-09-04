@@ -1,18 +1,50 @@
+(function() {
+
 /*global module */
 
-module.exports = function(){
+/**
+ *  KI for Makrene Circle.
+ * 
+ *  @param {Makrene.Circle} circle - The circle instance.
+ */
+module.exports = function(circle){
 
+  /**
+   *  KI-Circle Instance.
+   * 
+   *  @type {Makrene.Ki.Circle}
+   */
   var ki = {
-    init: function(circle){
-      circle.forEach(function(v){
+
+    /**
+     *  Circle instance.
+     * 
+     *  @type {Makrene.Circle}
+     */
+    circle: circle,
+
+    /**
+     *  Initialize Circle KI.
+     * 
+     *  @public
+     *  @return {undefined}
+     */
+    init: function(){
+      ki.circle.forEach(function(v){
         v.data.degree = v.data.degree % 360;
         v.data.OriginalLevel = v.data.degree;
         v.data.OriginalLevel= v.data.level;
       });
     },
 
-    step: function(circle){
-      circle.forEach(function(v){
+    /**
+     *  Execute one logic step for the KI.
+     * 
+     *  @public
+     *  @return {undefined}
+     */
+    step: function(){
+      ki.circle.forEach(function(v){
 
         // goto original angle
         var a1 = v.data.OriginalLevel;
@@ -39,3 +71,5 @@ module.exports = function(){
 
   return ki;
 };
+
+}());
