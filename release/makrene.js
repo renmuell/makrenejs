@@ -376,13 +376,13 @@ var Makrene = _dereq_('../base/makrene.base')
  *  
  *  Syntax:
  *  
- *  let circle = Makrene.Circle();
+ *  var circle = Makrene.Circle();
  *
  *  @public
- *  @implements {Graph}
+ *  @implements {Makrene.Graph}
  *  @param {object} config - the Settings
  *  @param {number} config.numVertexOnLevel - @see graph.numVertexOnLevel
- *  @returns {Circle} Circle
+ *  @returns {Makrene.Circle} - The circle instance.
  */
 module.exports = function Makrene_Circle(config) {
 
@@ -444,7 +444,7 @@ module.exports = function Makrene_Circle(config) {
   /**
    *  Circle Instance.
    * 
-   *  @typedef Circle
+   *  @typedef Makrene.Circle
    *  @type {Object}
    */
   var graph = Object.create(Makrene_Circle.prototype, {
@@ -958,7 +958,7 @@ module.exports = function Makrene_Circle(config) {
      *  @public
      *  @param {number} level - The level of the circle.
      *  @param {number} position - The position on the level.
-     *  @return {Vertex|undefined} - The vertex on the position.
+     *  @return {Makrene.Vertex|undefined} - The vertex on the position.
      */
     vertexAt: function(level, position){
       return graph.vertices[level] ? graph.vertices[level][position] : undefined;
@@ -969,8 +969,8 @@ module.exports = function Makrene_Circle(config) {
      * 
      *  @public
      *  @param {number} index - The zero-based index of the vertex to retrieve.
-     *  @param {Vertex|undefined} - The element at the specified position in the circle.
-     *  @return {Vertex|undefined} - The vertex on the position.
+     *  @param {Makrene.Vertex|undefined} - The element at the specified position in the circle.
+     *  @return {Makrene.Vertex|undefined} - The vertex on the position.
      */
     vertexAtIndex: function(index){
       var positionLevel = getPositionLevel(graph, index)
@@ -985,7 +985,7 @@ module.exports = function Makrene_Circle(config) {
      * 
      *  @public
      *  @param {number} level - The zero-based level of the circle.
-     *  @return {array<Face>} - A list of all Faces for one level.
+     *  @return {array<Makrene.Face>} - A list of all Faces for one level.
      */
     facesAt: function(level){
       return graph.faces.filter(function(f){ return f.data.level == level; });
@@ -998,7 +998,7 @@ module.exports = function Makrene_Circle(config) {
      *  circle.getFacesLevelArray()
      * 
      *  @public
-     *  @return {array<array<Face>>} - Grouped list of all Faces.
+     *  @return {array<array<Makrene.Face>>} - Grouped list of all Faces.
      */
     getFacesLevelArray: function(){
       var r = [];
@@ -1023,7 +1023,7 @@ module.exports = function Makrene_Circle(config) {
      *  circle.indexOf(vertex)
      *  
      *  @public
-     *  @param {Vertex} vertex - Vertex to locate in the circle.
+     *  @param {Makrene.Vertex} vertex - Vertex to locate in the circle.
      *  @return {number} - The first index of the vertex in the circle; -1 if not found.
      */
     indexOf: function(vertex){
@@ -1132,7 +1132,7 @@ module.exports = function Makrene_Circle(config) {
      *  @fires Change-Event
      *  @param {number} level - The level of the circle to add to.
      *  @param {number} position - The position on the level.
-     *  @return {Vertex} - The removed vertex from the circle.
+     *  @return {Makrene.Vertex} - The removed vertex from the circle.
      */
     removeVertexFrom: function(level, position){
       return graph.removeVertex(graph.vertexAt(level, position));
@@ -1146,8 +1146,8 @@ module.exports = function Makrene_Circle(config) {
      *  
      *  @public
      *  @fires Change-Event
-     *  @param {vertex} vertex - The vertex to remove.
-     *  @return {vertex} - The removed vertex from the circle.
+     *  @param {Makrene.vertex} vertex - The vertex to remove.
+     *  @return {Makrene.vertex} - The removed vertex from the circle.
      */
     removeVertex: function(vertex) {
       if (vertex){
@@ -1251,16 +1251,14 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  The forEach() method executes a provided function once for each array element.
+     *  The forEach() method executes a provided function once for each circle vertex.
      *
      *  Syntax:
      *  circle.forEach(function callback(currentVertex[, index[, graph]]) {
-     *    //your iterator
      *  }[, thisArg]);
      *
      *  @public
-     *  @param {function} callback - Function is a predicate, to test each element of the circle. 
-     *                               Return true to keep the element, false otherwise. It accepts three arguments:
+     *  @param {function} callback - Function to execute for each element, taking three arguments:
      *                          currentVertex  Optional
      *                              The current element being processed in the circle.
      *                          index   Optional
@@ -1268,7 +1266,7 @@ module.exports = function Makrene_Circle(config) {
      *                          circle   Optional
      *                              The circle filter was called upon.
      *
-     *  @return {array} - A new array with the elements that pass the test. If no elements pass the test, an empty array will be returned.
+     *  @return {undefined}
      */
     forEach: function(callback){
       graph.vertices.forEach(function(levels, level){ 
@@ -1376,7 +1374,7 @@ module.exports = function Makrene_Circle(config) {
  *  getIndex(graph, position, level)
  * 
  *  @private
- *  @param {Makrene.Circle} graph - The graph of the index.
+ *  @param {Makrene.Circle} graph - The graph instance.
  *  @param {number} position - The position on the level.
  *  @param {number} level - The level of the circle.
  *  @return {number} - The index.
@@ -1392,7 +1390,7 @@ function getIndex(graph, position, level){
  *  getPositionLevel(graph, index)
  * 
  *  @private
- *  @param {Makrene.Circle} graph - The graph of the index.
+ *  @param {Makrene.Circle} graph - The graph instance.
  *  @param {number} index - The index for the level and position data.
  *  @return {object} - object with properties 'level' and 'position'
  */
@@ -1413,6 +1411,19 @@ function getPositionLevel(graph, index){
   }
 }
 
+/**
+ *  Links a certain vertex with two vertices one level below. This method
+ *  will also create the edges and faces.
+ * 
+ *  Syntax:
+ *  linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph - The graph instance.
+ *  @param {number} levelIndex - The level of the vertex.
+ *  @param {number} vertexLevelIndex - The position of the vertex on that level.
+ *  @return {undefined}
+ */
 function linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex){
   var lastLevelVertexes = graph.vertices[levelIndex - 1];
 
@@ -1440,6 +1451,19 @@ function linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex){
   }
 }
 
+/**
+ *  Links a certain vertex with two vertices one level above. This method
+ *  will also create the edges and faces.
+ * 
+ *  Syntax:
+ *  linkWithLevelAboveVertexes(graph, levelIndex, vertexLevelIndex)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph - The graph instance.
+ *  @param {number} levelIndex - The level of the vertex.
+ *  @param {number} vertexLevelIndex - The position of the vertex on that level.
+ *  @return {undefined}
+ */
 function linkWithLevelAboveVertexes(graph, levelIndex, vertexLevelIndex){
   var aboveLevelVertexes = graph.vertices[levelIndex + 1];
 
@@ -1468,6 +1492,17 @@ function linkWithLevelAboveVertexes(graph, levelIndex, vertexLevelIndex){
   }
 }
 
+/**
+ *  Links a center vertex with all vertices on level one. This method
+ *  will also create the edges and faces.
+ * 
+ *  Syntax:
+ *  linkCenterWithLevelAboveVertexes(graph)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph - The graph instance.
+ *  @return {undefined}
+ */
 function linkCenterWithLevelAboveVertexes(graph){
 
   graph.vertices[1].forEach(function(aboveLevelVertex){
@@ -1490,6 +1525,19 @@ function linkCenterWithLevelAboveVertexes(graph){
   });
 }
 
+/**
+ *  Links a certain vertex with given neighbor vertex. This method
+ *  will also create the edges and faces.
+ * 
+ *  Syntax:
+ *  linkWithNeighborVertex(graph, vertex, neighbor)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph - The graph instance.
+ *  @param {Makrene.Vertex} vertex - The vertex to be linked. 
+ *  @param {Makrene.Vertex} neighbor - The neighbor vertex to link with. 
+ *  @return {undefined}
+ */
 function linkWithNeighborVertex(graph, vertex, neighbor){
   if (neighbor) {
     vertex.neighbors.push(neighbor);
@@ -1507,6 +1555,18 @@ function linkWithNeighborVertex(graph, vertex, neighbor){
   }
 }
 
+/**
+ *  Creates new edge for given graph from vertex one to vertex two.
+ * 
+ *  Syntax:
+ *  createEdge(graph, v1, v2)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph  - The graph instance.
+ *  @param {Makrene.Vertex} v1 - Vertex one of new edge.
+ *  @param {Makrene.Vertex} v2 - Vertex two of new edge.
+ *  @return {undefined}
+ */
 function createEdge(graph, v1, v2){
   var edge = Makrene.Edge();
   edge.vertices.push(v1);
@@ -1521,7 +1581,18 @@ function createEdge(graph, v1, v2){
   linkEdgeWithVertexEdges(edge, v2);
 }
 
-function linkEdgeWithVertexEdges (edge, vertex){
+/**
+ *  Links given edge with all edges of a vertex.
+ * 
+ *  Syntax:
+ *  linkEdgeWithVertexEdges(edge, vertex)
+ * 
+ *  @private
+ *  @param {Makrene.Edge} edge - The edge to be linked. 
+ *  @param {Makrene.Vertex} vertex - The vertex with edge neighbors.
+ *  @return {undefined}
+ */
+function linkEdgeWithVertexEdges(edge, vertex){
   vertex.edges.forEach(function(e){
     if (edge != e && !edge.neighbors.includes(e)){
       edge.neighbors.push(e);
@@ -1530,6 +1601,20 @@ function linkEdgeWithVertexEdges (edge, vertex){
   });
 }
 
+/**
+ *  Creates a new face for given graph from vertex one over 
+ *  vertex two to vertex three.
+ * 
+ *  Syntax:
+ *  createFace(graph, v1, v2, v3)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph  - The graph instance.
+ *  @param {Makrene.Vertex} v1 - Vertex one of new face.
+ *  @param {Makrene.Vertex} v2 - Vertex two of new face.
+ *  @param {Makrene.Vertex} v3 - Vertex three of new face.
+ *  @return {undefined}
+ */
 function createFace(graph, v1, v2, v3){
   var f = Makrene.Face();
 
@@ -1567,6 +1652,17 @@ function createFace(graph, v1, v2, v3){
   });
 }
 
+/**
+ *  Links given face with all faces of a vertex.
+ * 
+ *  Syntax:
+ *  linkFaceWithVertexFaces(edge, vertex)
+ * 
+ *  @private
+ *  @param {Makrene.Edge} face - The face to be linked. 
+ *  @param {Makrene.Vertex} vertex - The vertex with faces neighbors.
+ *  @return {undefined}
+ */
 function linkFaceWithVertexFaces(face, vertex){
   vertex.faces.forEach(function(f){
     if (face != f && !face.neighbors.includes(f)){
@@ -1576,18 +1672,38 @@ function linkFaceWithVertexFaces(face, vertex){
   });
 }
 
-function calculateVertexDegree(graph, level, levelPos) {
+/**
+ *  Calculates the degree of vertex on the circle level.
+ * 
+ *  Syntax:
+ *  calculateVertexDegree(graph, level, position)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph  - The graph instance.
+ *  @param {number} level - The level of the circle.
+ *  @param {number} position - The position on the level.
+ *  @return {number} - the degree of the vertex.
+ */
+function calculateVertexDegree(graph, level, position) {
   var levelDegreeOffset =  (360/graph.numVertexOnLevel)/2;
-  return levelDegreeOffset + (levelDegreeOffset * level) + ((360/graph.numVertexOnLevel) * levelPos);
+  return levelDegreeOffset + (levelDegreeOffset * level) + ((360/graph.numVertexOnLevel) * position);
 }
 
 }());
 
 },{"../base/makrene.base":1}],4:[function(_dereq_,module,exports){
+(function() {
+
 /*global require, module */
 
 var Makrene = _dereq_('../base/makrene.base');
 
+/**
+ *  Structure for directions on the grid.
+ *  
+ *  @private
+ *  @type {object}   
+ */
 var Dir = {
   Top     : 0,
   Right   : 1,
@@ -1600,173 +1716,374 @@ var Dir = {
   BottomLeft  : 3
 };
 
+/**
+ *  Multi linked grid mesh.
+ *
+ *  0,0 --- 0,1 --- 0,2
+ *   |       |       |
+ *   |       |       |
+ *  1,0 --- 1,1 --- 1,2
+ *   |       |       |
+ *   |       |       |
+ *  2,0 --- 2,1 --- 2,2
+ * 
+ *  Current it is a very simple data structure. It is static, which means 
+ *  it will create every vertex when it is created.
+ * 
+ *  Syntax:
+ *  
+ *  var grid = Makrene.Grid();
+ *
+ *  @public
+ *  @implements {Makrene.Grid}
+ *  @param {object} config - the Settings
+ *  @param {number} config.rows - @see graph.rows
+ *  @param {number} config.cols - @see graph.cols
+ *  @returns {Makrene.Grid} - The grid instance.
+ */
 module.exports = function Makrene_Grid(config){
-  config = config || {};
 
-  var graph = Object.create(Makrene_Grid.prototype, {});
+  /***
+   *       _____             __ _       
+   *      / ____|           / _(_)      
+   *     | |     ___  _ __ | |_ _  __ _ 
+   *     | |    / _ \| '_ \|  _| |/ _` |
+   *     | |___| (_) | | | | | | | (_| |
+   *      \_____\___/|_| |_|_| |_|\__, |
+   *                               __/ |
+   *                              |___/ 
+   */
 
+  config = Object.assign({
+
+    /**
+     *  default setting for rows.
+     *  @see graph.rows
+     */
+     rows: 0,
+
+    /**
+     *  default setting for columns.
+     *  @see graph.cols
+     */
+    cols: 0
+ 
+  }, config);
+
+  /***
+   *      _____                           _   _           
+   *     |  __ \                         | | (_)          
+   *     | |__) | __ ___  _ __   ___ _ __| |_ _  ___  ___ 
+   *     |  ___/ '__/ _ \| '_ \ / _ \ '__| __| |/ _ \/ __|
+   *     | |   | | | (_) | |_) |  __/ |  | |_| |  __/\__ \
+   *     |_|   |_|  \___/| .__/ \___|_|   \__|_|\___||___/
+   *                     | |                              
+   *                     |_|                              
+   */
+
+
+  var graph = Object.create(Makrene_Grid.prototype, {
+
+    /**
+     *  Gets the number of rows on the grid.
+     *
+     *  @public
+     *  @default 0
+     *  @type {number}
+     */
+    rows: {
+      value: config.rows
+    },
+
+    /**
+     *  Gets the number of columns on the grid.
+     *
+     *  @public
+     *  @default 0
+     *  @type {number}
+     */
+    cols: {
+      value: config.cols
+    }
+
+  });
+
+  /***
+   *      __  __      _   _               _     
+   *     |  \/  |    | | | |             | |    
+   *     | \  / | ___| |_| |__   ___   __| |___ 
+   *     | |\/| |/ _ \ __| '_ \ / _ \ / _` / __|
+   *     | |  | |  __/ |_| | | | (_) | (_| \__ \
+   *     |_|  |_|\___|\__|_| |_|\___/ \__,_|___/
+   *                                                                                     
+   */
   graph = Object.assign(Makrene.Graph({}, graph), {
 
-    rows: config.rows || 0,
-    cols: config.cols || 0,
-
-    init: function(){
-      graph.createVertexes();
-      graph.linkVertexes();
-
-      graph.createEdges();
-      graph.linkEdges();
-
-      graph.createFaces();
-      graph.linkFaces();
-    },
-
-    createVertexes: function(){
-      for (var r = graph.rows - 1; r >= 0; r--) {
-        graph.vertices[r] = [];
-        for (var c = graph.cols - 1; c >= 0; c--) {
-          var v = Makrene.Vertex();
-
-          v.data.row = r;
-          v.data.col = c;
-
-          graph.vertices[r][c] = v;
-        }
-      }
-    },
-
-    linkVertexes: function(){
-      graph.forEach(function(vertex, row, col){
-
-        if (col > 0){
-          vertex.neighbors[Dir.Left] = graph.vertices[row][col - 1];
-        }
-
-        if (col < graph.cols -1) {
-          vertex.neighbors[Dir.Right] = graph.vertices[row][col + 1];
-        }
-
-        if (row > 0){
-          vertex.neighbors[Dir.Top] = graph.vertices[row - 1][col];
-        }
-
-        if (row < graph.rows -1){
-          vertex.neighbors[Dir.Bottom] = graph.vertices[row + 1][col];
-        }
-
-      });
-    },
-
-    createEdge: function(v1, v2){
-      var edge = Makrene.Edge();
-      edge.vertices.push(v1);
-      edge.vertices.push(v2);
-
-      graph.edges.push(edge);
-
-      v2.edges.push(edge);
-      v1.edges.push(edge);
-    },
-
-    createEdges: function(){
-      graph.forEach(function(vertex){
-        if (vertex.neighbors[Dir.Left]) {
-          graph.createEdge(vertex, vertex.neighbors[Dir.Left]);
-        }
-
-        if (vertex.neighbors[Dir.Top]) {
-          graph.createEdge(vertex, vertex.neighbors[Dir.Top]);
-        }
-      });
-    },
-
-    linkEdges: function(){
-      graph.edges.forEach(function(edge) {
-        edge.vertices.forEach(function(vertex) {
-          vertex.edges.forEach(function(neighbor){
-            if (edge != neighbor) {
-              edge.neighbors.push(neighbor);
-            }
-          });
-        });
-      });
-    },
-
-    createFace: function(v1, v2, v3, v4){
-      var edges = [];
-
-      v1.edges.forEach(function(edge){
-        if (edge.vertices.includes(v2) || edge.vertices.includes(v3)){
-          edges.push(edge);
-        }
-      });
-
-      v4.edges.forEach(function(edge){
-        if (edge.vertices.includes(v2) || edge.vertices.includes(v3)){
-          edges.push(edge);
-        }
-      });
-
-      var face = Makrene.Face();
-
-      face.vertices[Dir.TopRight]    = v3;
-      face.vertices[Dir.TopLeft]     = v4;
-      face.vertices[Dir.BottomLeft]  = v2;
-      face.vertices[Dir.BottomRight] = v1;
-
-      graph.faces.push(face);
-
-      v1.faces.push(face)
-      v2.faces.push(face)
-      v3.faces.push(face)
-      v4.faces.push(face)
-
-      edges.forEach(function(edge){
-        face.edges.push(edge);
-        edge.faces.push(face);
-      });
-    },
-
-    createFaces: function(){
-      graph.forEach(function(vertex){
-        if (vertex.neighbors[Dir.Left]
-         && vertex.neighbors[Dir.Top]) {
-
-          graph.createFace(
-            vertex,
-            vertex.neighbors[Dir.Left],
-            vertex.neighbors[Dir.Top],
-            vertex.neighbors[Dir.Top]
-                  .neighbors[Dir.Left]);
-        }
-      });
-    },
-
-    linkFaces: function(){
-      graph.faces.forEach(function(face) {
-        face.vertices.forEach(function(vertex) {
-          vertex.faces.forEach(function(neighbor){
-            if (face != neighbor) {
-              face.neighbors.push(neighbor);
-            }
-          });
-        });
-      });
-    },
-
-    forEach: function(fn){
+    /**
+     *  The forEach() method executes a provided function once for each grid vertex.
+     *
+     *  Syntax:
+     *  grid.forEach(function callback(currentVertex[, row[, column]]) {
+     *  }[, thisArg]);
+     *
+     *  @public
+     *  @param {function} callback - Function to execute for each element, taking three arguments:
+     *                          currentVertex  Optional
+     *                              The current element being processed in the grid.
+     *                          row   Optional
+     *                              The row of the currentVertex.
+     *                          column   Optional
+     *                              The column of the currentVertex.
+     *
+     *  @return {undefined}
+     */
+    forEach: function(callback){
       for (var r = graph.rows - 1; r >= 0; r--) {
         for (var c = graph.cols - 1; c >= 0; c--) {
-          fn(graph.vertices[r][c], r, c);
+          callback(graph.vertices[r][c], r, c);
         }
       }
     }
   })
 
-  graph.init();
+  init(graph);
 
   return graph;
 };
+
+/***
+ *      _____      _            _            
+ *     |  __ \    (_)          | |           
+ *     | |__) | __ ___   ____ _| |_ ___  ___ 
+ *     |  ___/ '__| \ \ / / _` | __/ _ \/ __|
+ *     | |   | |  | |\ V / (_| | ||  __/\__ \
+ *     |_|   |_|  |_| \_/ \__,_|\__\___||___/
+ *                                                                                    
+ */
+
+/**
+ *  Initialize a empty grid with every vertex, edge and face for
+ *  given rows and columns.
+ * 
+ *  @private
+ *  @param {Makrene.Grid} graph - The graph instance.
+ *  @return {undefined}
+ */
+function init(graph){
+  createVertexes(graph);
+  linkVertexes(graph);
+
+  createEdges(graph);
+  linkEdges(graph);
+
+  createFaces(graph);
+  linkFaces(graph);
+}
+
+/**
+ *  Creates every vertex for the grid.
+ * 
+ *  @private
+ *  @param {Makrene.Grid} graph - The graph instance.
+ *  @return {undefined}
+ */
+function createVertexes(graph){
+  for (var r = graph.rows - 1; r >= 0; r--) {
+    graph.vertices[r] = [];
+    for (var c = graph.cols - 1; c >= 0; c--) {
+      var v = Makrene.Vertex();
+
+      v.data.row = r;
+      v.data.col = c;
+
+      graph.vertices[r][c] = v;
+    }
+  }
+}
+
+/**
+ *  Links every vertex for the grid.
+ * 
+ *  @private
+ *  @param {Makrene.Grid} graph - The graph instance.
+ *  @return {undefined}
+ */
+function linkVertexes(graph){
+  graph.forEach(function(vertex, row, col){
+
+    if (col > 0){
+      vertex.neighbors[Dir.Left] = graph.vertices[row][col - 1];
+    }
+
+    if (col < graph.cols -1) {
+      vertex.neighbors[Dir.Right] = graph.vertices[row][col + 1];
+    }
+
+    if (row > 0){
+      vertex.neighbors[Dir.Top] = graph.vertices[row - 1][col];
+    }
+
+    if (row < graph.rows -1){
+      vertex.neighbors[Dir.Bottom] = graph.vertices[row + 1][col];
+    }
+
+  });
+}
+
+/**
+ *  Creates every edge for the grid.
+ * 
+ *  @private
+ *  @param {Makrene.Grid} graph - The graph instance.
+ *  @return {undefined}
+ */
+function createEdges(graph){
+  graph.forEach(function(vertex){
+    if (vertex.neighbors[Dir.Left]) {
+      createEdge(graph, vertex, vertex.neighbors[Dir.Left]);
+    }
+
+    if (vertex.neighbors[Dir.Top]) {
+      createEdge(graph, vertex, vertex.neighbors[Dir.Top]);
+    }
+  });
+}
+
+/**
+ *  Creates new edge for given graph from vertex one to vertex two.
+ * 
+ *  Syntax:
+ *  createEdge(graph, v1, v2)
+ * 
+ *  @private
+ *  @param {Makrene.Grid} graph  - The graph instance.
+ *  @param {Makrene.Vertex} v1 - Vertex one of new edge.
+ *  @param {Makrene.Vertex} v2 - Vertex two of new edge.
+ *  @return {undefined}
+ */
+function createEdge(graph, v1, v2){
+  var edge = Makrene.Edge();
+  edge.vertices.push(v1);
+  edge.vertices.push(v2);
+
+  graph.edges.push(edge);
+
+  v2.edges.push(edge);
+  v1.edges.push(edge);
+}
+
+/**
+ *  Links every edge for the grid.
+ * 
+ *  @private
+ *  @param {Makrene.Grid} graph - The graph instance.
+ *  @return {undefined}
+ */
+function linkEdges(graph){
+  graph.edges.forEach(function(edge) {
+    edge.vertices.forEach(function(vertex) {
+      vertex.edges.forEach(function(neighbor){
+        if (edge != neighbor) {
+          edge.neighbors.push(neighbor);
+        }
+      });
+    });
+  });
+}
+
+/**
+ *  Creates every face for the grid.
+ * 
+ *  @private
+ *  @param {Makrene.Grid} graph - The graph instance.
+ *  @return {undefined}
+ */
+function createFaces(graph){
+  graph.forEach(function(vertex){
+    if (vertex.neighbors[Dir.Left]
+     && vertex.neighbors[Dir.Top]) {
+
+      createFace(
+        graph,
+        vertex,
+        vertex.neighbors[Dir.Left],
+        vertex.neighbors[Dir.Top],
+        vertex.neighbors[Dir.Top]
+              .neighbors[Dir.Left]);
+    }
+  });
+}
+
+/**
+ *  Creates a new face for given graph from vertex one over 
+ *  vertex two over vertex three to vertex four.
+ * 
+ *  Syntax:
+ *  createFace(graph, v1, v2, v3, v4)
+ * 
+ *  @private
+ *  @param {Makrene.Grid} graph  - The graph instance.
+ *  @param {Makrene.Vertex} v1 - Vertex one of new face.
+ *  @param {Makrene.Vertex} v2 - Vertex two of new face.
+ *  @param {Makrene.Vertex} v3 - Vertex three of new face.
+ *  @param {Makrene.Vertex} v4 - Vertex four of new face.
+ *  @return {undefined}
+ */
+function createFace(graph, v1, v2, v3, v4){
+  var edges = [];
+
+  v1.edges.forEach(function(edge){
+    if (edge.vertices.includes(v2) || edge.vertices.includes(v3)){
+      edges.push(edge);
+    }
+  });
+
+  v4.edges.forEach(function(edge){
+    if (edge.vertices.includes(v2) || edge.vertices.includes(v3)){
+      edges.push(edge);
+    }
+  });
+
+  var face = Makrene.Face();
+
+  face.vertices[Dir.TopRight]    = v3;
+  face.vertices[Dir.TopLeft]     = v4;
+  face.vertices[Dir.BottomLeft]  = v2;
+  face.vertices[Dir.BottomRight] = v1;
+
+  graph.faces.push(face);
+
+  v1.faces.push(face)
+  v2.faces.push(face)
+  v3.faces.push(face)
+  v4.faces.push(face)
+
+  edges.forEach(function(edge){
+    face.edges.push(edge);
+    edge.faces.push(face);
+  });
+}
+
+/**
+ *  Links every face for the grid.
+ * 
+ *  @private
+ *  @param {Makrene.Grid} graph - The graph instance.
+ *  @return {undefined}
+ */
+function linkFaces(graph){
+  graph.faces.forEach(function(face) {
+    face.vertices.forEach(function(vertex) {
+      vertex.faces.forEach(function(neighbor){
+        if (face != neighbor) {
+          face.neighbors.push(neighbor);
+        }
+      });
+    });
+  });
+}
+
+}());
 
 },{"../base/makrene.base":1}],5:[function(_dereq_,module,exports){
 /*global module */

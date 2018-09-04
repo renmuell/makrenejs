@@ -32,13 +32,13 @@ var Makrene = require('../base/makrene.base')
  *  
  *  Syntax:
  *  
- *  let circle = Makrene.Circle();
+ *  var circle = Makrene.Circle();
  *
  *  @public
- *  @implements {Graph}
+ *  @implements {Makrene.Graph}
  *  @param {object} config - the Settings
  *  @param {number} config.numVertexOnLevel - @see graph.numVertexOnLevel
- *  @returns {Circle} Circle
+ *  @returns {Makrene.Circle} - The circle instance.
  */
 module.exports = function Makrene_Circle(config) {
 
@@ -100,7 +100,7 @@ module.exports = function Makrene_Circle(config) {
   /**
    *  Circle Instance.
    * 
-   *  @typedef Circle
+   *  @typedef Makrene.Circle
    *  @type {Object}
    */
   var graph = Object.create(Makrene_Circle.prototype, {
@@ -614,7 +614,7 @@ module.exports = function Makrene_Circle(config) {
      *  @public
      *  @param {number} level - The level of the circle.
      *  @param {number} position - The position on the level.
-     *  @return {Vertex|undefined} - The vertex on the position.
+     *  @return {Makrene.Vertex|undefined} - The vertex on the position.
      */
     vertexAt: function(level, position){
       return graph.vertices[level] ? graph.vertices[level][position] : undefined;
@@ -625,8 +625,8 @@ module.exports = function Makrene_Circle(config) {
      * 
      *  @public
      *  @param {number} index - The zero-based index of the vertex to retrieve.
-     *  @param {Vertex|undefined} - The element at the specified position in the circle.
-     *  @return {Vertex|undefined} - The vertex on the position.
+     *  @param {Makrene.Vertex|undefined} - The element at the specified position in the circle.
+     *  @return {Makrene.Vertex|undefined} - The vertex on the position.
      */
     vertexAtIndex: function(index){
       var positionLevel = getPositionLevel(graph, index)
@@ -641,7 +641,7 @@ module.exports = function Makrene_Circle(config) {
      * 
      *  @public
      *  @param {number} level - The zero-based level of the circle.
-     *  @return {array<Face>} - A list of all Faces for one level.
+     *  @return {array<Makrene.Face>} - A list of all Faces for one level.
      */
     facesAt: function(level){
       return graph.faces.filter(function(f){ return f.data.level == level; });
@@ -654,7 +654,7 @@ module.exports = function Makrene_Circle(config) {
      *  circle.getFacesLevelArray()
      * 
      *  @public
-     *  @return {array<array<Face>>} - Grouped list of all Faces.
+     *  @return {array<array<Makrene.Face>>} - Grouped list of all Faces.
      */
     getFacesLevelArray: function(){
       var r = [];
@@ -679,7 +679,7 @@ module.exports = function Makrene_Circle(config) {
      *  circle.indexOf(vertex)
      *  
      *  @public
-     *  @param {Vertex} vertex - Vertex to locate in the circle.
+     *  @param {Makrene.Vertex} vertex - Vertex to locate in the circle.
      *  @return {number} - The first index of the vertex in the circle; -1 if not found.
      */
     indexOf: function(vertex){
@@ -788,7 +788,7 @@ module.exports = function Makrene_Circle(config) {
      *  @fires Change-Event
      *  @param {number} level - The level of the circle to add to.
      *  @param {number} position - The position on the level.
-     *  @return {Vertex} - The removed vertex from the circle.
+     *  @return {Makrene.Vertex} - The removed vertex from the circle.
      */
     removeVertexFrom: function(level, position){
       return graph.removeVertex(graph.vertexAt(level, position));
@@ -802,8 +802,8 @@ module.exports = function Makrene_Circle(config) {
      *  
      *  @public
      *  @fires Change-Event
-     *  @param {vertex} vertex - The vertex to remove.
-     *  @return {vertex} - The removed vertex from the circle.
+     *  @param {Makrene.vertex} vertex - The vertex to remove.
+     *  @return {Makrene.vertex} - The removed vertex from the circle.
      */
     removeVertex: function(vertex) {
       if (vertex){
@@ -907,16 +907,14 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  The forEach() method executes a provided function once for each array element.
+     *  The forEach() method executes a provided function once for each circle vertex.
      *
      *  Syntax:
      *  circle.forEach(function callback(currentVertex[, index[, graph]]) {
-     *    //your iterator
      *  }[, thisArg]);
      *
      *  @public
-     *  @param {function} callback - Function is a predicate, to test each element of the circle. 
-     *                               Return true to keep the element, false otherwise. It accepts three arguments:
+     *  @param {function} callback - Function to execute for each element, taking three arguments:
      *                          currentVertex  Optional
      *                              The current element being processed in the circle.
      *                          index   Optional
@@ -924,7 +922,7 @@ module.exports = function Makrene_Circle(config) {
      *                          circle   Optional
      *                              The circle filter was called upon.
      *
-     *  @return {array} - A new array with the elements that pass the test. If no elements pass the test, an empty array will be returned.
+     *  @return {undefined}
      */
     forEach: function(callback){
       graph.vertices.forEach(function(levels, level){ 
@@ -1032,7 +1030,7 @@ module.exports = function Makrene_Circle(config) {
  *  getIndex(graph, position, level)
  * 
  *  @private
- *  @param {Makrene.Circle} graph - The graph of the index.
+ *  @param {Makrene.Circle} graph - The graph instance.
  *  @param {number} position - The position on the level.
  *  @param {number} level - The level of the circle.
  *  @return {number} - The index.
@@ -1048,7 +1046,7 @@ function getIndex(graph, position, level){
  *  getPositionLevel(graph, index)
  * 
  *  @private
- *  @param {Makrene.Circle} graph - The graph of the index.
+ *  @param {Makrene.Circle} graph - The graph instance.
  *  @param {number} index - The index for the level and position data.
  *  @return {object} - object with properties 'level' and 'position'
  */
@@ -1069,6 +1067,19 @@ function getPositionLevel(graph, index){
   }
 }
 
+/**
+ *  Links a certain vertex with two vertices one level below. This method
+ *  will also create the edges and faces.
+ * 
+ *  Syntax:
+ *  linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph - The graph instance.
+ *  @param {number} levelIndex - The level of the vertex.
+ *  @param {number} vertexLevelIndex - The position of the vertex on that level.
+ *  @return {undefined}
+ */
 function linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex){
   var lastLevelVertexes = graph.vertices[levelIndex - 1];
 
@@ -1096,6 +1107,19 @@ function linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex){
   }
 }
 
+/**
+ *  Links a certain vertex with two vertices one level above. This method
+ *  will also create the edges and faces.
+ * 
+ *  Syntax:
+ *  linkWithLevelAboveVertexes(graph, levelIndex, vertexLevelIndex)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph - The graph instance.
+ *  @param {number} levelIndex - The level of the vertex.
+ *  @param {number} vertexLevelIndex - The position of the vertex on that level.
+ *  @return {undefined}
+ */
 function linkWithLevelAboveVertexes(graph, levelIndex, vertexLevelIndex){
   var aboveLevelVertexes = graph.vertices[levelIndex + 1];
 
@@ -1124,6 +1148,17 @@ function linkWithLevelAboveVertexes(graph, levelIndex, vertexLevelIndex){
   }
 }
 
+/**
+ *  Links a center vertex with all vertices on level one. This method
+ *  will also create the edges and faces.
+ * 
+ *  Syntax:
+ *  linkCenterWithLevelAboveVertexes(graph)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph - The graph instance.
+ *  @return {undefined}
+ */
 function linkCenterWithLevelAboveVertexes(graph){
 
   graph.vertices[1].forEach(function(aboveLevelVertex){
@@ -1146,6 +1181,19 @@ function linkCenterWithLevelAboveVertexes(graph){
   });
 }
 
+/**
+ *  Links a certain vertex with given neighbor vertex. This method
+ *  will also create the edges and faces.
+ * 
+ *  Syntax:
+ *  linkWithNeighborVertex(graph, vertex, neighbor)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph - The graph instance.
+ *  @param {Makrene.Vertex} vertex - The vertex to be linked. 
+ *  @param {Makrene.Vertex} neighbor - The neighbor vertex to link with. 
+ *  @return {undefined}
+ */
 function linkWithNeighborVertex(graph, vertex, neighbor){
   if (neighbor) {
     vertex.neighbors.push(neighbor);
@@ -1163,6 +1211,18 @@ function linkWithNeighborVertex(graph, vertex, neighbor){
   }
 }
 
+/**
+ *  Creates new edge for given graph from vertex one to vertex two.
+ * 
+ *  Syntax:
+ *  createEdge(graph, v1, v2)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph  - The graph instance.
+ *  @param {Makrene.Vertex} v1 - Vertex one of new edge.
+ *  @param {Makrene.Vertex} v2 - Vertex two of new edge.
+ *  @return {undefined}
+ */
 function createEdge(graph, v1, v2){
   var edge = Makrene.Edge();
   edge.vertices.push(v1);
@@ -1177,7 +1237,18 @@ function createEdge(graph, v1, v2){
   linkEdgeWithVertexEdges(edge, v2);
 }
 
-function linkEdgeWithVertexEdges (edge, vertex){
+/**
+ *  Links given edge with all edges of a vertex.
+ * 
+ *  Syntax:
+ *  linkEdgeWithVertexEdges(edge, vertex)
+ * 
+ *  @private
+ *  @param {Makrene.Edge} edge - The edge to be linked. 
+ *  @param {Makrene.Vertex} vertex - The vertex with edge neighbors.
+ *  @return {undefined}
+ */
+function linkEdgeWithVertexEdges(edge, vertex){
   vertex.edges.forEach(function(e){
     if (edge != e && !edge.neighbors.includes(e)){
       edge.neighbors.push(e);
@@ -1186,6 +1257,20 @@ function linkEdgeWithVertexEdges (edge, vertex){
   });
 }
 
+/**
+ *  Creates a new face for given graph from vertex one over 
+ *  vertex two to vertex three.
+ * 
+ *  Syntax:
+ *  createFace(graph, v1, v2, v3)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph  - The graph instance.
+ *  @param {Makrene.Vertex} v1 - Vertex one of new face.
+ *  @param {Makrene.Vertex} v2 - Vertex two of new face.
+ *  @param {Makrene.Vertex} v3 - Vertex three of new face.
+ *  @return {undefined}
+ */
 function createFace(graph, v1, v2, v3){
   var f = Makrene.Face();
 
@@ -1223,6 +1308,17 @@ function createFace(graph, v1, v2, v3){
   });
 }
 
+/**
+ *  Links given face with all faces of a vertex.
+ * 
+ *  Syntax:
+ *  linkFaceWithVertexFaces(edge, vertex)
+ * 
+ *  @private
+ *  @param {Makrene.Edge} face - The face to be linked. 
+ *  @param {Makrene.Vertex} vertex - The vertex with faces neighbors.
+ *  @return {undefined}
+ */
 function linkFaceWithVertexFaces(face, vertex){
   vertex.faces.forEach(function(f){
     if (face != f && !face.neighbors.includes(f)){
@@ -1232,9 +1328,21 @@ function linkFaceWithVertexFaces(face, vertex){
   });
 }
 
-function calculateVertexDegree(graph, level, levelPos) {
+/**
+ *  Calculates the degree of vertex on the circle level.
+ * 
+ *  Syntax:
+ *  calculateVertexDegree(graph, level, position)
+ * 
+ *  @private
+ *  @param {Makrene.Circle} graph  - The graph instance.
+ *  @param {number} level - The level of the circle.
+ *  @param {number} position - The position on the level.
+ *  @return {number} - the degree of the vertex.
+ */
+function calculateVertexDegree(graph, level, position) {
   var levelDegreeOffset =  (360/graph.numVertexOnLevel)/2;
-  return levelDegreeOffset + (levelDegreeOffset * level) + ((360/graph.numVertexOnLevel) * levelPos);
+  return levelDegreeOffset + (levelDegreeOffset * level) + ((360/graph.numVertexOnLevel) * position);
 }
 
 }());
