@@ -2,45 +2,15 @@
 
 var test = require('tape');
 var Makrene = require('../build/src/makrene/makrene.js');
+var FakeContext = require('./fakeContext.js')();
 
 test('Visualizer', function (t) {
     t.plan(1)
 
     var graph = Makrene.Graph();
 
-    var fakeContext = {
-        fillStyle: "black",
-        lineWidth: 1,
-        strokeStyle: "black",
-
-        beginPath: function (){
-
-        },
-        moveTo: function(x,y){
-
-        },
-        lineTo: function(x,y){
-
-        },
-        fill: function(){
-
-        },
-        stroke: function(){
-
-        },
-        fillRect: function(x, y, width, height){
-
-        },
-        fillText: function(text, x, y){
-
-        },
-        measureText: function(text){
-            return {
-                width: 0,
-                height: 0
-            };
-        }
-    };
+    var vertex = Makrene.Vertex();
+    graph.vertices.push(vertex);
 
     var config = {
         drawFaces: true,
@@ -51,7 +21,7 @@ test('Visualizer', function (t) {
         drawVertexDebugText: true,
     };
 
-    Makrene.Visualizer(fakeContext, graph, config);
+    Makrene.Visualizer(FakeContext, graph, config);
 
-    t.equal(true, true);
+    t.ok(FakeContext.beginPathCalls.length > 0);
 });

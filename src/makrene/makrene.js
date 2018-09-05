@@ -1,3 +1,5 @@
+(function() {
+
 /*global require, module */
 
 /**
@@ -53,3 +55,5 @@ module.exports = Object.assign(require('./base/makrene.base'), {
   })
   
 });
+
+}());

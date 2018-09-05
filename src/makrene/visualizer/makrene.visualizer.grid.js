@@ -1,3 +1,5 @@
+(function() {
+
 /*global require, module */
 
 var base = require('./makrene.visualizer');
@@ -14,3 +16,5 @@ module.exports = function (context, circle, config) {
       return config.offset + (((config.vertexHeight + config.margin ) * v.data.row) + config.vertexHeight/2);
     });
 };
+
+}());

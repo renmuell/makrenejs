@@ -1,3 +1,5 @@
+(function() {
+
 /*global require, module */
 
 var base = require('./makrene.visualizer');
@@ -17,3 +19,5 @@ module.exports = function (context, circle, config) {
       return offsetY + ((Math.sin(v.data.degree * 0.0174532925) * (v.data.level * config.levelOffset)) + config.vertexHeight / 2);
     });
 };
+
+}());

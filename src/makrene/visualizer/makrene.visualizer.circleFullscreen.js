@@ -1,3 +1,5 @@
+(function() {
+
 /*global require, module */
 
 var base = require('./makrene.visualizer');
@@ -133,3 +135,5 @@ function edgeOfView (rect, deg) {
   
   return edgePoint;
 }
+
+}());

@@ -1,9 +1,16 @@
+(function() {
+
 /*global module */
 
 var Search = {
 
   /**
-   *  
+   *  Depth first search algorithm.
+   * 
+   *  @param {Makrene.Vertex} vertex - vertex
+   *  @param {number} distance - distance
+   *  @param {callable} fn - fn
+   *  @return {undefined}
    */
   DepthFirstSearch: function(vertex, distance, fn){
     if (!vertex.data.visited && distance>0) {
@@ -18,7 +25,12 @@ var Search = {
   },
 
   /**
-   *
+   *  Breadth first search algorithm.
+   * 
+   *  @param {array} vertices - vertices
+   *  @param {number} distance - distance
+   *  @param {callable} fn - fn
+   *  @return {undefined}
    */
   BreadthFirstSearch: function (vertices, distance, fn) {
     if (distance > 0) {
@@ -40,7 +52,13 @@ var Search = {
   },
   
   /**
+   *  Breadth first search iterate algorithm.
    * 
+   *  @param {Makrene.Graph} graph - graph
+   *  @param {array} vertices - vertices
+   *  @param {callable} fn - fn
+   *  @param {array} visited - visited
+   *  @return {object} - next iterator object
    */
   BreadthFirstSearchIterate: function (graph, vertices, fn, visited) {
     visited = visited || [];
@@ -78,6 +96,10 @@ var Search = {
         visitedAll   : visited,
         nextVertices : nextVertices,
 
+        /**
+         *  Iterator object to execute next step of breadth first search.
+         *  @return {object} - next iterator object
+         */
         next : function () {
           return Search.BreadthFirstSearchIterate(graph, nextVertices, fn, visited);
         }
@@ -87,3 +109,5 @@ var Search = {
 };
 
 module.exports = Search;
+
+}());

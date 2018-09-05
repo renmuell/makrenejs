@@ -6,6 +6,7 @@
  *  KI for Makrene Circle.
  * 
  *  @param {Makrene.Circle} circle - The circle instance.
+ *  @return {Makrene.Ki.Circle} - The factory function
  */
 module.exports = function(circle){
 

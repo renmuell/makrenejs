@@ -1,3 +1,5 @@
+(function() {
+
 /*global module */
 
 module.exports = function(context, graph, config, getPosX, getPosY){
@@ -226,6 +228,17 @@ module.exports = function(context, graph, config, getPosX, getPosY){
   }
 };
 
+/**
+ *  Draws text on canvas context on x and y position 
+ *  with given color value.
+ * 
+ *  @param {object} context - context
+ *  @param {string} content - text
+ *  @param {number} x - x position
+ *  @param {number} y - y position
+ *  @param {string} color - color for text
+ *  @return {undefined}
+ */
 function drawText(context, content, x, y, color){
   var lineHeight=context.measureText('M').width;
   var width = context.measureText(content).width;
@@ -240,3 +253,5 @@ function drawText(context, content, x, y, color){
   context.strokeStyle = context.fillStyle = color;
   context.fillText(content, x - (width/2), y + (lineHeight/2));
 }
+
+}());

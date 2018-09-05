@@ -1,3 +1,5 @@
+(function() {
+
 /*global module */
 
 /**
@@ -315,3 +317,5 @@ var Makrene = {
 };
 
 module.exports = Makrene;
+
+}());

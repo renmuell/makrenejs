@@ -1,4 +1,6 @@
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Makrene=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+(function() {
+
 /*global module */
 
 /**
@@ -317,7 +319,11 @@ var Makrene = {
 
 module.exports = Makrene;
 
+}());
+
 },{}],2:[function(_dereq_,module,exports){
+(function() {
+
 /*global require, module */
 
 /**
@@ -373,6 +379,8 @@ module.exports = Object.assign(_dereq_('./base/makrene.base'), {
   })
   
 });
+
+}());
 
 },{"./base/makrene.base":1,"./graph/makrene.graph.circle":3,"./graph/makrene.graph.grid":4,"./ki/makrene.ki.circle":5,"./search/makrene.search":6,"./visualizer/makrene.visualizer":10,"./visualizer/makrene.visualizer.circle":7,"./visualizer/makrene.visualizer.circleFullscreen":8,"./visualizer/makrene.visualizer.grid":9}],3:[function(_dereq_,module,exports){
 (function() {
@@ -503,6 +511,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.numCircleLevels
+       * 
+       *  @return {number} - circle.numCircleLevels
        */
       get: function(){
         return _numCircleLevels;
@@ -519,6 +529,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.length
+       * 
+       *  @return {number} - circle.length
        */
       get: function(){
         return _circleLength;
@@ -535,6 +547,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.isEmpty
+       * 
+       *  @return {boolean} - is empty
        */
       get: function(){
         return graph.vertices.length === 0;
@@ -551,6 +565,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.first
+       * 
+       *  @return {Makrene.Vertex} - vertex
        */
       get: function(){
         return graph.vertices[0] ? graph.vertices[0][0] : undefined;
@@ -568,6 +584,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.center
+       * 
+       *  @return {Makrene.Vertex} - vertex
        */
       get: function(){
         return graph.first;
@@ -585,6 +603,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.last
+       * 
+       *  @return {Makrene.Vertex} - vertex
        */
       get: function(){
         return graph.isEmpty 
@@ -2151,6 +2171,7 @@ function linkFaces(graph){
  *  KI for Makrene Circle.
  * 
  *  @param {Makrene.Circle} circle - The circle instance.
+ *  @return {Makrene.Ki.Circle} - The factory function
  */
 module.exports = function(circle){
 
@@ -2220,12 +2241,19 @@ module.exports = function(circle){
 }());
 
 },{}],6:[function(_dereq_,module,exports){
+(function() {
+
 /*global module */
 
 var Search = {
 
   /**
-   *  
+   *  Depth first search algorithm.
+   * 
+   *  @param {Makrene.Vertex} vertex - vertex
+   *  @param {number} distance - distance
+   *  @param {callable} fn - fn
+   *  @return {undefined}
    */
   DepthFirstSearch: function(vertex, distance, fn){
     if (!vertex.data.visited && distance>0) {
@@ -2240,7 +2268,12 @@ var Search = {
   },
 
   /**
-   *
+   *  Breadth first search algorithm.
+   * 
+   *  @param {array} vertices - vertices
+   *  @param {number} distance - distance
+   *  @param {callable} fn - fn
+   *  @return {undefined}
    */
   BreadthFirstSearch: function (vertices, distance, fn) {
     if (distance > 0) {
@@ -2262,7 +2295,13 @@ var Search = {
   },
   
   /**
+   *  Breadth first search iterate algorithm.
    * 
+   *  @param {Makrene.Graph} graph - graph
+   *  @param {array} vertices - vertices
+   *  @param {callable} fn - fn
+   *  @param {array} visited - visited
+   *  @return {object} - next iterator object
    */
   BreadthFirstSearchIterate: function (graph, vertices, fn, visited) {
     visited = visited || [];
@@ -2300,6 +2339,10 @@ var Search = {
         visitedAll   : visited,
         nextVertices : nextVertices,
 
+        /**
+         *  Iterator object to execute next step of breadth first search.
+         *  @return {object} - next iterator object
+         */
         next : function () {
           return Search.BreadthFirstSearchIterate(graph, nextVertices, fn, visited);
         }
@@ -2310,7 +2353,11 @@ var Search = {
 
 module.exports = Search;
 
+}());
+
 },{}],7:[function(_dereq_,module,exports){
+(function() {
+
 /*global require, module */
 
 var base = _dereq_('./makrene.visualizer');
@@ -2331,7 +2378,11 @@ module.exports = function (context, circle, config) {
     });
 };
 
+}());
+
 },{"./makrene.visualizer":10}],8:[function(_dereq_,module,exports){
+(function() {
+
 /*global require, module */
 
 var base = _dereq_('./makrene.visualizer');
@@ -2468,7 +2519,11 @@ function edgeOfView (rect, deg) {
   return edgePoint;
 }
 
+}());
+
 },{"./makrene.visualizer":10}],9:[function(_dereq_,module,exports){
+(function() {
+
 /*global require, module */
 
 var base = _dereq_('./makrene.visualizer');
@@ -2486,7 +2541,11 @@ module.exports = function (context, circle, config) {
     });
 };
 
+}());
+
 },{"./makrene.visualizer":10}],10:[function(_dereq_,module,exports){
+(function() {
+
 /*global module */
 
 module.exports = function(context, graph, config, getPosX, getPosY){
@@ -2715,6 +2774,17 @@ module.exports = function(context, graph, config, getPosX, getPosY){
   }
 };
 
+/**
+ *  Draws text on canvas context on x and y position 
+ *  with given color value.
+ * 
+ *  @param {object} context - context
+ *  @param {string} content - text
+ *  @param {number} x - x position
+ *  @param {number} y - y position
+ *  @param {string} color - color for text
+ *  @return {undefined}
+ */
 function drawText(context, content, x, y, color){
   var lineHeight=context.measureText('M').width;
   var width = context.measureText(content).width;
@@ -2729,6 +2799,9 @@ function drawText(context, content, x, y, color){
   context.strokeStyle = context.fillStyle = color;
   context.fillText(content, x - (width/2), y + (lineHeight/2));
 }
+
+}());
+
 },{}]},{},[2])
 (2)
 });

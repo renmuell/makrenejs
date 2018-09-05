@@ -126,6 +126,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.numCircleLevels
+       * 
+       *  @return {number} - circle.numCircleLevels
        */
       get: function(){
         return _numCircleLevels;
@@ -142,6 +144,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.length
+       * 
+       *  @return {number} - circle.length
        */
       get: function(){
         return _circleLength;
@@ -158,6 +162,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.isEmpty
+       * 
+       *  @return {boolean} - is empty
        */
       get: function(){
         return graph.vertices.length === 0;
@@ -174,6 +180,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.first
+       * 
+       *  @return {Makrene.Vertex} - vertex
        */
       get: function(){
         return graph.vertices[0] ? graph.vertices[0][0] : undefined;
@@ -191,6 +199,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.center
+       * 
+       *  @return {Makrene.Vertex} - vertex
        */
       get: function(){
         return graph.first;
@@ -208,6 +218,8 @@ module.exports = function Makrene_Circle(config) {
 
       /**
        *  Getter for circle.last
+       * 
+       *  @return {Makrene.Vertex} - vertex
        */
       get: function(){
         return graph.isEmpty 
