@@ -9,24 +9,24 @@
 var Makrene = {
 
   /**
-   *  Current Version of library
+   *  Current Version of the library.
+   * 
    *  @public
    *  @type {string}
    */
   version : '0.1.1',
 
   /**
-   *  The factory Vertex(), create an new vertex object.
+   *  The factory Vertex(), create a new vertex object.
    * 
-   *  A vertex is a fundamental element of a graph. It represent an node which can hold data and
-   *  can be linked to create a graph.
+   *  A point in space that holds data.
    *
    *  Syntax:
    *  var vertex = Makrene.Vertex();
    *
    *  @public
-   *  @param {object} data - The data of the vertex
-   *  @return {Makrene.Vertex} - New vertex object
+   *  @param {object} data - The data of the vertex.
+   *  @return {Makrene.Vertex} - New vertex instance.
    */
   Vertex: function Makrene_Vertex (data) {
 
@@ -41,13 +41,13 @@ var Makrene = {
   },
 
   /**
-   *  The isVertex() method determines whether the passed value is an Vertex object.
+   *  The isVertex() method determines whether the passed value is a Vertex object.
    *
    *  Syntax:
    *  Makrene.isVertex(value);
    *  
    *  @param {object} value - The value to be checked.
-   *  @return {bool} - true if the value is an Vertex; otherwise, false.
+   *  @return {bool} - True if the value is a Vertex; otherwise, false.
    */
   isVertex: function (value){
     if (typeof value === 'undefined') { return false; }
@@ -55,16 +55,16 @@ var Makrene = {
   },
 
   /**
-   *  The factory Edge(), create an new edge object.
+   *  The factory Edge(), create a new edge object.
    * 
-   *  A edge represents a connection of two vertices.
+   *  An edge represents a connection between two vertices.
    *
    *  Syntax:
    *  var edge = Makrene.Edge();
    *
    *  @public
-   *  @param {object} data - The data of the edge
-   *  @return {Makrene.Edge} - New edge object
+   *  @param {object} data - The data of the edge.
+   *  @return {Makrene.Edge} - New edge instance.
    */
   Edge: function Makrene_Edge(data){
 
@@ -85,7 +85,7 @@ var Makrene = {
    *  Makrene.isEdge(value);
    *  
    *  @param {object} value - The value to be checked.
-   *  @return {bool} - true if the value is an Edge; otherwise, false.
+   *  @return {bool} - True if the value is an Edge; otherwise, false.
    */
   isEdge: function (value){
     if (typeof value === 'undefined') { return false; }
@@ -93,16 +93,16 @@ var Makrene = {
   },
 
   /**
-   *  The factory Face(), create an new Face object.
+   *  The factory Face(), create a new Face object.
    * 
-   *  A face represents a area between closed connected edges. Also known as polygon.
+   *  A face represents an area between closed connected edges.
    *
    *  Syntax:
    *  var face = Makrene.Face();
    *
    *  @public
-   *  @param {object} data - The data of the face
-   *  @return {Makrene.Face} - New face object
+   *  @param {object} data - The data of the face.
+   *  @return {Makrene.Face} - New face instance.
    */
   Face: function Makrene_Face(data){
 
@@ -117,13 +117,13 @@ var Makrene = {
   },
 
   /**
-   *  The isFace() method determines whether the passed value is an Face object.
+   *  The isFace() method determines whether the passed value is a Face object.
    *
    *  Syntax:
    *  Makrene.isFace(value);
    *  
    *  @param {object} value - The value to be checked.
-   *  @return {bool} - true if the value is an Face; otherwise, false.
+   *  @return {bool} - True if the value is a Face; otherwise, false.
    */
   isFace: function (value){
     if (typeof value === 'undefined') { return false; }
@@ -131,9 +131,9 @@ var Makrene = {
   },
 
   /**
-   *  The factory Graph(), create an new Graph object.
+   *  The factory Graph(), create a new Graph object.
    * 
-   *  A graph is a set of connected vertices, edges and faces.
+   *  A graph is a set of connected vertices, edges, and faces.
    *
    *  Syntax:
    *  var face = Makrene.Graph();
@@ -141,7 +141,7 @@ var Makrene = {
    *  @public
    *  @param {object} data - The data of the graph.
    *  @param {object} graph - Use this for inheritance.
-   *  @return {Makrene.Graph} - New graph object.
+   *  @return {Makrene.Graph} - New graph instance.
    */
   Graph: function Makrene_Graph(data, graph){
 
@@ -213,8 +213,8 @@ var Makrene = {
        *
        *  @public
        *  @fires Change-Event
-       *  @param {Makrene.Vertex} vertex - object to add
-       *  @return {Makrene.Graph}        - this graph instance
+       *  @param {Makrene.Vertex} vertex - New object.
+       *  @return {Makrene.Graph}        - This graph instance.
        */
       addVertex : function(vertex) { 
         graph.vertices.push(vertex); 
@@ -233,8 +233,8 @@ var Makrene = {
        *
        *  @public
        *  @fires Change-Event
-       *  @param {Makrene.Edge} edge - object to add
-       *  @return {Makrene.Graph}    - this graph instance
+       *  @param {Makrene.Edge} edge - New object.
+       *  @return {Makrene.Graph}    - This graph instance.
        */
       addEdge   : function(edge) { 
         graph.edges.push(edge);    
@@ -253,8 +253,8 @@ var Makrene = {
        *
        *  @public
        *  @fires Change-Event
-       *  @param {Makrene.Face} face - object to add
-       *  @return {Makrene.Graph}    - this graph instance
+       *  @param {Makrene.Face} face - New object.
+       *  @return {Makrene.Graph}    - This graph instance.
        */
       addFace   : function(face)   { 
         graph.faces.push(face);    
@@ -272,25 +272,25 @@ var Makrene = {
        *  The forEach() method executes a provided function once for each vertex of the graph.
        *
        *  @public
-       *  @param {function} fn - callback function for each vertex
+       *  @param {function} callback - Callback function for each vertex.
        *  @return {undefined}
        */
-      forEach   : function(fn)     { graph.vertices.forEach(fn); },
+      forEach   : function(callback)     { graph.vertices.forEach(callback); },
 
       /**
-       *  The onchange event occurs when the value of an graph component has been changed.
+       *  The onchange event occurs when the value of a graph component has been changed.
        *
        *  @public
-       *  @param {function} fn - callback when an change is been emitted. 
+       *  @param {function} callback - Callback when a change is been emitted. 
        *  @return {undefined}
        */
-      onChange  : function(fn)     { graph._onChangeCallbacks.push(fn); },
+      onChange  : function(callback)     { graph._onChangeCallbacks.push(callback); },
 
       /**
        *  Triggers a change event, which will call all listeners.
        *
        *  @public
-       *  @param {object} event - the event data which will be sent
+       *  @param {object} event - The event data.
        *  @return {undefined}
        */
       emitChange: function(event)  { 
@@ -302,13 +302,13 @@ var Makrene = {
   },
 
   /**
-   *  The isGraph() method determines whether the passed value is an Graph object.
+   *  The isGraph() method determines whether the passed value is a Graph object.
    *
    *  Syntax:
    *  Makrene.isGraph(value);
    *  
    *  @param {object} value - The value to be checked.
-   *  @return {bool} - true if the value is an Graph; otherwise, false.
+   *  @return {bool} - True if the value is a Graph; otherwise, false.
    */
   isGraph: function (value){
     if (typeof value === 'undefined') { return false; }
@@ -390,7 +390,10 @@ module.exports = Object.assign(_dereq_('./base/makrene.base'), {
 var Makrene = _dereq_('../base/makrene.base')
 
 /**
- *  Multi linked circle mesh.
+ *  A circle has multiple levels, each with a fixed number of vertices. 
+ *  The center has only one vertex. This center connects with each vertex 
+ *  of the first level. Each vertex on a level is then connected with their 
+ *  neighbors on the same level and two vertices of the lower and upper level.
  *
  *     -----B-----
  *    /    / \    \
@@ -398,22 +401,14 @@ var Makrene = _dereq_('../base/makrene.base')
  *   | \ / \ / \ / |
  *   |  4---1---7  |
  *   | / \ / \ / \ |  Circle with numVertexOnLevel = 6
- *   9----3---2----D         and  length = 13
+ *   9----3---2----D  and length = 13
  *    \    \ /    /
  *     -----8-----
  *
- *  The circle contains multiple levels/rings, each with a 
- *  max number of vertices. The center contains one vertex, connected
- *  with each of the first level/ring. Each level vertex is connected
- *  with their visual neighbor and two vertices of the lower and 
- *  higher level/ring (because each level/ring is offset by half 
- *  the distance of each vertex, which puts every vertex in the 
- *  middle of the vertices below and above). 
- *
- *  Behaves like a sequence. The first element is the center of 
- *  the circle and it grows outside, by which the last element 
- *  is the vertex with the highest degree/angle on the outer 
- *  level/ring.
+ *  This structure behaves like a sequence. The first element is the center. 
+ *  Each new vertex grows farther out. The last element is the vertex with the 
+ *  highest degree on the outer level. The data structure is highly dynamic with 
+ *  multiple methods to mutate its state.
  *  
  *  Syntax:
  *  
@@ -421,7 +416,7 @@ var Makrene = _dereq_('../base/makrene.base')
  *
  *  @public
  *  @implements {Makrene.Graph}
- *  @param {object} config - the Settings
+ *  @param {object} config - The Settings.
  *  @param {number} config.numVertexOnLevel - @see graph.numVertexOnLevel
  *  @returns {Makrene.Circle} - The circle instance.
  */
@@ -441,7 +436,8 @@ module.exports = function Makrene_Circle(config) {
   config = Object.assign({
 
    /**
-    *  default setting for numVertexOnLevel
+    *  Default setting for numVertexOnLevel.
+    * 
     *  @see graph.numVertexOnLevel
     */
     numVertexOnLevel: 8
@@ -483,7 +479,7 @@ module.exports = function Makrene_Circle(config) {
    */
 
   /**
-   *  Circle Instance.
+   *  Circle instance.
    * 
    *  @typedef Makrene.Circle
    *  @type {Object}
@@ -491,7 +487,7 @@ module.exports = function Makrene_Circle(config) {
   var graph = Object.create(Makrene_Circle.prototype, {
 
     /**
-     *  Gets the number of max vertex count per level/ring.
+     *  Gets the number of max vertex count per level.
      *
      *  @public
      *  @default 8
@@ -502,7 +498,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Gets the number of circle levels/rings.
+     *  Gets the number of circle levels.
      *
      *  @public
      *  @type {number}
@@ -510,9 +506,9 @@ module.exports = function Makrene_Circle(config) {
     numCircleLevels: {
 
       /**
-       *  Getter for circle.numCircleLevels
+       *  Getter for circle.numCircleLevels.
        * 
-       *  @return {number} - circle.numCircleLevels
+       *  @return {number} - circle.numCircleLevels.
        */
       get: function(){
         return _numCircleLevels;
@@ -520,7 +516,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  The number of vertices in the circle/graph.
+     *  The number of vertices in the circle.
      *
      *  @public
      *  @type {number}
@@ -528,9 +524,9 @@ module.exports = function Makrene_Circle(config) {
     length  : {
 
       /**
-       *  Getter for circle.length
+       *  Getter for circle.length.
        * 
-       *  @return {number} - circle.length
+       *  @return {number} - circle.length.
        */
       get: function(){
         return _circleLength;
@@ -538,7 +534,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Is circle empty.
+     *  Is circle empty?
      *
      *  @public
      *  @type {boolean}
@@ -546,9 +542,9 @@ module.exports = function Makrene_Circle(config) {
     isEmpty : {
 
       /**
-       *  Getter for circle.isEmpty
+       *  Getter for circle.isEmpty.
        * 
-       *  @return {boolean} - is empty
+       *  @return {boolean} - Is empty.
        */
       get: function(){
         return graph.vertices.length === 0;
@@ -556,7 +552,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  First Element of circle/graph, which is the center of the circle.
+     *  The first element of the circle, which is the center of the circle.
      *
      *  @public
      *  @type {Makrene.Vertex}
@@ -564,9 +560,9 @@ module.exports = function Makrene_Circle(config) {
     first: {
 
       /**
-       *  Getter for circle.first
+       *  Getter for circle.first.
        * 
-       *  @return {Makrene.Vertex} - vertex
+       *  @return {Makrene.Vertex} - The vertex.
        */
       get: function(){
         return graph.vertices[0] ? graph.vertices[0][0] : undefined;
@@ -574,7 +570,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Visual center element of circle/graph. Same as first().
+     *  Visual center element of circle. Same as first().
      *
      *  @public
      *  @alias graph.first
@@ -583,9 +579,9 @@ module.exports = function Makrene_Circle(config) {
     center: {
 
       /**
-       *  Getter for circle.center
+       *  Getter for circle.center.
        * 
-       *  @return {Makrene.Vertex} - vertex
+       *  @return {Makrene.Vertex} - The vertex.
        */
       get: function(){
         return graph.first;
@@ -593,8 +589,8 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Last element of circle/graph, which is the vertex with the 
-     *  highest degree/angle on the outer level/ring.
+     *  Last element of the circle, which is the vertex 
+     *  with the highest degree on the outer level.
      *
      *  @public
      *  @type {Makrene.Vertex}
@@ -602,9 +598,9 @@ module.exports = function Makrene_Circle(config) {
     last: {
 
       /**
-       *  Getter for circle.last
+       *  Getter for circle.last.
        * 
-       *  @return {Makrene.Vertex} - vertex
+       *  @return {Makrene.Vertex} - The vertex.
        */
       get: function(){
         return graph.isEmpty 

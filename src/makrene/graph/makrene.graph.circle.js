@@ -5,7 +5,10 @@
 var Makrene = require('../base/makrene.base')
 
 /**
- *  Multi linked circle mesh.
+ *  A circle has multiple levels, each with a fixed number of vertices. 
+ *  The center has only one vertex. This center connects with each vertex 
+ *  of the first level. Each vertex on a level is then connected with their 
+ *  neighbors on the same level and two vertices of the lower and upper level.
  *
  *     -----B-----
  *    /    / \    \
@@ -13,22 +16,14 @@ var Makrene = require('../base/makrene.base')
  *   | \ / \ / \ / |
  *   |  4---1---7  |
  *   | / \ / \ / \ |  Circle with numVertexOnLevel = 6
- *   9----3---2----D         and  length = 13
+ *   9----3---2----D  and length = 13
  *    \    \ /    /
  *     -----8-----
  *
- *  The circle contains multiple levels/rings, each with a 
- *  max number of vertices. The center contains one vertex, connected
- *  with each of the first level/ring. Each level vertex is connected
- *  with their visual neighbor and two vertices of the lower and 
- *  higher level/ring (because each level/ring is offset by half 
- *  the distance of each vertex, which puts every vertex in the 
- *  middle of the vertices below and above). 
- *
- *  Behaves like a sequence. The first element is the center of 
- *  the circle and it grows outside, by which the last element 
- *  is the vertex with the highest degree/angle on the outer 
- *  level/ring.
+ *  This structure behaves like a sequence. The first element is the center. 
+ *  Each new vertex grows farther out. The last element is the vertex with the 
+ *  highest degree on the outer level. The data structure is highly dynamic with 
+ *  multiple methods to mutate its state.
  *  
  *  Syntax:
  *  
@@ -36,7 +31,7 @@ var Makrene = require('../base/makrene.base')
  *
  *  @public
  *  @implements {Makrene.Graph}
- *  @param {object} config - the Settings
+ *  @param {object} config - The Settings.
  *  @param {number} config.numVertexOnLevel - @see graph.numVertexOnLevel
  *  @returns {Makrene.Circle} - The circle instance.
  */
@@ -56,7 +51,8 @@ module.exports = function Makrene_Circle(config) {
   config = Object.assign({
 
    /**
-    *  default setting for numVertexOnLevel
+    *  Default setting for numVertexOnLevel.
+    * 
     *  @see graph.numVertexOnLevel
     */
     numVertexOnLevel: 8
@@ -98,7 +94,7 @@ module.exports = function Makrene_Circle(config) {
    */
 
   /**
-   *  Circle Instance.
+   *  Circle instance.
    * 
    *  @typedef Makrene.Circle
    *  @type {Object}
@@ -106,7 +102,7 @@ module.exports = function Makrene_Circle(config) {
   var graph = Object.create(Makrene_Circle.prototype, {
 
     /**
-     *  Gets the number of max vertex count per level/ring.
+     *  Gets the number of max vertex count per level.
      *
      *  @public
      *  @default 8
@@ -117,7 +113,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Gets the number of circle levels/rings.
+     *  Gets the number of circle levels.
      *
      *  @public
      *  @type {number}
@@ -125,9 +121,9 @@ module.exports = function Makrene_Circle(config) {
     numCircleLevels: {
 
       /**
-       *  Getter for circle.numCircleLevels
+       *  Getter for circle.numCircleLevels.
        * 
-       *  @return {number} - circle.numCircleLevels
+       *  @return {number} - circle.numCircleLevels.
        */
       get: function(){
         return _numCircleLevels;
@@ -135,7 +131,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  The number of vertices in the circle/graph.
+     *  The number of vertices in the circle.
      *
      *  @public
      *  @type {number}
@@ -143,9 +139,9 @@ module.exports = function Makrene_Circle(config) {
     length  : {
 
       /**
-       *  Getter for circle.length
+       *  Getter for circle.length.
        * 
-       *  @return {number} - circle.length
+       *  @return {number} - circle.length.
        */
       get: function(){
         return _circleLength;
@@ -153,7 +149,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Is circle empty.
+     *  Is circle empty?
      *
      *  @public
      *  @type {boolean}
@@ -161,9 +157,9 @@ module.exports = function Makrene_Circle(config) {
     isEmpty : {
 
       /**
-       *  Getter for circle.isEmpty
+       *  Getter for circle.isEmpty.
        * 
-       *  @return {boolean} - is empty
+       *  @return {boolean} - Is empty.
        */
       get: function(){
         return graph.vertices.length === 0;
@@ -171,7 +167,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  First Element of circle/graph, which is the center of the circle.
+     *  The first element of the circle, which is the center of the circle.
      *
      *  @public
      *  @type {Makrene.Vertex}
@@ -179,9 +175,9 @@ module.exports = function Makrene_Circle(config) {
     first: {
 
       /**
-       *  Getter for circle.first
+       *  Getter for circle.first.
        * 
-       *  @return {Makrene.Vertex} - vertex
+       *  @return {Makrene.Vertex} - The vertex.
        */
       get: function(){
         return graph.vertices[0] ? graph.vertices[0][0] : undefined;
@@ -189,7 +185,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Visual center element of circle/graph. Same as first().
+     *  Visual center element of circle. Same as first().
      *
      *  @public
      *  @alias graph.first
@@ -198,9 +194,9 @@ module.exports = function Makrene_Circle(config) {
     center: {
 
       /**
-       *  Getter for circle.center
+       *  Getter for circle.center.
        * 
-       *  @return {Makrene.Vertex} - vertex
+       *  @return {Makrene.Vertex} - The vertex.
        */
       get: function(){
         return graph.first;
@@ -208,8 +204,8 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Last element of circle/graph, which is the vertex with the 
-     *  highest degree/angle on the outer level/ring.
+     *  Last element of the circle, which is the vertex 
+     *  with the highest degree on the outer level.
      *
      *  @public
      *  @type {Makrene.Vertex}
@@ -217,9 +213,9 @@ module.exports = function Makrene_Circle(config) {
     last: {
 
       /**
-       *  Getter for circle.last
+       *  Getter for circle.last.
        * 
-       *  @return {Makrene.Vertex} - vertex
+       *  @return {Makrene.Vertex} - The vertex.
        */
       get: function(){
         return graph.isEmpty 

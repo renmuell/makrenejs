@@ -8,24 +8,24 @@
 var Makrene = {
 
   /**
-   *  Current Version of library
+   *  Current Version of the library.
+   * 
    *  @public
    *  @type {string}
    */
   version : '0.1.1',
 
   /**
-   *  The factory Vertex(), create an new vertex object.
+   *  The factory Vertex(), create a new vertex object.
    * 
-   *  A vertex is a fundamental element of a graph. It represent an node which can hold data and
-   *  can be linked to create a graph.
+   *  A point in space that holds data.
    *
    *  Syntax:
    *  var vertex = Makrene.Vertex();
    *
    *  @public
-   *  @param {object} data - The data of the vertex
-   *  @return {Makrene.Vertex} - New vertex object
+   *  @param {object} data - The data of the vertex.
+   *  @return {Makrene.Vertex} - New vertex instance.
    */
   Vertex: function Makrene_Vertex (data) {
 
@@ -40,13 +40,13 @@ var Makrene = {
   },
 
   /**
-   *  The isVertex() method determines whether the passed value is an Vertex object.
+   *  The isVertex() method determines whether the passed value is a Vertex object.
    *
    *  Syntax:
    *  Makrene.isVertex(value);
    *  
    *  @param {object} value - The value to be checked.
-   *  @return {bool} - true if the value is an Vertex; otherwise, false.
+   *  @return {bool} - True if the value is a Vertex; otherwise, false.
    */
   isVertex: function (value){
     if (typeof value === 'undefined') { return false; }
@@ -54,16 +54,16 @@ var Makrene = {
   },
 
   /**
-   *  The factory Edge(), create an new edge object.
+   *  The factory Edge(), create a new edge object.
    * 
-   *  A edge represents a connection of two vertices.
+   *  An edge represents a connection between two vertices.
    *
    *  Syntax:
    *  var edge = Makrene.Edge();
    *
    *  @public
-   *  @param {object} data - The data of the edge
-   *  @return {Makrene.Edge} - New edge object
+   *  @param {object} data - The data of the edge.
+   *  @return {Makrene.Edge} - New edge instance.
    */
   Edge: function Makrene_Edge(data){
 
@@ -84,7 +84,7 @@ var Makrene = {
    *  Makrene.isEdge(value);
    *  
    *  @param {object} value - The value to be checked.
-   *  @return {bool} - true if the value is an Edge; otherwise, false.
+   *  @return {bool} - True if the value is an Edge; otherwise, false.
    */
   isEdge: function (value){
     if (typeof value === 'undefined') { return false; }
@@ -92,16 +92,16 @@ var Makrene = {
   },
 
   /**
-   *  The factory Face(), create an new Face object.
+   *  The factory Face(), create a new Face object.
    * 
-   *  A face represents a area between closed connected edges. Also known as polygon.
+   *  A face represents an area between closed connected edges.
    *
    *  Syntax:
    *  var face = Makrene.Face();
    *
    *  @public
-   *  @param {object} data - The data of the face
-   *  @return {Makrene.Face} - New face object
+   *  @param {object} data - The data of the face.
+   *  @return {Makrene.Face} - New face instance.
    */
   Face: function Makrene_Face(data){
 
@@ -116,13 +116,13 @@ var Makrene = {
   },
 
   /**
-   *  The isFace() method determines whether the passed value is an Face object.
+   *  The isFace() method determines whether the passed value is a Face object.
    *
    *  Syntax:
    *  Makrene.isFace(value);
    *  
    *  @param {object} value - The value to be checked.
-   *  @return {bool} - true if the value is an Face; otherwise, false.
+   *  @return {bool} - True if the value is a Face; otherwise, false.
    */
   isFace: function (value){
     if (typeof value === 'undefined') { return false; }
@@ -130,9 +130,9 @@ var Makrene = {
   },
 
   /**
-   *  The factory Graph(), create an new Graph object.
+   *  The factory Graph(), create a new Graph object.
    * 
-   *  A graph is a set of connected vertices, edges and faces.
+   *  A graph is a set of connected vertices, edges, and faces.
    *
    *  Syntax:
    *  var face = Makrene.Graph();
@@ -140,7 +140,7 @@ var Makrene = {
    *  @public
    *  @param {object} data - The data of the graph.
    *  @param {object} graph - Use this for inheritance.
-   *  @return {Makrene.Graph} - New graph object.
+   *  @return {Makrene.Graph} - New graph instance.
    */
   Graph: function Makrene_Graph(data, graph){
 
@@ -212,8 +212,8 @@ var Makrene = {
        *
        *  @public
        *  @fires Change-Event
-       *  @param {Makrene.Vertex} vertex - object to add
-       *  @return {Makrene.Graph}        - this graph instance
+       *  @param {Makrene.Vertex} vertex - New object.
+       *  @return {Makrene.Graph}        - This graph instance.
        */
       addVertex : function(vertex) { 
         graph.vertices.push(vertex); 
@@ -232,8 +232,8 @@ var Makrene = {
        *
        *  @public
        *  @fires Change-Event
-       *  @param {Makrene.Edge} edge - object to add
-       *  @return {Makrene.Graph}    - this graph instance
+       *  @param {Makrene.Edge} edge - New object.
+       *  @return {Makrene.Graph}    - This graph instance.
        */
       addEdge   : function(edge) { 
         graph.edges.push(edge);    
@@ -252,8 +252,8 @@ var Makrene = {
        *
        *  @public
        *  @fires Change-Event
-       *  @param {Makrene.Face} face - object to add
-       *  @return {Makrene.Graph}    - this graph instance
+       *  @param {Makrene.Face} face - New object.
+       *  @return {Makrene.Graph}    - This graph instance.
        */
       addFace   : function(face)   { 
         graph.faces.push(face);    
@@ -271,25 +271,25 @@ var Makrene = {
        *  The forEach() method executes a provided function once for each vertex of the graph.
        *
        *  @public
-       *  @param {function} fn - callback function for each vertex
+       *  @param {function} callback - Callback function for each vertex.
        *  @return {undefined}
        */
-      forEach   : function(fn)     { graph.vertices.forEach(fn); },
+      forEach   : function(callback)     { graph.vertices.forEach(callback); },
 
       /**
-       *  The onchange event occurs when the value of an graph component has been changed.
+       *  The onchange event occurs when the value of a graph component has been changed.
        *
        *  @public
-       *  @param {function} fn - callback when an change is been emitted. 
+       *  @param {function} callback - Callback when a change is been emitted. 
        *  @return {undefined}
        */
-      onChange  : function(fn)     { graph._onChangeCallbacks.push(fn); },
+      onChange  : function(callback)     { graph._onChangeCallbacks.push(callback); },
 
       /**
        *  Triggers a change event, which will call all listeners.
        *
        *  @public
-       *  @param {object} event - the event data which will be sent
+       *  @param {object} event - The event data.
        *  @return {undefined}
        */
       emitChange: function(event)  { 
@@ -301,13 +301,13 @@ var Makrene = {
   },
 
   /**
-   *  The isGraph() method determines whether the passed value is an Graph object.
+   *  The isGraph() method determines whether the passed value is a Graph object.
    *
    *  Syntax:
    *  Makrene.isGraph(value);
    *  
    *  @param {object} value - The value to be checked.
-   *  @return {bool} - true if the value is an Graph; otherwise, false.
+   *  @return {bool} - True if the value is a Graph; otherwise, false.
    */
   isGraph: function (value){
     if (typeof value === 'undefined') { return false; }

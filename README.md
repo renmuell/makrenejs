@@ -1,12 +1,12 @@
 # makrene.js
 
-javascript graph/mash library
+A JavaScript library for exploring special polygon mesh structures. At its core, this library utilizes graph theory, mesh visualization, and higher operations. Each element connects with its neighbors, its fundamentals and their abstractions. For example, an edge knows its vertices, their neighbors and faces that connect to it.
 
 ## Fundamentals
 
 ### Vertex
 
-A vertex is a fundamental element of a graph. It represent an node which can hold data and can be linked to create a graph.
+A point in space that holds data.
 
 #### Syntax
 
@@ -14,14 +14,14 @@ var vertex = Makrene.Vertex();
 
 #### Properties
 
-neighbors	- List of connected vertex neighbors
-edges	- List of edges, where this vertex is part of
-faces	- List of faces, where this vertex is part of
-data	- The data for this vertex
+| neighbors | A list of vertices, each connected to this vertex. |
+| edges  | A list of edges, all of which point this vertex. |
+| faces  | A list of faces each containing this vertex. |
+| data  | The information associated with this vertex. |
 
 ### Edge
 
-A edge represents a connection of two vertices.
+An edge represents a connection between two vertices.
 
 #### Syntax
 
@@ -29,14 +29,14 @@ var vertex = Makrene.Edge();
 
 #### Properties
 
-neighbors	- List of connected edge neighbors
-vertices	- List of vertices, where this edge is part of
-faces	- List of faces, where this edge is part of
-data	- The data for this edge
+| neighbors | A list of edges, each connected to this edge. |
+| vertices  | A list of vertices, each vertex is part of this edge. |
+| faces  | A list of faces, each including this edge. |
+| data  | The information associated with this edge. |
 
 ### Face
 
-A face represents a area between closed connected edges. Also known as polygon.
+A face represents an area between closed connected edges.
 
 #### Syntax
 
@@ -44,14 +44,14 @@ var vertex = Makrene.Face();
 
 #### Properties
 
-neighbors	- List of connected face neighbors
-vertices	- List of vertices, where this face is part of
-edges	- List of edges, where this face is part of
-data	- The data for this face
+| neighbors | A list of faces each connected to this face. |
+| vertices  | A list of vertices, each is part of this face. |
+| edges  | A list of edges, all of which are part of this face. |
+| data  | The information associated with this face. |
 
 ### Graph
 
-A graph is a set of connected vertices, edges and faces.
+A graph is a set of connected vertices, edges, and faces.
 
 #### Syntax
 
@@ -61,11 +61,9 @@ var graph = Makrene.Graph();
 
 ### Circle
 
-Multi linked circle mesh.
+A circle has multiple levels, each with a fixed number of vertices. The center has only one vertex. This center connects with each vertex of the first level. Each vertex on a level is then connected with their neighbors on the same level and two vertices of the lower and upper level.
 
-The circle contains multiple levels/rings, each with a max number of vertices. The center contains one vertex, connected with each of the first level/ring. Each level vertex is connected with their visual neighbor and two vertices of the lower and higher level/ring (because each level/ring is offset by half the distance of each vertex, which puts every vertex in the middle of the vertices below and above).
-
-Behaves like a sequence. The first element is the center of the circle and it grows outside, by which the last element is the vertex with the highest degree/angle on the outer level/ring. The data structure is highly dynamic, with multiple method to mutate its state.
+This structure behaves like a sequence. The first element is the center. Each new vertex grows farther out. The last element is the vertex with the highest degree on the outer level. The data structure is highly dynamic with multiple methods to mutate its state.
 
 #### Syntax
 
@@ -73,9 +71,9 @@ var circle = Makrene.Circle({ numVertexOnLevel: 10 });
 
 ### Grid
 
-Multi linked grid mesh.
+A grid is a multi-linked graph of rows and columns. 
 
-Current it is a very simple data structure. It is static, which means it will create every vertex when it is created.
+Currently, it is a very simple data structure. It is static, which means it will create every vertex when it is created.
 
 #### Syntax
 

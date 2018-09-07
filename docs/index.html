@@ -103,14 +103,14 @@
         
         <hr>
         <p>
-            javascript graph/mash library
+            A JavaScript library for exploring special polygon mesh structures. At its core, this library utilizes graph theory, mesh visualization, and higher operations. Each element connects with its neighbors, its fundamentals and their abstractions. For example, an edge knows its vertices, their neighbors and faces that connect to it.
         </p>
         <hr>
         <h2>Fundamentals</h2>
         <hr>
         <h3>Vertex</h3> 
         <p>
-            A vertex is a fundamental element of a graph. It represent an node which can hold data and can be linked to create a graph.
+            A point in space that holds data.
         </p>
         <div id="example_vertex"></div>
         <script type="text/javascript">
@@ -144,19 +144,19 @@
                 <tbody>
                     <tr>
                         <td>neighbors</td>
-                        <td>- List of connected vertex neighbors</td>
+                        <td>- A list of vertices, each connected to this vertex.</td>
                     </tr>
                     <tr>
                         <td>edges</td>
-                        <td>- List of edges, where this vertex is part of</td>
+                        <td>- A list of edges, all of which point this vertex.</td>
                     </tr>
                     <tr>
                         <td>faces</td>
-                        <td>- List of faces, where this vertex is part of</td>
+                        <td>- A list of faces each containing this vertex.</td>
                     </tr>
                     <tr>
                         <td>data</td>
-                        <td>- The data for this vertex</td>
+                        <td>- The information associated with this vertex.</td>
                     </tr>
                 </tbody>
             </table>
@@ -164,129 +164,129 @@
         <hr>
         <h3>Edge</h3> 
         <p>
-                A edge represents a connection of two vertices.
-            </p>
-            <div id="example_edge"></div>
-            <script type="text/javascript">
-    
-                var edge = Makrene.Edge();
-                var vertex_1 = Makrene.Vertex({ x:40, y: 50 });
-                var vertex_2 = Makrene.Vertex({ x:80, y: 50 });
-                edge.vertices.push(vertex_1);
-                edge.vertices.push(vertex_2);
+            An edge represents a connection between two vertices.
+        </p>
+        <div id="example_edge"></div>
+        <script type="text/javascript">
 
-                cEngine.create({
-                    domElement: document.getElementById("example_edge"),
-                    width: 100,
-                    height: 100,
-                    step: function (context, width, height) {
-                        context.beginPath();
-                        context.lineWidth = 4;
-                        context.strokeStyle = "red";
-                        context.moveTo(edge.vertices[0].data.x, edge.vertices[0].data.y);
-                        context.lineTo(edge.vertices[1].data.x, edge.vertices[1].data.y);
-                        context.stroke();
-                    }
-                }).step();
-            </script>
-                <p>
-                <h4>Syntax</h4>
-                <code>
-                    var vertex = Makrene.Edge();
-                </code>
-            </p>
+            var edge = Makrene.Edge();
+            var vertex_1 = Makrene.Vertex({ x:40, y: 50 });
+            var vertex_2 = Makrene.Vertex({ x:80, y: 50 });
+            edge.vertices.push(vertex_1);
+            edge.vertices.push(vertex_2);
+
+            cEngine.create({
+                domElement: document.getElementById("example_edge"),
+                width: 100,
+                height: 100,
+                step: function (context, width, height) {
+                    context.beginPath();
+                    context.lineWidth = 4;
+                    context.strokeStyle = "red";
+                    context.moveTo(edge.vertices[0].data.x, edge.vertices[0].data.y);
+                    context.lineTo(edge.vertices[1].data.x, edge.vertices[1].data.y);
+                    context.stroke();
+                }
+            }).step();
+        </script>
             <p>
-                <h4>Properties</h4>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>neighbors</td>
-                            <td>- List of connected edge neighbors</td>
-                        </tr>
-                        <tr>
-                            <td>vertices</td>
-                            <td>- List of vertices, where this edge is part of</td>
-                        </tr>
-                        <tr>
-                            <td>faces</td>
-                            <td>- List of faces, where this edge is part of</td>
-                        </tr>
-                        <tr>
-                            <td>data</td>
-                            <td>- The data for this edge</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </p>
+            <h4>Syntax</h4>
+            <code>
+                var vertex = Makrene.Edge();
+            </code>
+        </p>
+        <p>
+            <h4>Properties</h4>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>neighbors</td>
+                        <td>- A list of edges, each connected to this edge.</td>
+                    </tr>
+                    <tr>
+                        <td>vertices</td>
+                        <td>- A list of vertices, each vertex is part of this edge.</td>
+                    </tr>
+                    <tr>
+                        <td>faces</td>
+                        <td>- A list of faces, each including this edge.</td>
+                    </tr>
+                    <tr>
+                        <td>data</td>
+                        <td>- The information associated with this edge.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </p>
         <hr>
         <h3>Face</h3> 
         <p>
-                A face represents a area between closed connected edges. Also known as polygon.
-            </p>
-            <div id="example_face"></div>
-            <script type="text/javascript">
-    
-                var face = Makrene.Face();
-                var vertex_1 = Makrene.Vertex({ x:120, y: 40 });
-                var vertex_2 = Makrene.Vertex({ x:200, y: 110 });
-                var vertex_3 = Makrene.Vertex({ x:130, y: 180 });
-                var vertex_4 = Makrene.Vertex({ x:89, y: 130 });
-                var vertex_5 = Makrene.Vertex({ x:150, y: 120 });
-                face.vertices.push(vertex_1);
-                face.vertices.push(vertex_2);
-                face.vertices.push(vertex_3);
-                face.vertices.push(vertex_4);
-                face.vertices.push(vertex_5);
+            A face represents an area between closed connected edges.
+        </p>
+        <div id="example_face"></div>
+        <script type="text/javascript">
 
-                cEngine.create({
-                    domElement: document.getElementById("example_face"),
-                    width: 200,
-                    height: 200,
-                    step: function (context, width, height) {
-                        context.beginPath();
-                        context.fillStyle = "red";
-                        context.moveTo(edge.vertices[0].data.x, edge.vertices[0].data.y);
-                        face.vertices.forEach(function(v){
-                            context.lineTo(v.data.x, v.data.y);
-                        })
-                        context.fill();
-                    }
-                }).step();
-            </script>
-                <p>
-                        <h4>Syntax</h4>
-                        <code>
-                            var vertex = Makrene.Face();
-                        </code>
-                    </p>
-            <p>
-                <h4>Properties</h4>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>neighbors</td>
-                            <td>- List of connected face neighbors</td>
-                        </tr>
-                        <tr>
-                            <td>vertices</td>
-                            <td>- List of vertices, where this face is part of</td>
-                        </tr>
-                        <tr>
-                            <td>edges</td>
-                            <td>- List of edges, where this face is part of</td>
-                        </tr>
+            var face = Makrene.Face();
+            var vertex_1 = Makrene.Vertex({ x:120, y: 40 });
+            var vertex_2 = Makrene.Vertex({ x:200, y: 110 });
+            var vertex_3 = Makrene.Vertex({ x:130, y: 180 });
+            var vertex_4 = Makrene.Vertex({ x:89, y: 130 });
+            var vertex_5 = Makrene.Vertex({ x:150, y: 120 });
+            face.vertices.push(vertex_1);
+            face.vertices.push(vertex_2);
+            face.vertices.push(vertex_3);
+            face.vertices.push(vertex_4);
+            face.vertices.push(vertex_5);
 
-                        <tr>
-                            <td>data</td>
-                            <td>- The data for this face</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </p>
+            cEngine.create({
+                domElement: document.getElementById("example_face"),
+                width: 200,
+                height: 200,
+                step: function (context, width, height) {
+                    context.beginPath();
+                    context.fillStyle = "red";
+                    context.moveTo(edge.vertices[0].data.x, edge.vertices[0].data.y);
+                    face.vertices.forEach(function(v){
+                        context.lineTo(v.data.x, v.data.y);
+                    })
+                    context.fill();
+                }
+            }).step();
+        </script>
+        <p>
+            <h4>Syntax</h4>
+            <code>
+                var vertex = Makrene.Face();
+            </code>
+        </p>
+        <p>
+        <h4>Properties</h4>
+        <table>
+            <tbody>
+                <tr>
+                    <td>neighbors</td>
+                    <td>- A list of faces each connected to this face.</td>
+                </tr>
+                <tr>
+                    <td>vertices</td>
+                    <td>- A list of vertices, each is part of this face.</td>
+                </tr>
+                <tr>
+                    <td>edges</td>
+                    <td>- A list of edges, all of which are part of this face.</td>
+                </tr>
+
+                <tr>
+                    <td>data</td>
+                    <td>- The information associated with this face.</td>
+                </tr>
+            </tbody>
+        </table>
+        </p>
         <hr>
         <h3>Graph</h3> 
         <p>
-            A graph is a set of connected vertices, edges and faces.
+            A graph is a set of connected vertices, edges, and faces.
         </p>
         <div id="example_graph"></div>
         <script type="text/javascript">
@@ -387,10 +387,10 @@
             }).step();
         </script>
         <p>
-            <h4>Syntax</h4>
-            <code>
-                var graph = Makrene.Graph();
-            </code>
+        <h4>Syntax</h4>
+        <code>
+            var graph = Makrene.Graph();
+        </code>
         </p>
         <p>
             <h4>Vertices, Edges and Faces</h4>
@@ -464,7 +464,7 @@
         <h3>Circle</h3> 
 
         <p>
-            Multi linked circle mesh.
+            A circle has multiple levels, each with a fixed number of vertices. The center has only one vertex. This center connects with each vertex of the first level. Each vertex on a level is then connected with their neighbors on the same level and two vertices of the lower and upper level.
         </p>
         <div id="example_circle"></div>
         <script>
@@ -506,20 +506,7 @@
 
         </script>
         <p>
-            The circle contains multiple levels/rings, each with a 
-            max number of vertices. The center contains one vertex, connected
-            with each of the first level/ring. Each level vertex is connected
-            with their visual neighbor and two vertices of the lower and 
-            higher level/ring (because each level/ring is offset by half 
-            the distance of each vertex, which puts every vertex in the 
-            middle of the vertices below and above). 
-        </p>
-        <p>
-            Behaves like a sequence. The first element is the center of 
-            the circle and it grows outside, by which the last element 
-            is the vertex with the highest degree/angle on the outer 
-            level/ring. The data structure is highly dynamic, with multiple
-            method to mutate its state.
+            This structure behaves like a sequence. The first element is the center. Each new vertex grows farther out. The last element is the vertex with the highest degree on the outer level. The data structure is highly dynamic with multiple methods to mutate its state.
         </p>
         <p>
             <h4>Syntax</h4>
@@ -537,46 +524,46 @@
             <div style="clear:both"></div>
 
             <style>
-            .slidecontainer {
-                text-align: left;
-            }
-            .slider {
-                -webkit-appearance: none;
-                height: 15px;
-                border-radius: 5px;   
-                background: #d3d3d3;
-                outline: none;
-                -webkit-transition: .2s;
-                transition: opacity .2s;
-            }
+                .slidecontainer {
+                    text-align: left;
+                }
+                .slider {
+                    -webkit-appearance: none;
+                    height: 15px;
+                    border-radius: 5px;   
+                    background: #d3d3d3;
+                    outline: none;
+                    -webkit-transition: .2s;
+                    transition: opacity .2s;
+                }
 
-            .slider::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                appearance: none;
-                width: 25px;
-                height: 25px;
-                border-radius: 50%; 
-                background: red;
-                cursor: pointer;
-            }
+                .slider::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    width: 25px;
+                    height: 25px;
+                    border-radius: 50%; 
+                    background: red;
+                    cursor: pointer;
+                }
 
-            .slider::-moz-range-thumb {
-                width: 25px;
-                height: 25px;
-                border-radius: 50%;
-                background:red;
-                cursor: pointer;
-            }
+                .slider::-moz-range-thumb {
+                    width: 25px;
+                    height: 25px;
+                    border-radius: 50%;
+                    background:red;
+                    cursor: pointer;
+                }
 
-            #slider_value {
-                position: relative;
-                top:-2px;
-                color:white;
-                background:red;
-                border-radius: 10px;
-                height: 15px;;
-                padding:0 10px;
-            }
+                #slider_value {
+                    position: relative;
+                    top:-2px;
+                    color:white;
+                    background:red;
+                    border-radius: 10px;
+                    height: 15px;;
+                    padding:0 10px;
+                }
             </style>
             
             <br>
@@ -686,7 +673,7 @@
         <h3>Grid</h3>
 
         <p>
-            Multi linked grid mesh.
+            A grid is a multi-linked graph of rows and columns. 
         </p>
         <div id="example_grid"></div>
         <script type="text/javascript">
@@ -722,7 +709,7 @@
             }).step();
         </script>
         <p>
-            Current it is a very simple data structure. It is static, which means it will create every vertex when it is created.
+            Currently, it is a very simple data structure. It is static, which means it will create every vertex when it is created.
         </p>
         <p>
             <h4>Syntax</h4>
