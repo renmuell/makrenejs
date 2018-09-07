@@ -10,10 +10,14 @@ A point in space that holds data.
 
 #### Syntax
 
+```javascript
 var vertex = Makrene.Vertex();
+```
 
 #### Properties
 
+| Property | Description |
+|-----------|------------|
 | neighbors | A list of vertices, each connected to this vertex. |
 | edges  | A list of edges, all of which point this vertex. |
 | faces  | A list of faces each containing this vertex. |
@@ -25,10 +29,14 @@ An edge represents a connection between two vertices.
 
 #### Syntax
 
+```javascript
 var vertex = Makrene.Edge();
+```
 
 #### Properties
 
+| Property | Description |
+|-----------|------------|
 | neighbors | A list of edges, each connected to this edge. |
 | vertices  | A list of vertices, each vertex is part of this edge. |
 | faces  | A list of faces, each including this edge. |
@@ -40,10 +48,14 @@ A face represents an area between closed connected edges.
 
 #### Syntax
 
+```javascript
 var vertex = Makrene.Face();
+```
 
 #### Properties
 
+| Property | Description |
+|-----------|------------|
 | neighbors | A list of faces each connected to this face. |
 | vertices  | A list of vertices, each is part of this face. |
 | edges  | A list of edges, all of which are part of this face. |
@@ -55,7 +67,9 @@ A graph is a set of connected vertices, edges, and faces.
 
 #### Syntax
 
+```javascript
 var graph = Makrene.Graph();
+```
 
 ## Structures
 
@@ -67,7 +81,9 @@ This structure behaves like a sequence. The first element is the center. Each ne
 
 #### Syntax
 
+```javascript
 var circle = Makrene.Circle({ numVertexOnLevel: 10 });
+```
 
 ### Grid
 
@@ -77,7 +93,9 @@ Currently, it is a very simple data structure. It is static, which means it will
 
 #### Syntax
 
+```javascript
 var grid = Makrene.Grid({ rows: 3, cols: 2 });
+```
 
 ## Visualizer
 
