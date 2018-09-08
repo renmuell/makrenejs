@@ -625,16 +625,16 @@ module.exports = function Makrene_Circle(config) {
 
     /**
      *  The push() method adds one or more elements to the end of 
-     *  an Circle and returns the new length of the Circle.
+     *  a Circle and returns the new length of the Circle.
      *
      *  Syntax:
      *  let newCircleLength = circle.push(vertex1[, ...[, vertexN]])
      *
      *  @public
      *  @fires Change-Event
-     *  @param {...Makrene.Vertex|object} v - The elements to add to the end of the Circle.
-     *                                        New vertex or data for new vertex.
-     *  @return {number} - Length after push of vertex
+     *  @param {...Makrene.Vertex|object} v - The elements which are to add to the end of the Circle.
+     *                                        New vertex instance or data for new vertex.
+     *  @return {number} - Length of the circle after the pushing the vertex.
      */
     push: function () {
 
@@ -668,7 +668,7 @@ module.exports = function Makrene_Circle(config) {
     },
   
     /**
-     *  The pop() method removes the last element from an Circle and returns that element. 
+     *  The pop() method removes the last element from a Circle and returns that element. 
      *  This method changes the length of the Circle.
      *
      *  Syntax:
@@ -697,7 +697,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  The shift() method removes the first element from an Circle and returns that removed element. 
+     *  The shift() method removes the first element from a Circle and returns that removed element. 
      *  This method changes the length of the Circle.
      *
      *  Syntax:
@@ -709,9 +709,9 @@ module.exports = function Makrene_Circle(config) {
      *                                       undefined if the circle is empty.
      *
      *  @remarks Algorithm-idea: fast rotate to center
-     *           - remove middle
-     *           - remove every first element of each level, shift rest one position to front
-     *           - add removed element one level lower on freed last position
+     *           - Remove middle
+     *           - Remove every first element of each level, shift rest one position to the front
+     *           - Add removed elements one level lower on freed last position
      */
     shift: function(){
 
@@ -727,14 +727,14 @@ module.exports = function Makrene_Circle(config) {
 
       } else {
 
-        // remove all level index 0
+        // Remove all elements witch a level index 0.
         var indexZeroVertices = [];
         for (var i = graph.vertices.length - 1; i >= 0; i--) {
           indexZeroVertices[i] = graph.vertices[i][0];
           graph.removeVertex(graph.vertices[i][0]);
         }
 
-        // shift all levels --> undefined at last max level index
+        // Shift all levels.
         for (var j = graph.vertices.length - 1; j >= 0; j--) {
           graph.vertices[j].shift();
 
@@ -748,7 +748,7 @@ module.exports = function Makrene_Circle(config) {
         }
         _circleLength--;
 
-        // add all index 0 at the end of level below
+        // Add all removed elements at the end of the level below.
         graph.addVertexAt(0, 0, indexZeroVertices[1]);
         for (var k = indexZeroVertices.length - 1; k >= 2; k--) {
           graph.addVertexAt(k - 1, graph.numVertexOnLevel - 1, indexZeroVertices[k]);
@@ -770,7 +770,7 @@ module.exports = function Makrene_Circle(config) {
     
     /**
      *  The unshift() method adds one or more elements to the beginning of 
-     *  an Circle and returns the new length of the Circle.
+     *  a Circle and returns the new length of the Circle.
      *
      *  Syntax:
      *  let newCircleLength = circle.unshift(vertex1[, ...[, vertexN]])
@@ -778,7 +778,7 @@ module.exports = function Makrene_Circle(config) {
      *  @public
      *  @fires Change-Event
      *  @param {...Makrene.Vertex|object} v - The elements to add to the beginning of the Circle.
-     *                                        New vertex or data for new vertex.
+     *                                        New vertex instance or data for new vertex.
      *  @return {number} - The new length property of the circle upon which the method was called.
      */
     unshift: function(){
@@ -795,7 +795,7 @@ module.exports = function Makrene_Circle(config) {
           graph.addVertexAt(0, 0, v);  
         } else {
           var oldLength = graph.length;
-          // remove every last index
+          // Remove every last index.
           var indexLastVertices = [graph.center];
           graph.removeVertex(graph.center);
           for (var i = graph.vertices.length - 1; i >= 0; i--) {
@@ -805,7 +805,7 @@ module.exports = function Makrene_Circle(config) {
             }
           }
 
-          // unshift every level -> insert undefined at 0
+          // Unshift every level -> insert undefined at 0.
           for (var j = graph.vertices.length - 1; j >= 0; j--) {
             graph.vertices[j].unshift(undefined);
 
@@ -819,12 +819,12 @@ module.exports = function Makrene_Circle(config) {
           }
           _circleLength = oldLength + 1;
 
-          // add all last index at beginning of level above
+          // Add all removed elements at beginning of level above.
           for (var k = indexLastVertices.length - 1; k >= 0; k--) {
             graph.addVertexAt(k + 1, 0, indexLastVertices[k]);
           }
 
-          // add vertex at 0,0
+          // Add the vertex to the center.
           graph.addVertexAt(0, 0, v);
         }
 
@@ -842,7 +842,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  The fill() method fills all the elements of an circle from a start index to an end index with a static value. 
+     *  The fill() method fills all the elements of a circle from a start index to an end index with a static value. 
      *  The end index is not included.
      *
      *  Syntax:
@@ -850,9 +850,9 @@ module.exports = function Makrene_Circle(config) {
      *
      *  @public
      *  @fires Change-Event
-     *  @param {Makrene.Vertex|object} value - Value to fill an circle.
-     *  @param {number} start - Start index, defaults to 0.
-     *  @param {number} end - End index, defaults to this.length.
+     *  @param {Makrene.Vertex|object} value - Value to fill a circle.
+     *  @param {number} start - Start index; defaults to 0.
+     *  @param {number} end - End index; defaults to circle.length.
      *  @return {Makrene.Circle} - The modified circle. 
      */
     fill: function (value, start, end) {
@@ -898,7 +898,7 @@ module.exports = function Makrene_Circle(config) {
      *  circle.expandFromOutside(number)
      * 
      *  @public
-     *  @fires Change-Event for each vertex
+     *  @fires Change-Event For each vertex.
      *  @param {number} number - How many vertices to push to the end.
      *  @return {number} - The new length property of the circle upon which the method was called.
      */
@@ -920,7 +920,7 @@ module.exports = function Makrene_Circle(config) {
      *  circle.expandFromInside(number)
      * 
      *  @public
-     *  @fires Change-Event for each vertex
+     *  @fires Change-Event For each vertex.
      *  @param {number} number - How many vertices to unshift to the beginning.
      *  @return {number} - The new length property of the circle upon which the method was called.
      */
@@ -941,7 +941,7 @@ module.exports = function Makrene_Circle(config) {
      *  circle.collapseFromOutside(number)
      * 
      *  @public
-     *  @fires Change-Event for each vertex
+     *  @fires Change-Event For each vertex.
      *  @param {number} number - How many vertices to pop from the end.
      *  @return {number} - The new length property of the circle upon which the method was called.
      */
@@ -964,7 +964,7 @@ module.exports = function Makrene_Circle(config) {
      *  circle.collapseFromInside(number)
      * 
      *  @public
-     *  @fires Change-Event for each vertex
+     *  @fires Change-Event For each vertex.
      *  @param {number} number - How many vertices to shift from the beginning.
      *  @return {number} - The new length property of the circle upon which the method was called.
      */
@@ -981,7 +981,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Clears all vertices form the circle. And resets all data.
+     *  Clears all vertices from the circle and resets all data.
      * 
      *  Syntax:
      *  circle.clear()
@@ -1007,7 +1007,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  The includes() method determines whether an circle includes a certain
+     *  The includes() method determines whether a circle includes a certain
      *  element, returning true or false as appropriate.
      * 
      *  Syntax:
@@ -1015,15 +1015,14 @@ module.exports = function Makrene_Circle(config) {
      * 
      *  @public
      *  @param {Makrene.Vertex} searchElement - The element to search for.
-     *  @return {boolean} - A Boolean which is true if the value searchElement 
-     *                      is found within the circle.
+     *  @return {boolean} - Returns true if the element was found within the circle.
      */
     includes: function(searchElement){
       return graph.filter(function(v){ return v === searchElement; }).length > 0;
     },
 
     /**
-     *  Gets vertex at a certain level and position on that level of a circle.
+     *  Returns the vertex at a certain level and position of the circle.
      *  
      *  Syntax:
      *  circle.vertexAt(level, position)
@@ -1038,7 +1037,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Returns the vertex at a specified index in a circle.
+     *  This method returns the vertex at a specified index in a circle.
      * 
      *  @public
      *  @param {number} index - The zero-based index of the vertex to retrieve.
@@ -1096,7 +1095,7 @@ module.exports = function Makrene_Circle(config) {
      *  circle.indexOf(vertex)
      *  
      *  @public
-     *  @param {Makrene.Vertex} vertex - Vertex to locate in the circle.
+     *  @param {Makrene.Vertex} vertex - The vertex to locate in the circle.
      *  @return {number} - The first index of the vertex in the circle; -1 if not found.
      */
     indexOf: function(vertex){
@@ -1154,26 +1153,26 @@ module.exports = function Makrene_Circle(config) {
         vertex.id = vertex.data.level + '_' + vertex.data.degree;
         graph.vertices[level][position] = vertex;
 
-        //Link center with everyone above
+        // Link center with everyone above.
         if (level === 0) {
           if (graph.vertices[1]) {
             linkCenterWithLevelAboveVertexes(graph);
           }
         } else {
           
-          //linking with level below
+          // Linking with level below.
           linkWithLevelBelowVertexes(graph, level, position);
 
-          //linking with level above
+          // linking with level above.
           linkWithLevelAboveVertexes(graph, level, position);
 
-          //link with previous neighbor
+          // Link with previous neighbor.
           linkWithNeighborVertex(
             graph, 
             vertex, 
             graph.vertices[level][(position - 1 + graph.numVertexOnLevel) % graph.numVertexOnLevel]);
 
-          //link with next neighbor 
+          // Link with next neighbor.
           linkWithNeighborVertex(
             graph, 
             vertex, 
@@ -1196,7 +1195,7 @@ module.exports = function Makrene_Circle(config) {
     },
 
     /**
-     *  Removes a Vertex from a circle on level and position on that level.
+     *  This method removes a Vertex from a circle on level and position on that level.
      * 
      *  Syntax:
      *  circle.removeVertexFrom(level, position)
@@ -1295,7 +1294,7 @@ module.exports = function Makrene_Circle(config) {
         vertex.faces = [];
         vertex.neighbors = [];
 
-        // if last vertex update circle length and umCircleLevels
+        // if it was the last vertex on the circle, update circle length and umCircleLevels
         if (vertexIndex == _circleLength - 1) {
 
           var previousVertexIndex = vertexIndex - 1;
@@ -1332,12 +1331,12 @@ module.exports = function Makrene_Circle(config) {
      *
      *  @public
      *  @param {function} callback - Function to execute for each element, taking three arguments:
-     *                          currentVertex  Optional
-     *                              The current element being processed in the circle.
-     *                          index   Optional
-     *                              The index of the current element being processed in the circle.
-     *                          circle   Optional
-     *                              The circle filter was called upon.
+     *                             - currentVertex:
+     *                               The current element being processed in the circle.
+     *                             - index:
+     *                               The index of the current element being processed in the circle.
+     *                             - circle:
+     *                               The circle filter was called upon.
      *
      *  @return {undefined}
      */
@@ -1357,14 +1356,14 @@ module.exports = function Makrene_Circle(config) {
      *  var newArray = circle.filter(callback(vertex[, index[, graph]])[, thisArg])
      *
      *  @public
-     *  @param {function} callback - Function is a predicate, to test each element of the circle. 
+     *  @param {function} callback - The function is a predicate, to test each element of the circle. 
      *                               Return true to keep the element, false otherwise. It accepts three arguments:
-     *                          vertex  Optional
-     *                              The current element being processed in the circle.
-     *                          index   Optional
-     *                              The index of the current element being processed in the circle.
-     *                          graph   Optional
-     *                              The circle filter was called upon.
+     *                             - vertex:
+     *                               The current element being processed in the circle.
+     *                             - index:
+     *                               The index of the current element being processed in the circle.
+     *                             - graph:
+     *                               The circle filter was called upon.
      *
      *  @return {array} - A new array with the elements that pass the test. If no elements pass the test, an empty array will be returned.
      */
@@ -1390,13 +1389,13 @@ module.exports = function Makrene_Circle(config) {
      *  }[, thisArg])
      *
      *  @public
-     *  @param {function} callback - Function that produces an element of the new Array, taking three arguments:
-     *                          currentVertex  Optional
-     *                              The value of the current element being processed in the circle.
-     *                          index   Optional
-     *                              The index of the current element being processed in the circle.
-     *                          graph   Optional
-     *                              The circle that forEach() is being applied to.
+     *  @param {function} callback - The function that produces an element of the new Array, taking three arguments:
+     *                             - currentVertex:
+     *                               The value of the current element being processed in the circle.
+     *                             - index:
+     *                               The index of the current element being processed in the circle.
+     *                             - graph:
+     *                               The circle that map() is being applied to.
      *
      *  @return {array} - A new array with each element being the result of the callback function.
      */
@@ -1441,7 +1440,7 @@ module.exports = function Makrene_Circle(config) {
  */
 
 /**
- *  Returns index of vertex for level and position in circle.
+ *  Returns index of the vertex for level and position in the circle.
  * 
  *  Syntax:
  *  getIndex(graph, position, level)
@@ -1465,7 +1464,7 @@ function getIndex(graph, position, level){
  *  @private
  *  @param {Makrene.Circle} graph - The graph instance.
  *  @param {number} index - The index for the level and position data.
- *  @return {object} - object with properties 'level' and 'position'
+ *  @return {object} - Object with properties 'level' and 'position'.
  */
 function getPositionLevel(graph, index){
 
@@ -1485,8 +1484,8 @@ function getPositionLevel(graph, index){
 }
 
 /**
- *  Links a certain vertex with two vertices one level below. This method
- *  will also create the edges and faces.
+ *  This method links a vertex with two vertices one level below. 
+ *  This method will also create the edges and faces.
  * 
  *  Syntax:
  *  linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex)
@@ -1525,8 +1524,8 @@ function linkWithLevelBelowVertexes(graph, levelIndex, vertexLevelIndex){
 }
 
 /**
- *  Links a certain vertex with two vertices one level above. This method
- *  will also create the edges and faces.
+ *  This method links a vertex with two vertices one level above. 
+ *  This method will also create the edges and faces.
  * 
  *  Syntax:
  *  linkWithLevelAboveVertexes(graph, levelIndex, vertexLevelIndex)
@@ -1566,8 +1565,8 @@ function linkWithLevelAboveVertexes(graph, levelIndex, vertexLevelIndex){
 }
 
 /**
- *  Links a center vertex with all vertices on level one. This method
- *  will also create the edges and faces.
+ *  This method links a vertex in the center of the circle with all 
+ *  vertices on level one. This method will also create the edges and faces.
  * 
  *  Syntax:
  *  linkCenterWithLevelAboveVertexes(graph)
@@ -1599,7 +1598,7 @@ function linkCenterWithLevelAboveVertexes(graph){
 }
 
 /**
- *  Links a certain vertex with given neighbor vertex. This method
+ *  This method links a vertex with given neighbor vertex. This method
  *  will also create the edges and faces.
  * 
  *  Syntax:
@@ -1629,7 +1628,8 @@ function linkWithNeighborVertex(graph, vertex, neighbor){
 }
 
 /**
- *  Creates new edge for given graph from vertex one to vertex two.
+ *  This method creates a new edge for the given graph from 
+ *  vertex one to vertex two.
  * 
  *  Syntax:
  *  createEdge(graph, v1, v2)
@@ -1655,7 +1655,7 @@ function createEdge(graph, v1, v2){
 }
 
 /**
- *  Links given edge with all edges of a vertex.
+ *  This method links a given edge with all edges of a vertex.
  * 
  *  Syntax:
  *  linkEdgeWithVertexEdges(edge, vertex)
@@ -1675,8 +1675,8 @@ function linkEdgeWithVertexEdges(edge, vertex){
 }
 
 /**
- *  Creates a new face for given graph from vertex one over 
- *  vertex two to vertex three.
+ *  This method creates a new face for a given graph from 
+ *  vertex one over vertex two to vertex three.
  * 
  *  Syntax:
  *  createFace(graph, v1, v2, v3)
@@ -1726,7 +1726,7 @@ function createFace(graph, v1, v2, v3){
 }
 
 /**
- *  Links given face with all faces of a vertex.
+ *  This method links given face with all faces of a vertex.
  * 
  *  Syntax:
  *  linkFaceWithVertexFaces(edge, vertex)
@@ -1746,7 +1746,7 @@ function linkFaceWithVertexFaces(face, vertex){
 }
 
 /**
- *  Calculates the degree of vertex on the circle level.
+ *  Calculates the degree of the vertex on the circle level.
  * 
  *  Syntax:
  *  calculateVertexDegree(graph, level, position)
@@ -1755,7 +1755,7 @@ function linkFaceWithVertexFaces(face, vertex){
  *  @param {Makrene.Circle} graph  - The graph instance.
  *  @param {number} level - The level of the circle.
  *  @param {number} position - The position on the level.
- *  @return {number} - the degree of the vertex.
+ *  @return {number} - The degree of the vertex.
  */
 function calculateVertexDegree(graph, level, position) {
   var levelDegreeOffset =  (360/graph.numVertexOnLevel)/2;
@@ -1790,7 +1790,7 @@ var Dir = {
 };
 
 /**
- *  Multi linked grid mesh.
+ *  A grid is a multi-linked graph of rows and columns. 
  *
  *  0,0 --- 0,1 --- 0,2
  *   |       |       |
@@ -1800,8 +1800,8 @@ var Dir = {
  *   |       |       |
  *  2,0 --- 2,1 --- 2,2
  * 
- *  Current it is a very simple data structure. It is static, which means 
- *  it will create every vertex when it is created.
+ *  Currently, it is a very simple data structure. It is 
+ *  static, which means it will create every vertex when it is created.
  * 
  *  Syntax:
  *  
@@ -1809,7 +1809,7 @@ var Dir = {
  *
  *  @public
  *  @implements {Makrene.Grid}
- *  @param {object} config - the Settings
+ *  @param {object} config - The Settings.
  *  @param {number} config.rows - @see graph.rows
  *  @param {number} config.cols - @see graph.cols
  *  @returns {Makrene.Grid} - The grid instance.
@@ -1830,13 +1830,15 @@ module.exports = function Makrene_Grid(config){
   config = Object.assign({
 
     /**
-     *  default setting for rows.
+     *  Default setting for rows.
+     * 
      *  @see graph.rows
      */
      rows: 0,
 
     /**
-     *  default setting for columns.
+     *  Default setting for columns.
+     * 
      *  @see graph.cols
      */
     cols: 0
@@ -1853,7 +1855,6 @@ module.exports = function Makrene_Grid(config){
    *                     | |                              
    *                     |_|                              
    */
-
 
   var graph = Object.create(Makrene_Grid.prototype, {
 
@@ -1890,6 +1891,7 @@ module.exports = function Makrene_Grid(config){
    *     |_|  |_|\___|\__|_| |_|\___/ \__,_|___/
    *                                                                                     
    */
+
   graph = Object.assign(Makrene.Graph({}, graph), {
 
     /**
@@ -1901,12 +1903,12 @@ module.exports = function Makrene_Grid(config){
      *
      *  @public
      *  @param {function} callback - Function to execute for each element, taking three arguments:
-     *                          currentVertex  Optional
-     *                              The current element being processed in the grid.
-     *                          row   Optional
-     *                              The row of the currentVertex.
-     *                          column   Optional
-     *                              The column of the currentVertex.
+     *                             - currentVertex:
+     *                               The current element being processed in the grid.
+     *                             - row:
+     *                               The row of the currentVertex.
+     *                             - column:
+     *                               The column of the currentVertex.
      *
      *  @return {undefined}
      */
@@ -1935,8 +1937,8 @@ module.exports = function Makrene_Grid(config){
  */
 
 /**
- *  Initialize a empty grid with every vertex, edge and face for
- *  given rows and columns.
+ *  Initialize an empty grid with every vertex, edge, 
+ *  and face for given rows and columns.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -1954,7 +1956,7 @@ function init(graph){
 }
 
 /**
- *  Creates every vertex for the grid.
+ *  This method creates every vertex for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -1975,7 +1977,7 @@ function createVertexes(graph){
 }
 
 /**
- *  Links every vertex for the grid.
+ *  This method links every vertex for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -2004,7 +2006,7 @@ function linkVertexes(graph){
 }
 
 /**
- *  Creates every edge for the grid.
+ *  This method creates every edge for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -2023,7 +2025,8 @@ function createEdges(graph){
 }
 
 /**
- *  Creates new edge for given graph from vertex one to vertex two.
+ *  This method creates a new edge for a given graph 
+ *  from vertex one to vertex two.
  * 
  *  Syntax:
  *  createEdge(graph, v1, v2)
@@ -2046,7 +2049,7 @@ function createEdge(graph, v1, v2){
 }
 
 /**
- *  Links every edge for the grid.
+ *  This method links every edge for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -2065,7 +2068,7 @@ function linkEdges(graph){
 }
 
 /**
- *  Creates every face for the grid.
+ *  This method creates every face for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -2088,8 +2091,8 @@ function createFaces(graph){
 }
 
 /**
- *  Creates a new face for given graph from vertex one over 
- *  vertex two over vertex three to vertex four.
+ *  This method creates a new face for a given graph from 
+ *  vertex one over vertex two over vertex three to vertex four.
  * 
  *  Syntax:
  *  createFace(graph, v1, v2, v3, v4)
@@ -2138,7 +2141,7 @@ function createFace(graph, v1, v2, v3, v4){
 }
 
 /**
- *  Links every face for the grid.
+ *  This method links every face for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.

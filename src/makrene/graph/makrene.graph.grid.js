@@ -23,7 +23,7 @@ var Dir = {
 };
 
 /**
- *  Multi linked grid mesh.
+ *  A grid is a multi-linked graph of rows and columns. 
  *
  *  0,0 --- 0,1 --- 0,2
  *   |       |       |
@@ -33,8 +33,8 @@ var Dir = {
  *   |       |       |
  *  2,0 --- 2,1 --- 2,2
  * 
- *  Current it is a very simple data structure. It is static, which means 
- *  it will create every vertex when it is created.
+ *  Currently, it is a very simple data structure. It is 
+ *  static, which means it will create every vertex when it is created.
  * 
  *  Syntax:
  *  
@@ -42,7 +42,7 @@ var Dir = {
  *
  *  @public
  *  @implements {Makrene.Grid}
- *  @param {object} config - the Settings
+ *  @param {object} config - The Settings.
  *  @param {number} config.rows - @see graph.rows
  *  @param {number} config.cols - @see graph.cols
  *  @returns {Makrene.Grid} - The grid instance.
@@ -63,13 +63,15 @@ module.exports = function Makrene_Grid(config){
   config = Object.assign({
 
     /**
-     *  default setting for rows.
+     *  Default setting for rows.
+     * 
      *  @see graph.rows
      */
      rows: 0,
 
     /**
-     *  default setting for columns.
+     *  Default setting for columns.
+     * 
      *  @see graph.cols
      */
     cols: 0
@@ -86,7 +88,6 @@ module.exports = function Makrene_Grid(config){
    *                     | |                              
    *                     |_|                              
    */
-
 
   var graph = Object.create(Makrene_Grid.prototype, {
 
@@ -123,6 +124,7 @@ module.exports = function Makrene_Grid(config){
    *     |_|  |_|\___|\__|_| |_|\___/ \__,_|___/
    *                                                                                     
    */
+
   graph = Object.assign(Makrene.Graph({}, graph), {
 
     /**
@@ -134,12 +136,12 @@ module.exports = function Makrene_Grid(config){
      *
      *  @public
      *  @param {function} callback - Function to execute for each element, taking three arguments:
-     *                          currentVertex  Optional
-     *                              The current element being processed in the grid.
-     *                          row   Optional
-     *                              The row of the currentVertex.
-     *                          column   Optional
-     *                              The column of the currentVertex.
+     *                             - currentVertex:
+     *                               The current element being processed in the grid.
+     *                             - row:
+     *                               The row of the currentVertex.
+     *                             - column:
+     *                               The column of the currentVertex.
      *
      *  @return {undefined}
      */
@@ -168,8 +170,8 @@ module.exports = function Makrene_Grid(config){
  */
 
 /**
- *  Initialize a empty grid with every vertex, edge and face for
- *  given rows and columns.
+ *  Initialize an empty grid with every vertex, edge, 
+ *  and face for given rows and columns.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -187,7 +189,7 @@ function init(graph){
 }
 
 /**
- *  Creates every vertex for the grid.
+ *  This method creates every vertex for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -208,7 +210,7 @@ function createVertexes(graph){
 }
 
 /**
- *  Links every vertex for the grid.
+ *  This method links every vertex for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -237,7 +239,7 @@ function linkVertexes(graph){
 }
 
 /**
- *  Creates every edge for the grid.
+ *  This method creates every edge for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -256,7 +258,8 @@ function createEdges(graph){
 }
 
 /**
- *  Creates new edge for given graph from vertex one to vertex two.
+ *  This method creates a new edge for a given graph 
+ *  from vertex one to vertex two.
  * 
  *  Syntax:
  *  createEdge(graph, v1, v2)
@@ -279,7 +282,7 @@ function createEdge(graph, v1, v2){
 }
 
 /**
- *  Links every edge for the grid.
+ *  This method links every edge for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -298,7 +301,7 @@ function linkEdges(graph){
 }
 
 /**
- *  Creates every face for the grid.
+ *  This method creates every face for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
@@ -321,8 +324,8 @@ function createFaces(graph){
 }
 
 /**
- *  Creates a new face for given graph from vertex one over 
- *  vertex two over vertex three to vertex four.
+ *  This method creates a new face for a given graph from 
+ *  vertex one over vertex two over vertex three to vertex four.
  * 
  *  Syntax:
  *  createFace(graph, v1, v2, v3, v4)
@@ -371,7 +374,7 @@ function createFace(graph, v1, v2, v3, v4){
 }
 
 /**
- *  Links every face for the grid.
+ *  This method links every face for the grid.
  * 
  *  @private
  *  @param {Makrene.Grid} graph - The graph instance.
