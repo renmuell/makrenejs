@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Circle KI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body {
+            font-family:Arial;
+            padding:0;
+            margin:0;
+            background-color: white;
+            overflow: hidden;
+            width:100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <script type="text/javascript" src="release/makrene.js"></script>
+    <script src="vendors/cEngine/cEngine-min.js"></script>
+    <script src="vendors/cEngine/plugins/cEngine.fill-min.js"></script>
+
+    <script>
+
+        var circle = Makrene.Circle({
+            numVertexOnLevel: 18
+        });
+
+        circle.expandFromOutside((circle.numVertexOnLevel*circle.numVertexOnLevel)+1);
+
+        var ki = Makrene.Ki.Circle(circle);
+
+        cEngine.create({
+            autoClear: true,
+            height:1512,
+            plugins: {
+                fill: cEngine.fill.create({
+                    mode: 'stretch',
+                    aspectRetion: true
+                })
+            },
+            step: function (context, width, height, stepTimeElapsed) {
+
+                if (Math.random() > 0.5) {
+                    var pos = parseInt((circle.length - 1) * Math.random());
+                    circle.vertexAtIndex(pos).data.degree += (Math.random()*10);
+                    circle.vertexAtIndex(pos).data.level += (Math.random()*10);
+                }
+                
+                ki.step();
+
+                draw(context, width, height);
+            }
+        }).start();
+        
+        function draw(context, width, height){
+            context.font="20px Arial";
+            Makrene.Visualizer.Circle(context, circle, {
+                width       : width,
+                height      : height,
+                levelOffset : 20,
+                vertexWidth : 2,
+                vertexHeight: 2,
+                lineColor   : 'darkblue',
+                faceColor   : 'lightgray',
+                vertexColor : 'orangered',
+                lineWidth   : 1
+            })
+        }
+
+    </script>
+</body>
+</html>

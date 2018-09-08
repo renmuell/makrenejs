@@ -25,13 +25,6 @@
 
     <script>
 
-        document.addEventListener('click', musicPlay);
-        function musicPlay() {
-            document.getElementById('jp_audio_0').play();
-            document.getElementById('jp_audio_0').volume = 0.2;
-            document.removeEventListener('click', musicPlay);
-        }
-
         var circle = Makrene.Circle({
             numVertexOnLevel: 18
         });

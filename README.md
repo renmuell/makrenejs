@@ -118,3 +118,15 @@ var grid = Makrene.Grid({ rows: 3, cols: 2 });
 ## KI
 
 ### KI.Circle
+
+This little bot corrects each vertex of a circle to its original state by little increments. The properties that are corrected are level and degree.
+
+#### Syntax
+
+```javascript
+var ki = Makrene.Ki.Circle(circle);
+
+ki.step();
+```
+
+

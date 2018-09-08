@@ -10,8 +10,7 @@ test('circle ki step', function (t) {
     circle.expandFromInside(10);
 
     var ki = Makrene.Ki.Circle(circle);
-    ki.init();
-
+    
     var originalDegree = circle.vertices[1][1].data.degree;
     circle.vertices[1][1].data.degree += 10;
 

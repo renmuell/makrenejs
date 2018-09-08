@@ -3,10 +3,11 @@
 /*global module */
 
 /**
- *  KI for Makrene Circle.
+ *  This little bot corrects each vertex of a circle to its original state by little increments.
+ *  The properties that are corrected are level and degree.
  * 
  *  @param {Makrene.Circle} circle - The circle instance.
- *  @return {Makrene.Ki.Circle} - The factory function
+ *  @return {Makrene.Ki.Circle} - The ki instance.
  */
 module.exports = function(circle){
 
@@ -25,21 +26,7 @@ module.exports = function(circle){
     circle: circle,
 
     /**
-     *  Initialize Circle KI.
-     * 
-     *  @public
-     *  @return {undefined}
-     */
-    init: function(){
-      ki.circle.forEach(function(v){
-        v.data.degree = v.data.degree % 360;
-        v.data.OriginalLevel = v.data.degree;
-        v.data.OriginalLevel= v.data.level;
-      });
-    },
-
-    /**
-     *  Execute one logic step for the KI.
+     *  Execute one logical step for the KI.
      * 
      *  @public
      *  @return {undefined}
@@ -47,9 +34,9 @@ module.exports = function(circle){
     step: function(){
       ki.circle.forEach(function(v){
 
-        // goto original angle
-        var a1 = v.data.OriginalLevel;
-        var a2 = v.data.degree ;
+        // goto original degree
+        var a1 = v.data.OriginalDegree;
+        var a2 = v.data.degree;
         var angle = 180 - Math.abs(Math.abs(a1 - a2) - 180);
 
         if (Math.abs(angle) >= 1) {
@@ -70,7 +57,25 @@ module.exports = function(circle){
     }
   };
 
+  init(ki);
+
   return ki;
 };
+
+
+/**
+ *  Initialize Circle KI.
+ * 
+ *  @public
+ *  @param {Makrene.Ki.Circle} ki - The ki instance.
+ *  @return {undefined}
+ */
+function init(ki){
+  ki.circle.forEach(function(v){
+    v.data.degree = v.data.degree % 360;
+    v.data.OriginalDegree = v.data.degree;
+    v.data.OriginalLevel= v.data.level;
+  });
+}
 
 }());
